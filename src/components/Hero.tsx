@@ -75,8 +75,8 @@ export default function Hero() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   return (
-    <section id="top" className="relative min-h-[100svh] overflow-hidden border-b border-[#1f1c17]">
-      <CodeRain className="opacity-60" />
+    <section className="relative min-h-screen flex flex-col justify-center pt-14 overflow-hidden">
+      <CodeRain className="absolute inset-0 opacity-[0.06]" />
       <div className="absolute inset-0 bg-gradient-to-b from-[#07070a]/30 via-transparent to-[#07070a] pointer-events-none" />
 
       <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-10 pt-24 md:pt-28 pb-20">
@@ -124,8 +124,8 @@ export default function Hero() {
                     <span className="text-[#e7b766]">$</span>
                     <span className="text-[#e8e4dc]">
                       {l.typed}
-                      {i === lines.length - 1 && !done && (
-                        <span className="text-[#e7b766] animate-pulse">▌</span>
+                      {l.typed.length < l.cmd.length && (
+                        <span className="inline-block w-[7px] h-[14px] bg-[#e7b766] animate-pulse align-middle ml-px" />
                       )}
                     </span>
                   </div>
@@ -140,32 +140,25 @@ export default function Hero() {
 
               {done && (
                 <motion.div
-                  initial={{ opacity: 0, y: 6 }}
+                  initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4 }}
-                  className="mt-6 flex flex-wrap gap-3"
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                  className="mt-16 flex gap-4 items-center"
                 >
-                  <button
-                    onClick={() => scrollTo('work')}
+                  <a
+                    href="#work"
                     data-cursor="hover"
-                    className="px-4 py-2 border border-[#e7b766] text-[#e7b766] hover:bg-[#e7b766] hover:text-[#0b0a08] transition-colors text-sm"
+                    className="px-5 py-2.5 bg-[#e7b766] text-[#07070a] text-sm font-mono hover:bg-[#d4a554] transition-colors"
                   >
-                    [ enter archive ]
-                  </button>
-                  <button
-                    onClick={() => scrollTo('empathy')}
+                    view work
+                  </a>
+                  <a
+                    href="#contact"
                     data-cursor="hover"
-                    className="px-4 py-2 border border-[#5ec8d8] text-[#5ec8d8] hover:bg-[#5ec8d8] hover:text-[#0b0a08] transition-colors text-sm"
+                    className="px-5 py-2.5 border border-[#2a2620] text-sm font-mono text-[#a8a29e] hover:border-[#e7b766] hover:text-[#e7b766] transition-colors"
                   >
-                    [ begin v-k test ]
-                  </button>
-                  <button
-                    onClick={() => scrollTo('contact')}
-                    data-cursor="hover"
-                    className="px-4 py-2 border border-[#2a2620] text-[#a8a29e] hover:border-[#ff7a5c] hover:text-[#ff7a5c] transition-colors text-sm"
-                  >
-                    [ transmit ]
-                  </button>
+                    get in touch
+                  </a>
                 </motion.div>
               )}
             </div>
