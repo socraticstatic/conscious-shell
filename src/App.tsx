@@ -103,8 +103,11 @@ export default function App() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (isTyping(e)) return;
       const isMeta = e.metaKey || e.ctrlKey;
+      const t = e.target as HTMLElement | null;
+      const inEditable = t?.isContentEditable ?? false;
+      if (e.key === '/' && isTyping(e)) return;
+      if (isMeta && e.key.toLowerCase() === 'k' && inEditable) return;
       if ((isMeta && e.key.toLowerCase() === 'k') || e.key === '/') {
         e.preventDefault();
         setPaletteOpen((v) => !v);
