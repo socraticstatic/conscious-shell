@@ -36,6 +36,7 @@ export default function BaselineDrift() {
       konamiBuf.current = [...konamiBuf.current, k].slice(-KONAMI.length);
       if (konamiBuf.current.join('|') === KONAMI.join('|')) {
         setOverride((v) => !v);
+        window.dispatchEvent(new CustomEvent('override:toggle')); // connects OverrideMode
         konamiBuf.current = [];
       }
       if (e.key === 'Escape') setOverride(false);
