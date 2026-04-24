@@ -317,11 +317,15 @@ export default function App() {
 }
 ```
 
-- [ ] **Step 2: Verify build**
+- [ ] **Step 2: Verify build — handle Bolt prop mismatch**
 
 ```bash
-cd ~/Developer/conscious-shell && npm run build 2>&1 | tail -20
+cd ~/Developer/conscious-shell && npm run build 2>&1 | tail -30
 ```
+
+The new App.tsx may fail the build because it passes a mapped `Round` type to Bolt's AgentBattle (which expects `DesignRound[]`), and may have other prop mismatches with Bolt components not yet rewritten. If the build fails with prop type errors only, add temporary `as any` casts on the failing props and note each one. These will be removed when the target component is rewritten in later tasks. Do NOT change the App.tsx architecture — only add temporary casts where TypeScript reports prop errors.
+
+Example: if `<AgentBattle initial={data.designRounds.map(toRound)} />` fails, change it to `<AgentBattle initial={data.designRounds.map(toRound) as any} />` and add a comment `// TODO: remove cast when AgentBattle is rewritten in Task 17`.
 
 - [ ] **Step 3: Commit**
 
@@ -938,7 +942,15 @@ BaselineDrift is a **sidebar HUD** — not a background color shifter. The exist
 - Konami code (↑↑↓↓←→←→ba) toggles an "override" mode that adds a banner and sets `document.body.classList.add('override-mode')`
 - When drift > 78, random chance (35%) to show a floating "baseline flag" card with a Blade Runner VK test prompt
 
-Preserve this exact behavior. Do not replace it with a color-temperature animation.
+**Bug fix required:** The existing Konami handler calls `setOverride((v) => !v)` but does NOT dispatch a CustomEvent. OverrideMode listens for `override:toggle` and is currently dead code. In the rewrite, add `window.dispatchEvent(new CustomEvent('override:toggle'))` immediately after `setOverride`:
+
+```typescript
+if (konamiBuf.current.join('|') === KONAMI.join('|')) {
+  setOverride((v) => !v);
+  window.dispatchEvent(new CustomEvent('override:toggle')); // connects OverrideMode
+  konamiBuf.current = [];
+}
+```
 
 - [ ] **Step 6: Commit**
 
@@ -1347,14 +1359,25 @@ Populate answer text for each question in the Supabase dashboard before testing.
 
 - [ ] **Step 3: Rewrite VoightKampff**
 
-Read existing `VoightKampff.tsx` in Step 1. Actual mechanics:
-- **No category filter tabs** — category is display-only text (`category · {q.category}`)
-- **No existing answer reveal** — clicking "respond / next →" advances to next question only
-- Has: vital gauges that animate, pulse waveform updating every 70ms, baseline metrics randomizing every 1400ms
+Read existing `VoightKampff.tsx` in Step 1. Preserve ALL existing mechanics exactly: vital gauges that animate, pulse waveform updating every 70ms, baseline metrics randomizing every 1400ms, category display text. Do NOT add category filter tabs.
 
-The `answer` field (added in Step 2) is a **new feature** — implement a reveal mechanic on a second "respond" click: show the answer with a typewriter effect below the prompt. This is new behavior on top of the existing advance pattern.
+The `answer` field (added in Step 2) requires a **new two-phase click state machine** on top of the existing advance logic:
 
-Do NOT add category filter tabs — they don't exist in the original and are not requested.
+```typescript
+const [idx, setIdx] = useState(0);
+const [revealed, setRevealed] = useState(false);
+
+function handleRespond() {
+  if (!revealed) {
+    setRevealed(true); // phase 1: show answer with typewriter
+  } else {
+    setIdx((i) => (i + 1) % questions.length);
+    setRevealed(false); // phase 2: advance and reset
+  }
+}
+```
+
+Show `questions[idx].answer` below the prompt when `revealed === true`, using the same typewriter pattern as the prompt display. Button label: "respond →" when `!revealed`, "next →" when `revealed`.
 
 - [ ] **Step 4: Rewrite HaikuDeck**
 
