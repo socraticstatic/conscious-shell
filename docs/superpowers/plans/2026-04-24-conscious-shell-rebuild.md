@@ -13,7 +13,7 @@
 ## File Map
 
 ### Preserved (no changes)
-- `src/lib/supabase.ts` — all types + client
+- `src/lib/supabase.ts` — all types + client (**except:** Task 12 adds `answer: string` to `VkQuestion` and applies a matching migration)
 - `src/lib/logger.ts` — console intercept + batched Supabase logging + Vite HMR hooks + fetch monitor. Complex and correct. Keep as-is; verify only.
 - `src/lib/intelligence.ts` — visitor analytics, persona classification, localStorage signal tracking. Complex and correct. Keep as-is; verify only.
 - `src/lib/persona.ts` — `Persona` type, `Signals` type, `EMPTY_SIGNALS`, `PERSONA_META`, `classifyPersona()`. intelligence.ts depends on all of these. Keep as-is; verify only.
@@ -655,7 +655,6 @@ Two-column layout: left = project list, right = EsperPanel detail. EsperPanel im
 
 ```typescript
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import EsperPanel from './EsperPanel';
 import type { Project } from '../lib/supabase';
 
@@ -833,7 +832,13 @@ cat ~/Developer/conscious-shell/src/index.css
 
 - [ ] **Step 2: Rewrite with clean global effect classes**
 
-Preserve all custom properties, `.site-grain`, `.site-rain`, `.chroma`, `.font-jp`. Remove Bolt-generated dead classes.
+CRITICAL: The first line of `index.css` must be kept exactly as-is:
+```css
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Noto+Sans+JP:wght@300;500&display=swap');
+```
+This loads JetBrains Mono and Noto Sans JP. Dropping it breaks all `font-mono` styling and the `.font-jp` class used throughout for Japanese text.
+
+Also preserve all custom properties, `.site-grain`, `.site-rain`, `.chroma`, `.font-jp`. Remove Bolt-generated dead classes.
 
 - [ ] **Step 3: Verify grain + rain overlays visible in browser at low opacity**
 
@@ -915,7 +920,15 @@ Custom cursor dot + trailing ring. Tracks `mousemove`. Scales up on `[data-curso
 
 - [ ] **Step 5: Rewrite BaselineDrift**
 
-Subtle periodic color temperature shift of the page background (warm → cool). Uses CSS custom property animation via JS, 8s cycle. `pointer-events-none`.
+BaselineDrift is a **sidebar HUD** — not a background color shifter. The existing implementation (read in Step 1) tracks mouse velocity, scroll %, and idle time to compute a "drift" score 0-100. The HUD is fixed right-center, hidden on mobile. It shows:
+- Score as a 3-digit number (000-100) in a color keyed to state: nominal (<40, cyan `#5ec8d8`), watching (<70, amber `#e7b766`), flag (≥70, red `#ff7a5c`)
+- State label + matching icon (Activity / Eye / ShieldAlert from lucide)
+- Progress bar representing drift %
+- Three mini stats: vel / scr / idl
+- Konami code (↑↑↓↓←→←→ba) toggles an "override" mode that adds a banner and sets `document.body.classList.add('override-mode')`
+- When drift > 78, random chance (35%) to show a floating "baseline flag" card with a Blade Runner VK test prompt
+
+Preserve this exact behavior. Do not replace it with a color-temperature animation.
 
 - [ ] **Step 6: Commit**
 
@@ -947,21 +960,53 @@ done
 
 - [ ] **Step 2: Rewrite SessionHUD**
 
-Fixed bottom-right HUD. Shows session start time (read from `getSessionId()` in `lib/logger.ts` — import and parse the timestamp prefix from the session ID), scroll depth %, a pulsing amber dot. Font mono, tiny text, `bg-[#07070a]/80`.
+Fixed bottom-right HUD. Shows session start time, scroll depth %, a pulsing amber dot. Font mono, tiny text, `bg-[#07070a]/80`.
+
+Import `getSessionId` from `../lib/logger`. Parse the timestamp from the session ID (which encodes `Date.now()` in base-36 as its first segment):
+
+```typescript
+import { getSessionId } from '../lib/logger';
+
+function sessionStart(): Date {
+  return new Date(parseInt(getSessionId().split('-')[0], 36));
+}
+```
+
+Display elapsed time as `mm:ss` using a `setInterval(1000)` tick.
 
 - [ ] **Step 3: Rewrite AmbientAudio**
 
-Web Audio API drone. Use two detuned sine oscillators + a `DelayNode` for pseudo-reverb (no impulse response file needed). Toggle button fixed bottom-left. `AudioContext` created on first user gesture (click), not on mount. Auto-suspend when toggled off.
+Web Audio API drone. Use two detuned sine oscillators + a `DelayNode` for pseudo-reverb (no impulse response file needed). Toggle button fixed bottom-left. `AudioContext` created on first user gesture (click), not on mount.
+
+The existing code uses a `ctx.resume()` / `ctx.suspend()` toggle pattern — preserve this. The correct lifecycle:
+- First toggle-on: create `AudioContext`, create `OscillatorNode` (type=`'sine'`, freq=55hz) + a detuned second osc (freq=55.5hz) + `GainNode` (gain=0.12) + `DelayNode` (delayTime=0.4), connect chain to `ctx.destination`, call `osc.start()`
+- Subsequent toggle-on: call `ctx.resume()` (do NOT recreate oscillators — they're already started)
+- Toggle-off: call `ctx.suspend()`
 
 ```typescript
-// Core audio setup pattern:
 let ctx: AudioContext | null = null;
-function getCtx() {
-  if (!ctx) ctx = new AudioContext();
-  return ctx;
+let initialized = false;
+
+function ensureInit(ctx: AudioContext) {
+  if (initialized) return;
+  initialized = true;
+  const gain = ctx.createGain(); gain.gain.value = 0.12;
+  const delay = ctx.createDelay(1); delay.delayTime.value = 0.4;
+  [55, 55.5].forEach((freq) => {
+    const osc = ctx.createOscillator();
+    osc.type = 'sine'; osc.frequency.value = freq;
+    osc.connect(gain); osc.start();
+  });
+  gain.connect(delay); delay.connect(ctx.destination); gain.connect(ctx.destination);
 }
-// On toggle-on: create OscillatorNode (type='sine', freq=55hz) + GainNode + DelayNode, connect to ctx.destination
-// On toggle-off: ctx.suspend()
+
+// On toggle-on:
+if (!ctx) ctx = new AudioContext();
+ensureInit(ctx);
+if (ctx.state === 'suspended') await ctx.resume();
+
+// On toggle-off:
+await ctx.suspend();
 ```
 
 - [ ] **Step 4: Rewrite BlackLitany**
@@ -1401,11 +1446,13 @@ export default function ScrambleText({
 
 - [ ] **Step 3: Rewrite Manifesto**
 
-Static section. Long-form personal statement in noir voice. No data dependencies. Uses ScrambleText on section header when scrolled into view (IntersectionObserver).
+Static section — no data dependencies. Read the existing Manifesto.tsx in Step 1 and copy the manifesto text verbatim. Do not invent, paraphrase, or summarize it. The text is authored content specific to Micah's voice and is not regenerable.
+
+Uses ScrambleText on section header when scrolled into view (IntersectionObserver).
 
 - [ ] **Step 4: Rewrite Impact**
 
-Static stats section. Numbers: years, projects, clients, books. Each number uses a count-up animation on scroll entry. Font mono, amber accents.
+Static stats section. Read the existing Impact.tsx in Step 1 and copy the exact stat values (years, projects count, clients count, books count). Do not guess or round numbers — use the values as authored in the existing component. Each number uses a count-up animation on scroll entry. Font mono, amber accents.
 
 - [ ] **Step 5: Rewrite IndexList**
 
