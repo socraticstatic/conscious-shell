@@ -11,8 +11,8 @@ async function q<T>(table: string, opts: { order: string; asc?: boolean; limit?:
   let query = supabase.from(table).select('*').order(opts.order, { ascending: opts.asc ?? true });
   if (opts.limit) query = query.limit(opts.limit);
   const { data, error } = await query;
-  if (error) console.warn(`[portfolio] ${table}:`, error.message);
-  return (data ?? []) as T[];
+  if (error) throw new Error(`[portfolio] ${table}: ${error.message}`);
+  return data as T[];
 }
 
 export async function fetchPortfolio() {
