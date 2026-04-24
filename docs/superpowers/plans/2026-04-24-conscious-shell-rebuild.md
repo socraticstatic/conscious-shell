@@ -1429,7 +1429,7 @@ cat ~/Developer/conscious-shell/src/components/ScrambleText.tsx
 
 - [ ] **Step 2: Rewrite ScrambleText**
 
-Utility component. Props: `text: string`, `trigger: boolean`, `className?: string`. On `trigger=true`, scrambles through random chars before resolving to `text`. 30ms intervals, 12 scramble frames.
+Read existing `ScrambleText.tsx` in Step 1. The actual Bolt prop interface is `{ text, durationMs, trigger, hoverRescramble, className }` — HumanLayer passes `text`, `trigger`, AND `durationMs`. The plan's new ScrambleText MUST preserve all five props or HumanLayer will break with a TypeScript error after Task 13.
 
 ```typescript
 import { useEffect, useRef, useState } from 'react';
@@ -1439,23 +1439,28 @@ const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&';
 export default function ScrambleText({
   text,
   trigger,
+  durationMs = 400,
+  hoverRescramble = false,
   className,
 }: {
   text: string;
   trigger: boolean;
+  durationMs?: number;
+  hoverRescramble?: boolean;
   className?: string;
 }) {
   const [display, setDisplay] = useState(text);
-  const frame = useRef(0);
   const raf = useRef<number>(0);
+  const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
-    if (!trigger) { setDisplay(text); return; }
-    frame.current = 0;
+    const active = trigger || (hoverRescramble && hovered);
+    if (!active) { setDisplay(text); return; }
     const total = 12;
+    let frame = 0;
     const tick = () => {
-      frame.current++;
-      const progress = frame.current / total;
+      frame++;
+      const progress = frame / total;
       setDisplay(
         text.split('').map((c, i) =>
           i < Math.floor(progress * text.length) || c === ' '
@@ -1463,16 +1468,26 @@ export default function ScrambleText({
             : CHARS[Math.floor(Math.random() * CHARS.length)]
         ).join('')
       );
-      if (frame.current < total) raf.current = requestAnimationFrame(tick);
+      if (frame < total) raf.current = requestAnimationFrame(tick);
       else setDisplay(text);
     };
     raf.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf.current);
-  }, [trigger, text]);
+  }, [trigger, hoverRescramble, hovered, text]);
 
-  return <span className={className}>{display}</span>;
+  return (
+    <span
+      className={className}
+      onMouseEnter={() => hoverRescramble && setHovered(true)}
+      onMouseLeave={() => hoverRescramble && setHovered(false)}
+    >
+      {display}
+    </span>
+  );
 }
 ```
+
+Note: `durationMs` is accepted but animation speed is controlled by `requestAnimationFrame` frames. If the existing component uses time-based animation (via `durationMs` controlling interval timing), read the existing implementation and copy that approach instead of the frame-count pattern above.
 
 - [ ] **Step 3: Rewrite Manifesto**
 
@@ -1718,7 +1733,17 @@ git commit -m "refactor(palette): clean command palette, fuzzy search, keyboard 
 
 ### Task 19: Type-check, build, deploy
 
-- [ ] **Step 1: Full type-check**
+- [ ] **Step 1: Remove temporary `as any` casts from App.tsx**
+
+Search App.tsx for any `as any` casts added during Task 2 as Bolt prop-mismatch escape hatches. Every component has now been rewritten — all casts must be gone before the final commit:
+
+```bash
+grep -n "as any" ~/Developer/conscious-shell/src/App.tsx
+```
+
+Expected: no output. If any remain, the corresponding component rewrite task missed removing them. Fix each cast by ensuring the component's prop type matches what App.tsx passes.
+
+- [ ] **Step 2: Full type-check**
 
 ```bash
 cd ~/Developer/conscious-shell && npm run typecheck 2>&1
@@ -1726,7 +1751,7 @@ cd ~/Developer/conscious-shell && npm run typecheck 2>&1
 
 Fix any errors. Common: mismatched prop types, missing imports, unused variables.
 
-- [ ] **Step 2: Lint**
+- [ ] **Step 3: Lint**
 
 ```bash
 cd ~/Developer/conscious-shell && npm run lint 2>&1
@@ -1734,7 +1759,7 @@ cd ~/Developer/conscious-shell && npm run lint 2>&1
 
 Fix lint errors. Warnings are okay.
 
-- [ ] **Step 3: Production build**
+- [ ] **Step 4: Production build**
 
 ```bash
 cd ~/Developer/conscious-shell && npm run build 2>&1
@@ -1742,7 +1767,7 @@ cd ~/Developer/conscious-shell && npm run build 2>&1
 
 Expected: build completes, no errors, bundle sizes reasonable (Three.js + D3 will be large — that's expected).
 
-- [ ] **Step 4: Preview build locally**
+- [ ] **Step 5: Preview build locally**
 
 ```bash
 cd ~/Developer/conscious-shell && npm run preview
@@ -1750,7 +1775,7 @@ cd ~/Developer/conscious-shell && npm run preview
 
 Open `http://localhost:4173`. Verify: boot overlay shows, hero types in, all sections visible, TimeMachine shows screenshots.
 
-- [ ] **Step 5: Final commit**
+- [ ] **Step 6: Final commit**
 
 ```bash
 cd ~/Developer/conscious-shell
@@ -1759,7 +1784,7 @@ git add src/ supabase/ docs/ public/
 git commit -m "feat: complete portfolio rebuild — all 40 components, screenshot timeline, clean TypeScript"
 ```
 
-- [ ] **Step 6: Push**
+- [ ] **Step 7: Push**
 
 ```bash
 cd ~/Developer/conscious-shell && git push origin master
