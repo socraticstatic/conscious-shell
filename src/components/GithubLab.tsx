@@ -16,10 +16,10 @@ export default function GithubLab({ projects }: { projects: GithubProject[] }) {
     return Array.from(counts.entries()).sort((a, b) => b[1] - a[1]);
   }, [projects]);
 
-  const visible = useMemo(
-    () => (tag === 'all' ? projects : projects.filter((p) => p.tags.includes(tag))),
-    [projects, tag],
-  );
+  const visible = useMemo(() => {
+    const filtered = tag === 'all' ? projects : projects.filter((p) => p.tags.includes(tag));
+    return [...filtered].sort((a, b) => Number(b.featured) - Number(a.featured));
+  }, [projects, tag]);
 
   const active = activeId ? projects.find((p) => p.id === activeId) ?? null : null;
 
