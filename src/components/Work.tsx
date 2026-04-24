@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import EsperPanel from './EsperPanel';
 import type { Project } from '../lib/supabase';
 
@@ -24,7 +24,7 @@ export function SectionHeader({ path, jp, count, right }: {
 }
 
 export default function Work({ projects }: { projects: Project[] }) {
-  const featured = projects.filter((p) => p.featured);
+  const featured = useMemo(() => projects.filter((p) => p.featured), [projects]);
   const [active, setActive] = useState<Project | null>(null);
 
   useEffect(() => {
