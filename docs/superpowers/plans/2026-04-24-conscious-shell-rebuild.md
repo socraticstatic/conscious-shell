@@ -914,7 +914,9 @@ cat ~/Developer/conscious-shell/src/components/BaselineDrift.tsx
 
 - [ ] **Step 2: Rewrite BootOverlay**
 
-Full-screen black overlay that animates out after 1.8s. Shows `rep7 // initializing` text. Uses Framer Motion `AnimatePresence`. Unmounts after exit.
+Full-screen black overlay. Uses Framer Motion `AnimatePresence`. Dismisses automatically after all boot lines are shown (sets `sessionStorage['cs_booted'] = '1'` then calls `setOpen(false)` after 550ms).
+
+Read existing `BootOverlay.tsx` in Step 1 and copy the boot sequence lines verbatim — they are authored content ("initializing conscious_shell@v4.7", "mounting filesystem", "loading portfolio", "connecting supabase", "hydrating artifacts", "yerba_mate status: BREWED", "ready." — copy from source, do not use this approximate list).
 
 - [ ] **Step 3: Rewrite Spinner**
 
@@ -968,58 +970,23 @@ done
 
 - [ ] **Step 2: Rewrite SessionHUD**
 
-Fixed bottom-right HUD. Shows session start time, scroll depth %, a pulsing amber dot. Font mono, tiny text, `bg-[#07070a]/80`.
+Read existing `SessionHUD.tsx` in Step 1 and copy the display logic exactly — the actual component is NOT a session-time tracker. It displays: header "TYRELL.SHELL v4.7", current UTC time (HH:MM:SS, updated via setInterval), mouse coordinates (updated on mousemove), and scroll percentage with a progress bar.
 
-Import `getSessionId` from `../lib/logger`. Parse the timestamp from the session ID (which encodes `Date.now()` in base-36 as its first segment):
-
-```typescript
-import { getSessionId } from '../lib/logger';
-
-function sessionStart(): Date {
-  return new Date(parseInt(getSessionId().split('-')[0], 36));
-}
-```
-
-Display elapsed time as `mm:ss` using a `setInterval(1000)` tick.
+Do NOT import `getSessionId`. Do NOT implement a session start time elapsed counter. Those were incorrect descriptions from a prior version of this plan.
 
 - [ ] **Step 3: Rewrite AmbientAudio**
 
-Web Audio API drone. Use two detuned sine oscillators + a `DelayNode` for pseudo-reverb (no impulse response file needed). Toggle button fixed bottom-left. `AudioContext` created on first user gesture (click), not on mount.
+Read existing `AmbientAudio.tsx` in Step 1 and copy the audio architecture exactly. The actual implementation:
+- Oscillators (droneA, droneB, droneC + lfo) are created INSIDE the component's `start()` function — not at module level
+- Toggle is a button click with labels "amb · on" / "amb · off" (aria-label: "silence ambient" / "enable ambient")
+- `ctx.resume()` is called once at startup if the context is suspended (browser autoplay policy), NOT as the toggle mechanism
+- `start()` creates and connects all nodes fresh; `stop()` tears them down
 
-The existing code uses a `ctx.resume()` / `ctx.suspend()` toggle pattern — preserve this. The correct lifecycle:
-- First toggle-on: create `AudioContext`, create `OscillatorNode` (type=`'sine'`, freq=55hz) + a detuned second osc (freq=55.5hz) + `GainNode` (gain=0.12) + `DelayNode` (delayTime=0.4), connect chain to `ctx.destination`, call `osc.start()`
-- Subsequent toggle-on: call `ctx.resume()` (do NOT recreate oscillators — they're already started)
-- Toggle-off: call `ctx.suspend()`
-
-```typescript
-let ctx: AudioContext | null = null;
-let initialized = false;
-
-function ensureInit(ctx: AudioContext) {
-  if (initialized) return;
-  initialized = true;
-  const gain = ctx.createGain(); gain.gain.value = 0.12;
-  const delay = ctx.createDelay(1); delay.delayTime.value = 0.4;
-  [55, 55.5].forEach((freq) => {
-    const osc = ctx.createOscillator();
-    osc.type = 'sine'; osc.frequency.value = freq;
-    osc.connect(gain); osc.start();
-  });
-  gain.connect(delay); delay.connect(ctx.destination); gain.connect(ctx.destination);
-}
-
-// On toggle-on:
-if (!ctx) ctx = new AudioContext();
-ensureInit(ctx);
-if (ctx.state === 'suspended') await ctx.resume();
-
-// On toggle-off:
-await ctx.suspend();
-```
+Do NOT use module-level `ctx`/`initialized` variables — the real component scopes these inside React refs. Do NOT use `ctx.suspend()` as the toggle-off — the real component stops oscillators directly.
 
 - [ ] **Step 4: Rewrite BlackLitany**
 
-Periodic `console.log` of poetic phrases. Pure JS, no DOM. Array of 8-10 phrases. Logs one every 90s on a `setInterval`. Clears on unmount.
+Read existing `BlackLitany.tsx` in Step 1. The actual component is a **DOM element** — a scrolling bottom-of-page marquee with CSS animation (`litany-scroll 90s linear infinite`). It is NOT a console.log component. Copy the phrases and animation approach exactly from the existing file.
 
 - [ ] **Step 5: Rewrite OverrideMode**
 
