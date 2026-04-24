@@ -5,15 +5,14 @@ import type { EsperHotspot } from '../lib/supabase';
 
 type Phase = 'idle' | 'track' | 'enhance' | 'resolve';
 
-export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
+// --- useEsperSequence ---
+// Encapsulates the 3-phase animation: track → enhance → resolve.
+// Returns { active, phase, typed, run, reset }.
+function useEsperSequence(onReset?: () => void) {
   const [active, setActive] = useState<EsperHotspot | null>(null);
   const [phase, setPhase] = useState<Phase>('idle');
   const [typed, setTyped] = useState<string[]>([]);
   const timers = useRef<number[]>([]);
-
-  const photo = hotspots[0]?.photo_url ?? '';
-  const caption = hotspots[0]?.photo_caption ?? '';
-  const credit = hotspots[0]?.photo_credit ?? '';
 
   const clearAll = () => {
     timers.current.forEach(clearTimeout);
@@ -27,6 +26,7 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
     setActive(null);
     setPhase('idle');
     setTyped([]);
+    onReset?.();
   };
 
   const run = (h: EsperHotspot) => {
@@ -53,6 +53,17 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
       timers.current.push(id);
     });
   };
+
+  return { active, phase, typed, run, reset };
+}
+// --- end useEsperSequence ---
+
+export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
+  const { active, phase, typed, run, reset } = useEsperSequence();
+
+  const photo = hotspots[0]?.photo_url ?? '';
+  const caption = hotspots[0]?.photo_caption ?? '';
+  const credit = hotspots[0]?.photo_credit ?? '';
 
   const zoomStyle = useMemo(() => {
     if (!active) return { transform: 'scale(1) translate(0%,0%)' };
