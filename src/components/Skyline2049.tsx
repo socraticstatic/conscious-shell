@@ -239,14 +239,6 @@ export default function Skyline2049({ signs }: { signs: SkylineSign[] }) {
             spinner over the <span className="br-sign">grid</span>
           </h2>
         </div>
-        <div className="hidden md:block text-right">
-          <div className="text-[10px] tracking-[0.4em] uppercase text-[#5ec8d8]/70">
-            webgl · instanced · real-time
-          </div>
-          <div className="text-[10px] tracking-[0.4em] uppercase text-[#7a6e62] mt-1">
-            move cursor · the camera follows
-          </div>
-        </div>
       </div>
 
       <div
@@ -275,7 +267,6 @@ export default function Skyline2049({ signs }: { signs: SkylineSign[] }) {
 
           <Suspense fallback={null}>
             <City data={buildings} />
-            <Billboards signs={signs} />
             <Spinner />
             <Rain />
             <Sparkles count={60} size={2} scale={[40, 20, 40]} speed={0.3} color="#e7b766" />
