@@ -51,7 +51,18 @@ export default function Recognition({
                   transition={{ duration: 0.3, delay: i * 0.06 }}
                   className="py-4 border-b border-dashed border-[#1f1c17] flex items-baseline justify-between gap-4"
                 >
-                  <span className="text-[#e8e4dc] text-lg">{p.title}</span>
+                  {p.url ? (
+                    <a
+                      href={p.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-[#e8e4dc] text-lg hover:text-[#e7b766] transition-colors"
+                    >
+                      {p.title}
+                    </a>
+                  ) : (
+                    <span className="text-[#e8e4dc] text-lg">{p.title}</span>
+                  )}
                   <span className="text-[11px] uppercase tracking-wider text-[#6b6660] shrink-0">
                     {p.kind}
                   </span>
