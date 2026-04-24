@@ -143,14 +143,18 @@ export default function TimeMachine({ captures }: { captures: ArchiveCapture[] }
             </div>
             <div>
               <div className="text-[#4a453e] mb-0.5">ORIGINAL URL</div>
-              <a
-                href={current.original_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#5ec8d8] hover:text-[#7dd8e8] break-all"
-              >
-                {current.original_url || '—'}
-              </a>
+              {current.original_url ? (
+                <a
+                  href={current.original_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#5ec8d8] hover:text-[#7dd8e8] break-all"
+                >
+                  {current.original_url}
+                </a>
+              ) : (
+                <span className="text-[#6b6660]">—</span>
+              )}
             </div>
             {current.wayback_url && (
               <div>
