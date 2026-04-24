@@ -58,90 +58,87 @@ function polar(angleDeg: number, radius: number) {
 const FIBER_PALETTE = ['#e7b766', '#c27a32', '#ffb347', '#8a5a2a', '#a36634', '#2a1a0f', '#ff9a3c'];
 const RECEPTOR_PALETTE = ['#ff9a3c', '#ffb267', '#ffcf8e', '#5ec8d8', '#ff7a5c', '#e7b766'];
 
-function useIrisFibers() {
-  return useMemo(() => {
-    const rng = seededRand(9173);
-    const fibers: Array<{ d: string; stroke: string; width: number; opacity: number }> = [];
-    for (let i = 0; i < FIBER_COUNT; i++) {
-      const baseAngle = rng() * 360;
-      const jitter = () => (rng() - 0.5) * 6;
-      const r0 = IRIS_R_INNER + rng() * 3;
-      const r1 = IRIS_R_INNER + 40 + rng() * 20;
-      const r2 = IRIS_R_OUTER - 60 + rng() * 30;
-      const r3 = IRIS_R_OUTER - 4 + rng() * 6;
-      const a0 = baseAngle + jitter() * 0.2;
-      const a1 = baseAngle + jitter();
-      const a2 = baseAngle + jitter() * 1.3;
-      const a3 = baseAngle + jitter() * 1.6;
-      const p0 = polar(a0, r0);
-      const p1 = polar(a1, r1);
-      const p2 = polar(a2, r2);
-      const p3 = polar(a3, r3);
-      const d = `M ${p0.x} ${p0.y} C ${p1.x} ${p1.y}, ${p2.x} ${p2.y}, ${p3.x} ${p3.y}`;
-      const stroke = FIBER_PALETTE[Math.floor(rng() * FIBER_PALETTE.length)];
-      const width = 0.35 + rng() * 1.15;
-      const opacity = 0.18 + rng() * 0.55;
-      fibers.push({ d, stroke, width, opacity });
-    }
-    return fibers;
-  }, []);
+// Pure function — no React deps
+function buildFibers(): Array<{ d: string; stroke: string; width: number; opacity: number }> {
+  const rng = seededRand(9173);
+  const fibers: Array<{ d: string; stroke: string; width: number; opacity: number }> = [];
+  for (let i = 0; i < FIBER_COUNT; i++) {
+    const baseAngle = rng() * 360;
+    const jitter = () => (rng() - 0.5) * 6;
+    const r0 = IRIS_R_INNER + rng() * 3;
+    const r1 = IRIS_R_INNER + 40 + rng() * 20;
+    const r2 = IRIS_R_OUTER - 60 + rng() * 30;
+    const r3 = IRIS_R_OUTER - 4 + rng() * 6;
+    const a0 = baseAngle + jitter() * 0.2;
+    const a1 = baseAngle + jitter();
+    const a2 = baseAngle + jitter() * 1.3;
+    const a3 = baseAngle + jitter() * 1.6;
+    const p0 = polar(a0, r0);
+    const p1 = polar(a1, r1);
+    const p2 = polar(a2, r2);
+    const p3 = polar(a3, r3);
+    const d = `M ${p0.x} ${p0.y} C ${p1.x} ${p1.y}, ${p2.x} ${p2.y}, ${p3.x} ${p3.y}`;
+    const stroke = FIBER_PALETTE[Math.floor(rng() * FIBER_PALETTE.length)];
+    const width = 0.35 + rng() * 1.15;
+    const opacity = 0.18 + rng() * 0.55;
+    fibers.push({ d, stroke, width, opacity });
+  }
+  return fibers;
 }
 
-function useCrypts() {
-  return useMemo(() => {
-    const rng = seededRand(12049);
-    return Array.from({ length: 42 }).map(() => {
-      const a = rng() * 360;
-      const r = IRIS_R_INNER + 6 + rng() * (IRIS_R_OUTER - IRIS_R_INNER - 18);
-      const { x, y } = polar(a, r);
-      const rx = 1 + rng() * 4;
-      const ry = rx * (0.5 + rng() * 1.2);
-      return { x, y, rx, ry, rot: rng() * 360, alpha: 0.35 + rng() * 0.45 };
-    });
-  }, []);
+// Pure function — no React deps
+function buildCrypts(): Array<{ x: number; y: number; rx: number; ry: number; rot: number; alpha: number }> {
+  const rng = seededRand(12049);
+  return Array.from({ length: 42 }).map(() => {
+    const a = rng() * 360;
+    const r = IRIS_R_INNER + 6 + rng() * (IRIS_R_OUTER - IRIS_R_INNER - 18);
+    const { x, y } = polar(a, r);
+    const rx = 1 + rng() * 4;
+    const ry = rx * (0.5 + rng() * 1.2);
+    return { x, y, rx, ry, rot: rng() * 360, alpha: 0.35 + rng() * 0.45 };
+  });
 }
 
-function useProjectLayout(projects: Project[]): ProjectLayout[] {
-  return useMemo(() => {
-    if (!projects.length) return [];
-    const years = projects.map((p) => Number(p.year)).filter((n) => !Number.isNaN(n));
-    const minY = Math.min(...years);
-    const maxY = Math.max(...years);
-    const span = Math.max(1, maxY - minY);
+// Pure function — no React deps
+function computeLayout(projects: Project[]): ProjectLayout[] {
+  if (!projects.length) return [];
+  const years = projects.map((p) => Number(p.year)).filter((n) => !Number.isNaN(n));
+  const minY = Math.min(...years);
+  const maxY = Math.max(...years);
+  const span = Math.max(1, maxY - minY);
 
-    const byYear = new Map<number, Project[]>();
-    projects.forEach((p) => {
-      const y = Number(p.year);
-      if (!byYear.has(y)) byYear.set(y, []);
-      byYear.get(y)!.push(p);
-    });
+  const byYear = new Map<number, Project[]>();
+  projects.forEach((p) => {
+    const y = Number(p.year);
+    if (!byYear.has(y)) byYear.set(y, []);
+    byYear.get(y)!.push(p);
+  });
 
-    const nodes: ProjectLayout[] = [];
-    byYear.forEach((group, year) => {
-      const t = (year - minY) / span;
-      const start = -90 + GAP_DEG / 2;
-      const angle = start - (1 - t) * ARC_DEG;
-      group.forEach((p, i) => {
-        const featured = p.featured;
-        const baseR = featured ? IRIS_R_OUTER - 38 : IRIS_R_INNER + 62;
-        const jitterR = ((hash(p.id) % 28) - 14) * (featured ? 0.6 : 1.1);
-        const radius = baseR + jitterR;
-        const sliceOffset = (i - (group.length - 1) / 2) * (featured ? 2.2 : 3.4);
-        const size = featured ? 10 : 6.5;
-        const color = RECEPTOR_PALETTE[hash(p.id) % RECEPTOR_PALETTE.length];
-        nodes.push({
-          id: p.id,
-          project: p,
-          year,
-          angleDeg: angle + sliceOffset,
-          radius,
-          size,
-          color,
-        });
+  const nodes: ProjectLayout[] = [];
+  byYear.forEach((group, year) => {
+    const t = (year - minY) / span;
+    const start = -90 + GAP_DEG / 2;
+    const angle = start - (1 - t) * ARC_DEG;
+    group.forEach((p, i) => {
+      const featured = p.featured;
+      const baseR = featured ? IRIS_R_OUTER - 38 : IRIS_R_INNER + 62;
+      const jitterR = ((hash(p.id) % 28) - 14) * (featured ? 0.6 : 1.1);
+      const radius = baseR + jitterR;
+      const sliceOffset = (i - (group.length - 1) / 2) * (featured ? 2.2 : 3.4);
+      const size = featured ? 10 : 6.5;
+      const color = RECEPTOR_PALETTE[hash(p.id) % RECEPTOR_PALETTE.length];
+      nodes.push({
+        id: p.id,
+        project: p,
+        year,
+        angleDeg: angle + sliceOffset,
+        radius,
+        size,
+        color,
       });
     });
-    return nodes;
-  }, [projects]);
+  });
+  return nodes;
 }
 
 function MicroSaccade({ children }: { children: React.ReactNode }) {
@@ -172,9 +169,9 @@ function MicroSaccade({ children }: { children: React.ReactNode }) {
 }
 
 export default function ForceGraph({ projects }: { projects: Project[] }) {
-  const nodes = useProjectLayout(projects);
-  const fibers = useIrisFibers();
-  const crypts = useCrypts();
+  const nodes = useMemo(() => computeLayout(projects), [projects]);
+  const fibers = useMemo(() => buildFibers(), []);
+  const crypts = useMemo(() => buildCrypts(), []);
   const gradId = useId();
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
