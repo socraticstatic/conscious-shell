@@ -879,7 +879,7 @@ Fixed `pointer-events-none` overlay. Scanlines via CSS `repeating-linear-gradien
 
 - [ ] **Step 3: Rewrite TearsInRain**
 
-Canvas-based rain. `useRef<HTMLCanvasElement>`, `requestAnimationFrame` loop via `useEffect`. Drops are vertical white lines with alpha fade. `position: fixed`, `pointer-events-none`, `z-index: 0`.
+Read existing `TearsInRain.tsx` in Step 1. The actual component is NOT canvas-based — it is pure CSS + Framer Motion text stanzas with fade-in animations (opacity, y-offset, blur). A final line displays after all stanzas complete. Background uses `repeating-linear-gradient` rain effect and radial gradients. Copy stanza text and animation config exactly from the existing file.
 
 - [ ] **Step 4: Rewrite CodeRain**
 
@@ -1033,11 +1033,17 @@ done
 
 - [ ] **Step 2: Rewrite SystemBreach**
 
-Random 0.3% chance per minute glitch. `setInterval` every 60s, `Math.random() < 0.003`. Full-screen red scanline flash, "SYSTEM BREACH DETECTED" text, auto-dismisses after 2s. Brief Web Audio burst: `OscillatorNode` type `sawtooth`, freq 220hz, gain 0.3, duration 0.2s.
+Read existing `SystemBreach.tsx` in Step 1. The actual trigger is NOT a fixed `setInterval` with probability — it uses a `schedule()` function that fires randomly every 180–420s (only when tab is visible). It also responds to:
+- `breach:fire` CustomEvent on window
+- `Ctrl+Alt+B` keyboard shortcut
+
+There is NO Web Audio sound — it is purely visual: red scanline overlay + animated glitch text. Copy the scheduling logic and visual effect from the existing file.
 
 - [ ] **Step 3: Rewrite DeadDropConsole**
 
-Appears on `~` key (`e.key === '~'`, which is Shift+backtick on US keyboards — this is the correct event value, not `` ` ``). Fixed full-screen overlay, dark bg. Input field. Commands: `whoami` → `micah boswell // design_leader`, `ls` → lists sections, `help` → lists commands, `contact` → shows email, `clear` → clears history. Each response has a 300ms fake delay. Closes on `Escape`.
+Read existing `DeadDropConsole.tsx` in Step 1 and copy the command list and responses verbatim.
+
+The trigger key is **backtick** (`` ` ``), not tilde: `e.key === '`'`. The actual command set is much larger than originally described — it includes at minimum: `help`, `whoami`, `scan`, `trace`, `decrypt`, `narrate`, `breach`, `memorial`, `konami`, `roll`, `weather`, `clear`, `exit`. Do not use the shorter command list from previous plan versions. Copy all commands and their response text from the existing file.
 
 - [ ] **Step 4: Rewrite LogViewer**
 
@@ -1644,15 +1650,15 @@ cat ~/Developer/conscious-shell/src/components/CommandPalette.tsx
 
 - [ ] **Step 2: Rewrite CommandPalette**
 
-Full-screen modal triggered by `⌘K` or `/`. Shows searchable list of: all projects, section navigation links, keyboard shortcuts. Keyboard navigable (arrow keys, Enter, Escape). Props: `{ open, onClose, projects }`.
+Full-screen modal triggered by `⌘K` or `/`. Props: `{ open: boolean, onClose: () => void, projects: Project[] }`. Keyboard navigation already present in existing file: ArrowUp/ArrowDown moves index, Enter selects, Escape closes.
 
-Search: case-insensitive `includes()` over `project.title` and `project.client` — no new packages. Do not install fuse.js or any search library.
+Read existing `CommandPalette.tsx` in Step 1. The actual search operates over **command objects** (each has `label` + `hint` fields), not raw `project.title`/`project.client` directly. Copy the command-building logic and search implementation exactly — do not simplify to a plain project title filter, that will break the palette's non-project commands (section navigation, keyboard shortcuts).
 
 ```typescript
-const results = projects.filter((p) => {
-  const q = query.toLowerCase();
-  return p.title.toLowerCase().includes(q) || p.client.toLowerCase().includes(q);
-});
+// The search filters over commands, not projects directly:
+const results = commands.filter((c) =>
+  (c.label + c.hint).toLowerCase().includes(query.toLowerCase())
+);
 ```
 
 - [ ] **Step 3: Verify palette opens, search works, keyboard nav works**
