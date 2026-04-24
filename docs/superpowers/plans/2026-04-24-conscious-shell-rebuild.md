@@ -149,7 +149,7 @@ git commit -m "refactor(lib): isolated query errors in portfolio.ts"
 - [ ] **Step 1: Replace App.tsx with clean shell**
 
 ```typescript
-import { useEffect, useState, lazy, Suspense } from 'react';
+import { useEffect, useState } from 'react';
 import Nav from './components/Nav';
 import Hero from './components/Hero';
 import Work from './components/Work';
@@ -181,7 +181,6 @@ import BlackLitany from './components/BlackLitany';
 import SystemBreach from './components/SystemBreach';
 import NoirSubtitles from './components/NoirSubtitles';
 import DeadDropConsole from './components/DeadDropConsole';
-import EsperPanel from './components/EsperPanel';
 import Skyline2049 from './components/Skyline2049';
 import CRTOverlay from './components/CRTOverlay';
 import CommandPalette from './components/CommandPalette';
@@ -245,7 +244,12 @@ export default function App() {
   const [paletteOpen, setPaletteOpen] = useState(false);
 
   useEffect(() => {
-    fetchPortfolio().then(setData).catch((e) => console.error('[portfolio] load failed', e));
+    fetchPortfolio()
+      .then((d) => {
+        setData(d);
+        window.dispatchEvent(new CustomEvent('portfolio:ready'));
+      })
+      .catch((e) => console.error('[portfolio] load failed', e));
   }, []);
 
   useEffect(() => {
@@ -677,11 +681,59 @@ export function SectionHeader({ path, jp, count, right }: {
 }
 
 export default function Work({ projects }: { projects: Project[] }) {
-  // ... two-column layout from existing file
+  const featured = projects.filter((p) => p.featured);
+  const [active, setActive] = useState<Project | null>(null);
+
+  useEffect(() => {
+    if (!active && featured[0]) setActive(featured[0]);
+  }, [featured, active]);
+
+  return (
+    <section id="work" className="relative py-20 md:py-28 border-b border-[#1f1c17]">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-10">
+        <SectionHeader path="/work/featured" jp="セレクト・ワーク" count={featured.length} right="esper_mode=auto" />
+        <div className="grid grid-cols-12 gap-6 md:gap-10 mt-10">
+          <ul className="col-span-12 lg:col-span-7 border-t border-[#1f1c17]">
+            {featured.map((p, i) => (
+              <li
+                key={p.id}
+                onMouseEnter={() => setActive(p)}
+                onClick={() => setActive(p)}
+                className={`flex items-start gap-4 py-4 px-2 border-b border-[#1f1c17] cursor-pointer transition-colors ${
+                  active?.id === p.id ? 'bg-[#0f0e0b]' : 'hover:bg-[#0b0a08]'
+                }`}
+                data-cursor="hover"
+              >
+                <span className="text-[#4a453e] font-mono text-xs w-5 pt-0.5">{String(i + 1).padStart(2, '0')}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <span className="text-sm text-[#e8e4dc] truncate">{p.title}</span>
+                    <span className="text-[10px] text-[#4a453e] font-mono shrink-0">{p.year}</span>
+                  </div>
+                  <div className="text-xs text-[#6b6660] mt-0.5">{p.client} · {p.role}</div>
+                  <div className="flex flex-wrap gap-1 mt-1.5">
+                    {p.tags.map((t) => (
+                      <span key={t} className="text-[9px] font-mono px-1.5 py-0.5 border border-[#2a2620] text-[#4a453e]">{t}</span>
+                    ))}
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className="col-span-12 lg:col-span-5 lg:sticky lg:top-20 self-start">
+            <EsperPanel project={active} />
+            {active?.summary && (
+              <div className="mt-3 text-xs text-[#a8a29e] leading-relaxed border border-[#1f1c17] p-3">
+                <span className="text-[#4a453e]">// </span>{active.summary}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }
 ```
-
-(Implement project row hover, active state, tag chips, sticky EsperPanel on desktop — mirror existing visual patterns.)
 
 - [ ] **Step 4: Verify Work section renders with Supabase data**
 
@@ -757,10 +809,11 @@ Logo, nav links, social links (GitHub, LinkedIn), copyright. No data dependencie
 
 ```bash
 cd ~/Developer/conscious-shell
-git add src/components/About.tsx src/components/Services.tsx \
+git add supabase/migrations/20260424000000_create_contact_submissions.sql \
+        src/components/About.tsx src/components/Services.tsx \
         src/components/Recognition.tsx src/components/Contact.tsx \
         src/components/Footer.tsx
-git commit -m "refactor(content): About, Services, Recognition, Contact, Footer"
+git commit -m "refactor(content): About, Services, Recognition, Contact, Footer + contact_submissions migration"
 ```
 
 ---
@@ -957,7 +1010,7 @@ Random 0.3% chance per minute glitch. `setInterval` every 60s, `Math.random() < 
 
 - [ ] **Step 3: Rewrite DeadDropConsole**
 
-Appears on `~` key. Fixed full-screen overlay, dark bg. Input field. Commands: `whoami` → `micah boswell // design_leader`, `ls` → lists sections, `help` → lists commands, `contact` → shows email, `clear` → clears history. Each response has a 300ms fake delay. Closes on `Escape`.
+Appears on `~` key (`e.key === '~'`, which is Shift+backtick on US keyboards — this is the correct event value, not `` ` ``). Fixed full-screen overlay, dark bg. Input field. Commands: `whoami` → `micah boswell // design_leader`, `ls` → lists sections, `help` → lists commands, `contact` → shows email, `clear` → clears history. Each response has a 300ms fake delay. Closes on `Escape`.
 
 - [ ] **Step 4: Rewrite LogViewer**
 
@@ -1234,24 +1287,50 @@ cat ~/Developer/conscious-shell/src/components/HaikuDeck.tsx
 cat ~/Developer/conscious-shell/src/components/HumanLayer.tsx
 ```
 
-- [ ] **Step 2: Rewrite VoightKampff**
+- [ ] **Step 2: Add `answer` column to vk_questions**
 
-Blade Runner-themed Q&A experience. Displays one `VkQuestion` at a time from the DB. User clicks to reveal the "answer" (a poetic statement about Micah). Navigation: prev/next. Category filter. Typewriter reveal on question change.
+The `VkQuestion` type has no `answer` field. Add it via migration before implementing the component:
 
-- [ ] **Step 3: Rewrite HaikuDeck**
+```sql
+-- supabase/migrations/20260424000001_add_answer_to_vk_questions.sql
+alter table vk_questions add column if not exists answer text default '';
+```
 
-Card carousel of `Haiku[]` records. Each card shows 3 haiku lines + source + mood tag. Auto-advances every 8s. Click to pause. Swipe-friendly (touch events).
+Apply via `supabase db push` or Supabase SQL editor. Then add `answer: string` to the `VkQuestion` type in `src/lib/supabase.ts`:
 
-- [ ] **Step 4: Rewrite HumanLayer**
+```typescript
+export type VkQuestion = {
+  id: string;
+  prompt: string;
+  prompt_jp: string;
+  answer: string;        // add this
+  category: string;
+  order_index: number;
+};
+```
 
-Grid of `Trivia[]` records. Each trivia item has `category`, `label`, `value`, `glyph`. Grouped by category. Hover reveals value (hidden by default behind redaction bar).
+Populate answer text for each question in the Supabase dashboard before testing.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 3: Rewrite VoightKampff**
+
+Blade Runner-themed Q&A. Displays one `VkQuestion` at a time. Shows `prompt` (and `prompt_jp` as subtext). User clicks "respond" to reveal `answer` with a typewriter effect. Navigation: prev/next buttons. Category filter tabs. Section header uses `SectionHeader` from `./Work`. Props: `{ questions: VkQuestion[] }`.
+
+- [ ] **Step 4: Rewrite HaikuDeck**
+
+Card carousel of `Haiku[]` records. Each card shows 3 haiku lines + source + mood tag. Auto-advances every 8s. Click to pause. Touch: listen for `touchstart`/`touchend` delta > 50px to swipe next/prev.
+
+- [ ] **Step 5: Rewrite HumanLayer**
+
+Grid of `Trivia[]` records. Each trivia item has `category`, `label`, `value`, `glyph`. Grouped by category. Value hidden by default behind a `bg-[#1f1c17]` redaction bar. On hover (`group-hover`): bar fades out, value fades in.
+
+- [ ] **Step 6: Commit**
 
 ```bash
 cd ~/Developer/conscious-shell
-git add src/components/VoightKampff.tsx src/components/HaikuDeck.tsx src/components/HumanLayer.tsx
-git commit -m "refactor(cinematic): VoightKampff, HaikuDeck, HumanLayer"
+git add supabase/migrations/20260424000001_add_answer_to_vk_questions.sql \
+        src/lib/supabase.ts \
+        src/components/VoightKampff.tsx src/components/HaikuDeck.tsx src/components/HumanLayer.tsx
+git commit -m "refactor(cinematic): VoightKampff (+ answer migration), HaikuDeck, HumanLayer"
 ```
 
 ---
@@ -1358,13 +1437,23 @@ This is the largest component (641 lines) — a D3/SVG iris visualization where 
 cat ~/Developer/conscious-shell/src/components/ForceGraph.tsx
 ```
 
-- [ ] **Step 2: Identify the exact SVG constants and layout math**
+- [ ] **Step 2: Identify direct Supabase calls inside ForceGraph**
+
+The existing file imports `supabase` directly. Before rewriting, find every `supabase.from(...)` call inside ForceGraph.tsx:
+
+```bash
+grep -n "supabase\." ~/Developer/conscious-shell/src/components/ForceGraph.tsx
+```
+
+If it queries a table not fetched by App.tsx (e.g., a separate `visitor_intelligence` or `web_dossier_facts` query), preserve that call in the rewrite. Do not silently drop it.
+
+- [ ] **Step 3: Identify the exact SVG constants and layout math**
 
 Copy down: `VIEW=720`, `CENTER=360`, `PUPIL_R=64`, `IRIS_R_INNER=78`, `IRIS_R_OUTER=322`, `LIMBUS_R=334`, `FIBER_COUNT=280`, `GAP_DEG=38`. These drive the layout.
 
-- [ ] **Step 3: Rewrite ForceGraph.tsx**
+- [ ] **Step 4: Rewrite ForceGraph.tsx**
 
-Keep all visual math intact. Clean up: extract `ProjectLayout` computation into a pure function, separate SVG fiber generation from project dot rendering, remove any Bolt-generated redundant `useEffect` chains.
+Keep all visual math and any direct Supabase calls intact. Clean up: extract `ProjectLayout` computation into a pure function, separate SVG fiber generation from project dot rendering, remove redundant `useEffect` chains.
 
 Structure:
 ```typescript
@@ -1377,9 +1466,9 @@ function buildFibers(count: number): JSX.Element[] { ... }
 export default function ForceGraph({ projects }: { projects: Project[] }) { ... }
 ```
 
-- [ ] **Step 4: Verify iris renders with project dots, hover state works**
+- [ ] **Step 5: Verify iris renders with project dots, hover state works**
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
 cd ~/Developer/conscious-shell
@@ -1516,7 +1605,16 @@ cat ~/Developer/conscious-shell/src/components/CommandPalette.tsx
 
 - [ ] **Step 2: Rewrite CommandPalette**
 
-Full-screen modal triggered by `⌘K` or `/`. Shows searchable list of: all projects, section navigation links, keyboard shortcuts. Keyboard navigable (arrow keys, Enter, Escape). Fuzzy search over project titles + clients. Props: `{ open, onClose, projects }`.
+Full-screen modal triggered by `⌘K` or `/`. Shows searchable list of: all projects, section navigation links, keyboard shortcuts. Keyboard navigable (arrow keys, Enter, Escape). Props: `{ open, onClose, projects }`.
+
+Search: case-insensitive `includes()` over `project.title` and `project.client` — no new packages. Do not install fuse.js or any search library.
+
+```typescript
+const results = projects.filter((p) => {
+  const q = query.toLowerCase();
+  return p.title.toLowerCase().includes(q) || p.client.toLowerCase().includes(q);
+});
+```
 
 - [ ] **Step 3: Verify palette opens, search works, keyboard nav works**
 
@@ -1570,7 +1668,8 @@ Open `http://localhost:4173`. Verify: boot overlay shows, hero types in, all sec
 
 ```bash
 cd ~/Developer/conscious-shell
-git add -A
+# Do NOT use git add -A — .env is at project root and must not be staged
+git add src/ supabase/ docs/ public/
 git commit -m "feat: complete portfolio rebuild — all 40 components, screenshot timeline, clean TypeScript"
 ```
 
