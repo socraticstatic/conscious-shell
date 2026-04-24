@@ -202,12 +202,16 @@ export default function ForceGraph({ projects }: { projects: Project[] }) {
     if (!selectedId) return;
     const n = nodes.find((x) => x.id === selectedId);
     if (!n) return;
+    let cancelled = false;
     void supabase.from('visitor_events').insert({
       visitor_id: (typeof window !== 'undefined' && localStorage.getItem('intel:v1:vid')) || 'anon',
       type: 'iris_select',
       payload: { project_id: n.project.id, year: n.year, title: n.project.title },
+    }).then(() => {
+      if (cancelled) return;
     });
-  }, [selectedId, nodes]);
+    return () => { cancelled = true; };
+  }, [selectedId]);
 
   if (!nodes.length) return null;
 
