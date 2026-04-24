@@ -13,15 +13,16 @@
 ## File Map
 
 ### Preserved (no changes)
-- `src/lib/supabase.ts` — all types + client (keep as-is)
-- `supabase/migrations/` — all migrations (keep as-is)
+- `src/lib/supabase.ts` — all types + client
+- `src/lib/logger.ts` — console intercept + batched Supabase logging + Vite HMR hooks + fetch monitor. Complex and correct. Keep as-is; verify only.
+- `src/lib/intelligence.ts` — visitor analytics, persona classification, localStorage signal tracking. Complex and correct. Keep as-is; verify only.
+- `src/lib/persona.ts` — `Persona` type, `Signals` type, `EMPTY_SIGNALS`, `PERSONA_META`, `classifyPersona()`. intelligence.ts depends on all of these. Keep as-is; verify only.
+- `src/main.tsx` — entry point calling `installLogger()`. Keep as-is.
+- `supabase/migrations/` — all migrations
 - `package.json`, `vite.config.ts`, `tailwind.config.js`, `tsconfig*.json`
 
 ### Rewritten (same path, clean implementation)
 - `src/lib/portfolio.ts` — data fetch consolidation
-- `src/lib/logger.ts` — console intercept + Supabase log writer
-- `src/lib/persona.ts` — static identity constants
-- `src/lib/intelligence.ts` — visitor analytics helpers
 - `src/App.tsx` — root shell
 - `src/index.css` — global styles (CRT grain, rain, chroma effects)
 - All 40 components in `src/components/`
@@ -35,11 +36,24 @@
 
 ## Phase 1: Foundation
 
-### Task 1: Clean lib/portfolio.ts and lib/persona.ts
+### Task 1: Verify infrastructure libs + clean portfolio.ts
 
 **Files:**
+- Verify (read-only): `src/lib/logger.ts`, `src/lib/intelligence.ts`, `src/lib/persona.ts`, `src/main.tsx`
 - Modify: `src/lib/portfolio.ts`
-- Modify: `src/lib/persona.ts`
+
+- [ ] **Step 0: Verify infrastructure libs are intact — do not rewrite them**
+
+```bash
+# These files are sophisticated and correct. Just confirm they compile.
+cd ~/Developer/conscious-shell && npm run typecheck 2>&1 | grep -E "error|warning" | head -20
+```
+
+`logger.ts` exports: `installLogger`, `log`, `subscribeToFlush`, `getSessionId`.
+`intelligence.ts` imports `classifyPersona`, `EMPTY_SIGNALS`, `Persona`, `Signals` from `./persona` — these must remain in persona.ts.
+`main.tsx` calls `installLogger()` on startup — must stay as-is.
+
+Do not touch any of these four files.
 
 - [ ] **Step 1: Rewrite portfolio.ts with error isolation per query**
 
@@ -109,25 +123,7 @@ export async function fetchPortfolio() {
 }
 ```
 
-- [ ] **Step 2: Rewrite persona.ts with static constants**
-
-Replace `src/lib/persona.ts`:
-
-```typescript
-export const PERSONA = {
-  name: 'Micah Boswell',
-  title: 'Design Leader',
-  domain: 'conscious-shell.com',
-  established: 2000,
-  years: 20,
-  projects: 126,
-  clients: 20,
-  handle: 'socraticstatic',
-  tagline: 'research → product → traction → organizations that ship',
-} as const;
-```
-
-- [ ] **Step 3: Verify build passes**
+- [ ] **Step 2: Verify build passes**
 
 ```bash
 cd ~/Developer/conscious-shell && npm run build 2>&1 | tail -20
@@ -135,12 +131,12 @@ cd ~/Developer/conscious-shell && npm run build 2>&1 | tail -20
 
 Expected: no TypeScript errors. Warnings about unused imports are okay at this stage.
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 3: Commit**
 
 ```bash
 cd ~/Developer/conscious-shell
-git add src/lib/portfolio.ts src/lib/persona.ts
-git commit -m "refactor(lib): isolated query errors, static persona constants"
+git add src/lib/portfolio.ts
+git commit -m "refactor(lib): isolated query errors in portfolio.ts"
 ```
 
 ---
@@ -606,17 +602,17 @@ git commit -m "refactor(hero): clean terminal animation, no timing hacks"
 
 **Files:**
 - Modify: `src/components/Work.tsx`
-- Modify: `src/components/EsperPanel.tsx`
+- Note: `EsperPanel.tsx` is a dependency of Work but is owned by Task 16 (EsperScene). Do not rewrite it here — use the existing Bolt version as a placeholder until Task 16.
 
-- [ ] **Step 1: Read EsperPanel in full**
+- [ ] **Step 1: Read Work.tsx in full**
 
 ```bash
-cat ~/Developer/conscious-shell/src/components/EsperPanel.tsx
+cat ~/Developer/conscious-shell/src/components/Work.tsx
 ```
 
 - [ ] **Step 2: Export SectionHeader from Work.tsx**
 
-SectionHeader is used by many components. Keep it in Work.tsx and export it.
+SectionHeader is used by many components. Define and export it from Work.tsx. Other components import it via `import { SectionHeader } from './Work'`.
 
 ```typescript
 // At top of Work.tsx — export so other components can import
@@ -651,19 +647,41 @@ export function SectionHeader({
 
 - [ ] **Step 3: Rewrite Work.tsx fully**
 
-Read the existing full file first (step 1), then rewrite preserving all visual logic but cleaning Bolt artifacts. The Work section is a two-column layout: left = project list, right = EsperPanel detail.
+Two-column layout: left = project list, right = EsperPanel detail. EsperPanel import stays unchanged (Bolt version placeholder). Start file with the exported SectionHeader, then default export Work.
 
 ```typescript
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import EsperPanel from './EsperPanel';
 import type { Project } from '../lib/supabase';
-export { SectionHeader } from './Work'; // re-export (see above)
 
-// ... (full clean rewrite preserving existing layout)
+// Exported so other sections can import it — do NOT also import from here, just define it here.
+export function SectionHeader({ path, jp, count, right }: {
+  path: string; jp?: string; count?: number; right?: string;
+}) {
+  return (
+    <div className="border border-[#1f1c17] mb-0">
+      <div className="flex items-center justify-between px-4 py-2 text-[10px] font-mono">
+        <div className="flex items-center gap-2 text-[#e7b766]">
+          <span className="w-1.5 h-1.5 bg-[#e7b766] animate-pulse" />
+          <span>{path}</span>
+          {count !== undefined && <span className="text-[#4a453e]">({count})</span>}
+        </div>
+        <div className="flex items-center gap-3">
+          {jp && <span className="text-[#5ec8d8] font-jp hidden md:inline">{jp}</span>}
+          {right && <span className="text-[#4a453e]">{right}</span>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function Work({ projects }: { projects: Project[] }) {
+  // ... two-column layout from existing file
+}
 ```
 
-(Implement using patterns from the existing file — project row hover, active state, tag chips, sticky panel on desktop.)
+(Implement project row hover, active state, tag chips, sticky EsperPanel on desktop — mirror existing visual patterns.)
 
 - [ ] **Step 4: Verify Work section renders with Supabase data**
 
@@ -671,7 +689,7 @@ export { SectionHeader } from './Work'; // re-export (see above)
 
 ```bash
 cd ~/Developer/conscious-shell
-git add src/components/Work.tsx src/components/EsperPanel.tsx
+git add src/components/Work.tsx
 git commit -m "refactor(work): clean two-column layout, exported SectionHeader"
 ```
 
@@ -710,7 +728,24 @@ Two columns: awards list, publications list. Both from Supabase data. Publicatio
 
 - [ ] **Step 5: Rewrite Contact.tsx**
 
-Form with name, email, message. On submit: write row to `app_logs` table (existing migration). Clear form on success. No external service needed.
+Form with name, email, message. `app_logs` is a logging table — do not use it for contact submissions. Instead, write submissions to a new `contact_submissions` table. Add the migration first:
+
+```sql
+-- supabase/migrations/20260424000000_create_contact_submissions.sql
+create table contact_submissions (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  email text not null,
+  message text not null,
+  created_at timestamptz default now()
+);
+alter table contact_submissions enable row level security;
+create policy "insert only" on contact_submissions for insert with check (true);
+```
+
+Apply via: `supabase db push` or paste into Supabase SQL editor.
+
+On submit: `supabase.from('contact_submissions').insert({ name, email, message })`. Show success state. Clear form.
 
 - [ ] **Step 6: Rewrite Footer.tsx**
 
@@ -840,65 +875,105 @@ git commit -m "refactor(ambient): boot overlay, spinner, cursor, baseline drift"
 
 ---
 
-### Task 10: SessionHUD, AmbientAudio, BlackLitany, OverrideMode, NoirSubtitles, SystemBreach, DeadDropConsole, LogViewer, IntelligenceHUD
+### Task 10a: SessionHUD, AmbientAudio, BlackLitany, OverrideMode, NoirSubtitles
 
-**Files:** All components listed above
+**Files:**
+- Modify: `src/components/SessionHUD.tsx`
+- Modify: `src/components/AmbientAudio.tsx`
+- Modify: `src/components/BlackLitany.tsx`
+- Modify: `src/components/OverrideMode.tsx`
+- Modify: `src/components/NoirSubtitles.tsx`
 
-- [ ] **Step 1: Read all nine**
+- [ ] **Step 1: Read all five**
 
 ```bash
-for f in SessionHUD AmbientAudio BlackLitany OverrideMode \
-          NoirSubtitles SystemBreach DeadDropConsole LogViewer IntelligenceHUD; do
+for f in SessionHUD AmbientAudio BlackLitany OverrideMode NoirSubtitles; do
   echo "=== $f ===" && cat ~/Developer/conscious-shell/src/components/${f}.tsx | head -60
 done
 ```
 
 - [ ] **Step 2: Rewrite SessionHUD**
 
-Fixed bottom-right HUD. Shows session start time, scroll depth %, a pulsing amber dot. Font mono, tiny text, `bg-[#07070a]/80`.
+Fixed bottom-right HUD. Shows session start time (read from `getSessionId()` in `lib/logger.ts` — import and parse the timestamp prefix from the session ID), scroll depth %, a pulsing amber dot. Font mono, tiny text, `bg-[#07070a]/80`.
 
 - [ ] **Step 3: Rewrite AmbientAudio**
 
-Web Audio API — generates subtle ambient drone (sine oscillator + reverb via ConvolutionReverb or simple delay). Toggle button fixed bottom-left. Auto-suspended until user gesture.
+Web Audio API drone. Use two detuned sine oscillators + a `DelayNode` for pseudo-reverb (no impulse response file needed). Toggle button fixed bottom-left. `AudioContext` created on first user gesture (click), not on mount. Auto-suspend when toggled off.
+
+```typescript
+// Core audio setup pattern:
+let ctx: AudioContext | null = null;
+function getCtx() {
+  if (!ctx) ctx = new AudioContext();
+  return ctx;
+}
+// On toggle-on: create OscillatorNode (type='sine', freq=55hz) + GainNode + DelayNode, connect to ctx.destination
+// On toggle-off: ctx.suspend()
+```
 
 - [ ] **Step 4: Rewrite BlackLitany**
 
-Periodic `console.log` output of poetic phrases. Pure JS, no DOM. Runs on mount, clears on unmount.
+Periodic `console.log` of poetic phrases. Pure JS, no DOM. Array of 8-10 phrases. Logs one every 90s on a `setInterval`. Clears on unmount.
 
 - [ ] **Step 5: Rewrite OverrideMode**
 
-Keyboard shortcut (`Shift+O`) triggers a full-screen "OVERRIDE MODE" flash effect. Framer Motion AnimatePresence. Dispatches `override:mode` CustomEvent.
+`Shift+O` triggers a full-screen "OVERRIDE MODE" flash. Framer Motion AnimatePresence, red border + white text flash, auto-dismiss after 1.8s. Dispatches `override:mode` CustomEvent.
 
 - [ ] **Step 6: Rewrite NoirSubtitles**
 
-Fixed bottom-center. Cycles through `noir: Noir[]` lines with typewriter effect. 6s per line. Fades in/out. Skips if array empty.
+Fixed bottom-center, `pointer-events-none`. Cycles through `noir: Noir[]` with typewriter effect per line. 6s per line. Fades in/out via Framer Motion. Skips if array empty. Props: `{ lines: Noir[] }`.
 
-- [ ] **Step 7: Rewrite SystemBreach**
-
-Rare (random 0.3% chance per minute) full-screen glitch effect. Flashes red scanlines, plays a brief sound burst via Web Audio, shows "SYSTEM BREACH DETECTED". Auto-dismisses after 2s.
-
-- [ ] **Step 8: Rewrite DeadDropConsole**
-
-Hidden terminal that appears on `~` key. Accepts freeform input. Responds to commands: `whoami`, `ls`, `help`, `contact`, `clear`. Fake response delay. Fixed overlay.
-
-- [ ] **Step 9: Rewrite LogViewer**
-
-Fixed panel (toggle via `L` key). Shows last 20 rows from `app_logs` Supabase table, polling every 30s. Filterable by log level.
-
-- [ ] **Step 10: Rewrite IntelligenceHUD**
-
-Visitor analytics overlay (toggle via `I` key). Shows browser, OS, screen size, referrer, time-on-site. Listens for `intel:command` CustomEvent from CommandPalette.
-
-- [ ] **Step 11: Commit all**
+- [ ] **Step 7: Commit**
 
 ```bash
 cd ~/Developer/conscious-shell
 git add src/components/SessionHUD.tsx src/components/AmbientAudio.tsx \
         src/components/BlackLitany.tsx src/components/OverrideMode.tsx \
-        src/components/NoirSubtitles.tsx src/components/SystemBreach.tsx \
-        src/components/DeadDropConsole.tsx src/components/LogViewer.tsx \
-        src/components/IntelligenceHUD.tsx
-git commit -m "refactor(ambient): HUD, audio, litany, override, subtitles, breach, console, log, intel"
+        src/components/NoirSubtitles.tsx
+git commit -m "refactor(ambient): SessionHUD, AmbientAudio, BlackLitany, OverrideMode, NoirSubtitles"
+```
+
+---
+
+### Task 10b: SystemBreach, DeadDropConsole, LogViewer, IntelligenceHUD
+
+**Files:**
+- Modify: `src/components/SystemBreach.tsx`
+- Modify: `src/components/DeadDropConsole.tsx`
+- Modify: `src/components/LogViewer.tsx`
+- Modify: `src/components/IntelligenceHUD.tsx`
+
+- [ ] **Step 1: Read all four**
+
+```bash
+for f in SystemBreach DeadDropConsole LogViewer IntelligenceHUD; do
+  echo "=== $f ===" && cat ~/Developer/conscious-shell/src/components/${f}.tsx | head -80
+done
+```
+
+- [ ] **Step 2: Rewrite SystemBreach**
+
+Random 0.3% chance per minute glitch. `setInterval` every 60s, `Math.random() < 0.003`. Full-screen red scanline flash, "SYSTEM BREACH DETECTED" text, auto-dismisses after 2s. Brief Web Audio burst: `OscillatorNode` type `sawtooth`, freq 220hz, gain 0.3, duration 0.2s.
+
+- [ ] **Step 3: Rewrite DeadDropConsole**
+
+Appears on `~` key. Fixed full-screen overlay, dark bg. Input field. Commands: `whoami` → `micah boswell // design_leader`, `ls` → lists sections, `help` → lists commands, `contact` → shows email, `clear` → clears history. Each response has a 300ms fake delay. Closes on `Escape`.
+
+- [ ] **Step 4: Rewrite LogViewer**
+
+Toggle via `L` key. Fixed panel (right side, 400px wide). Reads from `app_logs` Supabase table: `supabase.from('app_logs').select('*').order('created_at', { ascending: false }).limit(20)`. Polls every 30s via `setInterval`. Filter buttons: all / error / warn / info. Uses `subscribeToFlush` from `lib/logger.ts` to refresh immediately after a new log is written.
+
+- [ ] **Step 5: Rewrite IntelligenceHUD**
+
+Toggle via `I` key, also triggered by `intel:command` CustomEvent (from CommandPalette). Fixed panel. Reads from `intelligence.ts`: import `getState` or equivalent to get current `Signals` and `Persona`. Shows: persona label + accent color, scroll depth, session time, section dwell times, command uses. Read the existing IntelligenceHUD and intelligence.ts APIs carefully — use whatever `getState`/subscription pattern intelligence.ts already exposes.
+
+- [ ] **Step 6: Commit**
+
+```bash
+cd ~/Developer/conscious-shell
+git add src/components/SystemBreach.tsx src/components/DeadDropConsole.tsx \
+        src/components/LogViewer.tsx src/components/IntelligenceHUD.tsx
+git commit -m "refactor(ambient): SystemBreach, DeadDropConsole, LogViewer, IntelligenceHUD"
 ```
 
 ---
@@ -911,16 +986,19 @@ git commit -m "refactor(ambient): HUD, audio, litany, override, subtitles, breac
 - Modify: `src/components/TimeMachine.tsx`
 - Create: `src/lib/timeline.ts`
 
-The `ArchiveCapture` type already has `custom_screenshot_url`. This task replaces the archive.org iframe embed with a plain `<img>` sourced from `custom_screenshot_url` (Supabase Storage URL or public path). Fallback: `screenshot_url`. No iframes.
+The `ArchiveCapture` type already has `custom_screenshot_url`. This task replaces the archive.org iframe embed with a plain `<img>` sourced from `custom_screenshot_url`. No iframes. No fallback to `screenshot_url` — that field contains Wayback Machine iframe URLs, not image URLs, and would render broken in an `<img>` tag.
 
 - [ ] **Step 1: Create src/lib/timeline.ts**
 
 ```typescript
 import type { ArchiveCapture } from './supabase';
 
-/** Returns the best available screenshot URL for a capture, or null if none. */
+/**
+ * Returns the custom screenshot URL for a capture, or null if not set.
+ * Does NOT fall back to screenshot_url — that field is a Wayback iframe URL, not an image.
+ */
 export function screenshotUrl(capture: ArchiveCapture): string | null {
-  return capture.custom_screenshot_url || capture.screenshot_url || null;
+  return capture.custom_screenshot_url || null;
 }
 
 /** Sort captures by year ascending */
@@ -1394,7 +1472,26 @@ Canvas or SVG 2049-style city skyline with scrolling neon signs from `SkylineSig
 
 - [ ] **Step 3: Rewrite AgentBattle**
 
-Design round battle log. Two AI agents (scifi vs goth) debating design decisions. `DesignRound[]` from Supabase. Each round: round number, agent, title, palette swatches, motif, critique, score. Displayed as a debate transcript. Winner highlighted.
+Design round battle log. Two AI agents (scifi vs goth) debating design decisions. App.tsx passes `data.designRounds.map(toRound)` — AgentBattle does NOT receive raw `DesignRound[]`. It receives a mapped type. Define the prop type to match `toRound`'s output exactly:
+
+```typescript
+type Round = {
+  id: string;
+  round_number: number;
+  agent: 'goth' | 'scifi';
+  title: string;
+  palette: string[];      // array of hex strings
+  motif: string;
+  material: string;
+  typography: string;
+  critique: string;
+  score: number;
+};
+
+export default function AgentBattle({ initial }: { initial: Round[] }) { ... }
+```
+
+Each round: round number badge, agent label (GOTH/SCIFI), title, palette swatches (small colored squares), motif + material + typography metadata, critique text, score. Displayed as a debate transcript ordered by `round_number`. Highest-scoring round gets amber highlight.
 
 - [ ] **Step 4: Commit**
 
