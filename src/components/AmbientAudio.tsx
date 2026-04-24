@@ -104,6 +104,7 @@ export default function AmbientAudio() {
         lfo.stop();
         noise.stop();
         ctx.close();
+      // eslint-disable-next-line no-empty
       } catch {}
       nodes.current = null;
     }, 1600);
