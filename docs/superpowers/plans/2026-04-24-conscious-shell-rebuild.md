@@ -1347,15 +1347,33 @@ Populate answer text for each question in the Supabase dashboard before testing.
 
 - [ ] **Step 3: Rewrite VoightKampff**
 
-Blade Runner-themed Q&A. Displays one `VkQuestion` at a time. Shows `prompt` (and `prompt_jp` as subtext). User clicks "respond" to reveal `answer` with a typewriter effect. Navigation: prev/next buttons. Category filter tabs. Section header uses `SectionHeader` from `./Work`. Props: `{ questions: VkQuestion[] }`.
+Read existing `VoightKampff.tsx` in Step 1. Actual mechanics:
+- **No category filter tabs** — category is display-only text (`category · {q.category}`)
+- **No existing answer reveal** — clicking "respond / next →" advances to next question only
+- Has: vital gauges that animate, pulse waveform updating every 70ms, baseline metrics randomizing every 1400ms
+
+The `answer` field (added in Step 2) is a **new feature** — implement a reveal mechanic on a second "respond" click: show the answer with a typewriter effect below the prompt. This is new behavior on top of the existing advance pattern.
+
+Do NOT add category filter tabs — they don't exist in the original and are not requested.
 
 - [ ] **Step 4: Rewrite HaikuDeck**
 
-Card carousel of `Haiku[]` records. Each card shows 3 haiku lines + source + mood tag. Auto-advances every 8s. Click to pause. Touch: listen for `touchstart`/`touchend` delta > 50px to swipe next/prev.
+Read existing `HaikuDeck.tsx` in Step 1. Actual mechanics:
+- Auto-advances at **7000ms** interval via `requestAnimationFrame` progress tick (not 8s, not setInterval)
+- Hover pauses auto-advance (`onMouseEnter`/`onMouseLeave`)
+- Clicking a row jumps directly to that haiku
+- **No touch swipe** — do not add touchstart/touchend handlers
+
+Copy the rAF progress tick pattern and hover-pause logic exactly from the existing file.
 
 - [ ] **Step 5: Rewrite HumanLayer**
 
-Grid of `Trivia[]` records. Each trivia item has `category`, `label`, `value`, `glyph`. Grouped by category. Value hidden by default behind a `bg-[#1f1c17]` redaction bar. On hover (`group-hover`): bar fades out, value fades in.
+Read existing `HumanLayer.tsx` in Step 1. Actual mechanics:
+- **No hover-to-reveal** — values are visible and animate via `ScrambleText` (imported from `./ScrambleText`)
+- ScrambleText `trigger` prop fires when the active category changes, scrambling then resolving each value
+- Items are grouped/filtered by active category selection
+
+Do NOT implement a group-hover redaction bar — that mechanic does not exist. Copy the ScrambleText + category-change trigger pattern from the existing file.
 
 - [ ] **Step 6: Commit**
 
