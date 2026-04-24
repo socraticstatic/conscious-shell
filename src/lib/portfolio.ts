@@ -11,7 +11,7 @@ async function q<T>(table: string, opts: { order: string; asc?: boolean; limit?:
   let query = supabase.from(table).select('*').order(opts.order, { ascending: opts.asc ?? true });
   if (opts.limit) query = query.limit(opts.limit);
   const { data, error } = await query;
-  if (error) throw new Error(`[portfolio] ${table}: ${error.message}`);
+  if (error) throw Object.assign(new Error(`[portfolio] ${table}: ${error.message}`), { cause: error });
   return data as T[];
 }
 
