@@ -5,7 +5,7 @@ import { ChevronRight, Minus, X } from 'lucide-react';
 type Entry = { id: number; kind: 'in' | 'out' | 'sys'; text: string; color?: string };
 
 const BANNER = [
-  '-- dead-drop terminal v0.7 · tyrell off-world unit --',
+  '-- dead-drop terminal v0.7 · off-world unit --',
   'type "help" for available commands.',
   'responses are theatrical. network remains cold.',
 ];
@@ -117,7 +117,7 @@ export default function DeadDropConsole() {
       case 'trace': {
         const host = arg || 'off-world.comm';
         push('out', `tracing ${host} ...`, '#5ec8d8');
-        const hops = ['local-gw', 'tyrell-edge', 'wallace-core', 'obscura-exchange', host];
+        const hops = ['local-gw', 'shadow-edge', 'wallace-core', 'obscura-exchange', host];
         hops.forEach((h, i) =>
           setTimeout(() => push('out', `  ${(i + 1).toString().padStart(2)}  ${rip().padEnd(16)} ${h}`, '#c9b8a6'), 180 * i),
         );
@@ -191,7 +191,7 @@ export default function DeadDropConsole() {
             kp: 5 + Math.floor(Math.random() * 3),
           },
           {
-            name: 'lunar shadow · tyrell farside array',
+            name: 'lunar shadow · farside array',
             temp: -173,
             wind: 0,
             cond: 'still · sunless for another 109h',

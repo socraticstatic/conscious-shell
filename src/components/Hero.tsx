@@ -170,7 +170,7 @@ export default function Hero() {
       <div className="absolute bottom-0 inset-x-0 z-10 border-t border-[#1f1c17] bg-[#07070a]/90 backdrop-blur-sm">
         <div className="max-w-[1400px] mx-auto px-6 md:px-10 py-3 flex items-center justify-between text-[11px] text-[#6b6660] flex-wrap gap-2">
           <span>
-            <span className="text-[#e7b766]">tyrell.shell</span> v4.7 — more human than human
+            <span className="text-[#e7b766]">conscious-shell</span> v4.7
           </span>
           <span className="font-jp text-[#5ec8d8]/70 hidden md:inline">
             応答時間 〜48時間
