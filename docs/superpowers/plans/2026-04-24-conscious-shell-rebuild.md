@@ -478,6 +478,8 @@ cat ~/Developer/conscious-shell/src/components/Hero.tsx
 Preserve: typing animation, CodeRain background, terminal prompt aesthetic, fade-in CTA.
 Remove: any Bolt-generated timing hacks, redundant state.
 
+CRITICAL: Read `Hero.tsx` in Step 1 and copy the `SCRIPT` array verbatim — do not use the approximate version below. The lines below are illustrative only; the actual authored text may differ, and mismatches between Hero's summary line and Impact's stat values will confuse visitors.
+
 ```typescript
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
@@ -485,6 +487,7 @@ import CodeRain from './CodeRain';
 
 type Line = { prompt: string; cmd: string; out?: string[] };
 
+// Copy SCRIPT from existing Hero.tsx — this is approximate only:
 const SCRIPT: Line[] = [
   { prompt: '~', cmd: 'whoami', out: ['micah boswell · design leader · est. 2000'] },
   {
@@ -767,7 +770,7 @@ cat ~/Developer/conscious-shell/src/components/Footer.tsx
 
 - [ ] **Step 2: Rewrite About.tsx**
 
-Preserve: testimonial quote display, personal statement, headshot if present, timeline stat chips. Remove Bolt timing artifacts.
+Read the existing `About.tsx` in Step 1 and copy the personal statement / bio text verbatim — it is authored content, not regenerable. Preserve: testimonial quote display, personal statement (exact text), headshot if present, timeline stat chips. Remove Bolt timing artifacts.
 
 - [ ] **Step 3: Rewrite Services.tsx**
 
@@ -779,10 +782,12 @@ Two columns: awards list, publications list. Both from Supabase data. Publicatio
 
 - [ ] **Step 5: Rewrite Contact.tsx**
 
-Form with name, email, message. `app_logs` is a logging table — do not use it for contact submissions. Instead, write submissions to a new `contact_submissions` table. Add the migration first:
+Form with name, email, message. `app_logs` is a logging table — do not use it for contact submissions. Instead, write submissions to a new `contact_submissions` table.
 
-```sql
--- supabase/migrations/20260424000000_create_contact_submissions.sql
+First, write the migration file to disk:
+
+```bash
+cat > ~/Developer/conscious-shell/supabase/migrations/20260424000000_create_contact_submissions.sql << 'EOF'
 create table contact_submissions (
   id uuid primary key default gen_random_uuid(),
   name text not null,
@@ -792,9 +797,10 @@ create table contact_submissions (
 );
 alter table contact_submissions enable row level security;
 create policy "insert only" on contact_submissions for insert with check (true);
+EOF
 ```
 
-Apply via: `supabase db push` or paste into Supabase SQL editor.
+Then apply it: `supabase db push` or paste into Supabase SQL editor.
 
 On submit: `supabase.from('contact_submissions').insert({ name, email, message })`. Show success state. Clear form.
 
@@ -912,7 +918,9 @@ Full-screen black overlay that animates out after 1.8s. Shows `rep7 // initializ
 
 - [ ] **Step 3: Rewrite Spinner**
 
-Global loading indicator. Fixed top-right. Small amber dot that pulses while Supabase data is loading. Dispatches a `portfolio:ready` CustomEvent when data arrives. Reads from window event.
+Read the existing `Spinner.tsx` in Step 1 before rewriting — the actual component is a canvas-based animation (ship elements launch on staggered timers via `scheduleLaunch`), not a loading dot. Copy the canvas animation logic exactly.
+
+`portfolio:ready` is dispatched by App.tsx after fetch completes — Spinner does not dispatch or listen for that event. Remove any reference to `portfolio:ready` from Spinner.
 
 - [ ] **Step 4: Rewrite Cursor**
 
@@ -1015,7 +1023,14 @@ Periodic `console.log` of poetic phrases. Pure JS, no DOM. Array of 8-10 phrases
 
 - [ ] **Step 5: Rewrite OverrideMode**
 
-`Shift+O` triggers a full-screen "OVERRIDE MODE" flash. Framer Motion AnimatePresence, red border + white text flash, auto-dismiss after 1.8s. Dispatches `override:mode` CustomEvent.
+OverrideMode is the **receiver** in a two-part override system — it does NOT have its own key trigger. Read the existing `OverrideMode.tsx` carefully in Step 1.
+
+Actual behavior:
+- Listens for `window` CustomEvent named `override:toggle`
+- On each event, toggles `document.body.classList.toggle('override-mode')`
+- May render a visual overlay/banner when override is active
+
+Do NOT use Shift+O as a trigger — that's wrong. Do NOT dispatch `override:mode` — it listens, not dispatches. The Konami code in BaselineDrift is the trigger; BaselineDrift should dispatch `window.dispatchEvent(new CustomEvent('override:toggle'))` when Konami fires (verify this in the BaselineDrift read from Task 9 Step 1 and add the dispatch if it's missing from the existing code).
 
 - [ ] **Step 6: Rewrite NoirSubtitles**
 
@@ -1334,14 +1349,15 @@ cat ~/Developer/conscious-shell/src/components/HumanLayer.tsx
 
 - [ ] **Step 2: Add `answer` column to vk_questions**
 
-The `VkQuestion` type has no `answer` field. Add it via migration before implementing the component:
+The `VkQuestion` type has no `answer` field. First write the migration file to disk:
 
-```sql
--- supabase/migrations/20260424000001_add_answer_to_vk_questions.sql
+```bash
+cat > ~/Developer/conscious-shell/supabase/migrations/20260424000001_add_answer_to_vk_questions.sql << 'EOF'
 alter table vk_questions add column if not exists answer text default '';
+EOF
 ```
 
-Apply via `supabase db push` or Supabase SQL editor. Then add `answer: string` to the `VkQuestion` type in `src/lib/supabase.ts`:
+Then apply it: `supabase db push` or paste into Supabase SQL editor. Then add `answer: string` to the `VkQuestion` type in `src/lib/supabase.ts`:
 
 ```typescript
 export type VkQuestion = {
@@ -1502,8 +1518,17 @@ Copy down: `VIEW=720`, `CENTER=360`, `PUPIL_R=64`, `IRIS_R_INNER=78`, `IRIS_R_OU
 
 Keep all visual math and any direct Supabase calls intact. Clean up: extract `ProjectLayout` computation into a pure function, separate SVG fiber generation from project dot rendering, remove redundant `useEffect` chains.
 
-Structure:
+Read the existing `ForceGraph.tsx` in Step 1 to determine what `ProjectLayout` actually computes per project (it will include at minimum: x, y position on the iris, angle in degrees, and a reference to the project). Define the type explicitly at the top of the file based on what you read — do not leave it implicit.
+
 ```typescript
+// Define based on what existing ForceGraph computes — approximate shape:
+type ProjectLayout = {
+  project: Project;
+  x: number;      // SVG coordinate
+  y: number;      // SVG coordinate
+  angle: number;  // degrees from center
+};
+
 // Pure function — no React deps
 function computeLayout(projects: Project[]): ProjectLayout[] { ... }
 
@@ -1571,9 +1596,9 @@ cat ~/Developer/conscious-shell/src/components/EsperPanel.tsx
 
 - [ ] **Step 2: Rewrite EsperScene**
 
-Blade Runner Esper-machine UX. Shows a photograph with hotspot overlays from `EsperHotspot[]`. Clicking a hotspot triggers a 3-phase animation: `track → enhance → resolve`. Each phase types a command sequence. Uses `AnimatePresence` for phase transitions.
+Blade Runner Esper-machine UX. The photo is **shared across all hotspots** — sourced from `hotspots[0]?.photo_url`. All hotspot overlays are positioned on top of this single image. Clicking a hotspot triggers a 3-phase animation: `track → enhance → resolve`. Each phase types a command sequence. Uses `AnimatePresence` for phase transitions.
 
-Extract phase sequencing to a hook: `useEsperSequence(hotspot, onReset)`.
+Extract phase sequencing to a function `useEsperSequence(hotspot, onReset)` defined **inside `EsperScene.tsx`** — do not create a separate file. The git add in Step 4 only stages `EsperScene.tsx` and `EsperPanel.tsx`; any new file would be silently untracked.
 
 - [ ] **Step 3: Rewrite EsperPanel**
 
