@@ -50,7 +50,7 @@ export type Publication = {
   id: string;
   title: string;
   kind: string;
-  url: string;
+  url?: string | null;
   order_index: number;
 };
 
