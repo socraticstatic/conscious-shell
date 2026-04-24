@@ -1047,11 +1047,11 @@ The trigger key is **backtick** (`` ` ``), not tilde: `e.key === '`'`. The actua
 
 - [ ] **Step 4: Rewrite LogViewer**
 
-Toggle via `L` key. Fixed panel (right side, 400px wide). Reads from `app_logs` Supabase table: `supabase.from('app_logs').select('*').order('created_at', { ascending: false }).limit(20)`. Polls every 30s via `setInterval`. Filter buttons: all / error / warn / info. Uses `subscribeToFlush` from `lib/logger.ts` to refresh immediately after a new log is written.
+Read existing `LogViewer.tsx` in Step 1. There is NO keyboard shortcut — it toggles via a click button at bottom-right. Reads from `app_logs` Supabase table. Filter UI has level toggles (error / warn / info / log / debug) plus a session filter checkbox. Uses `subscribeToFlush` from `lib/logger.ts` to refresh after new logs. Copy the full filter and display logic from the existing file.
 
 - [ ] **Step 5: Rewrite IntelligenceHUD**
 
-Toggle via `I` key, also triggered by `intel:command` CustomEvent (from CommandPalette). Fixed panel. Reads from `intelligence.ts`: import `getState` or equivalent to get current `Signals` and `Persona`. Shows: persona label + accent color, scroll depth, session time, section dwell times, command uses. Read the existing IntelligenceHUD and intelligence.ts APIs carefully — use whatever `getState`/subscription pattern intelligence.ts already exposes.
+Read existing `IntelligenceHUD.tsx` in Step 1. There is NO `I` key binding — it opens via a click button. Listens for four CustomEvents: `intel:command`, `intel:vk_answer`, `intel:override`, `intel:skyline`. Displays: persona signature + label + tagline, persona score bars, top 4 dwell signals, session duration, scroll depth, visit count. Uses `getState()` and `subscribe()` from `intelligence.ts`. Copy the full display and event subscription logic from the existing file.
 
 - [ ] **Step 6: Commit**
 
@@ -1445,7 +1445,7 @@ Static stats section. Read the existing Impact.tsx in Step 1 and copy the exact 
 
 - [ ] **Step 5: Rewrite IndexList**
 
-All projects as a filterable index table. Columns: year, client, title, role, tags. Filter by tag. Sort by year. Uses `projects: Project[]` from Supabase.
+All projects as a filterable index table. Columns: year, client, title, role, tags. Filter by tag. Display order is the original Supabase array order — there is **no sort-by-year** in the existing component. Read `IndexList.tsx` in Step 1 and copy the filter and display logic exactly.
 
 - [ ] **Step 6: Commit**
 
@@ -1538,11 +1538,11 @@ cat ~/Developer/conscious-shell/src/components/WebDossier.tsx
 
 - [ ] **Step 2: Rewrite GithubLab**
 
-Grid of `GithubProject[]` cards. Each card: repo name, tagline, description, tags, stars, language badge, links to repo + pages. Featured projects first. Filter by language/tag.
+Grid of `GithubProject[]` cards. Each card: repo name, tagline, description, tags, stars, language badge, links to repo + pages. Featured projects first. Filter by **tag only** — there is no language filter in the existing component. Read `GithubLab.tsx` in Step 1 and copy the tag filter logic exactly.
 
 - [ ] **Step 3: Rewrite WebDossier**
 
-`WebDossierFact[]` displayed as an intelligence dossier. Facts grouped by `category`. Each fact: text, source label (link). Weight drives visual prominence (larger text or amber color for weight > 7).
+Read existing `WebDossier.tsx` in Step 1. Facts are NOT grouped by category — they use `CATEGORY_META` for per-category visual styling. There is no `weight > 7` threshold — weight is used via `weightedPick()` for weighted random selection, not for visual sizing. Copy the `CATEGORY_META` map, the `weightedPick` logic, and the display layout exactly from the existing file.
 
 - [ ] **Step 4: Commit**
 
@@ -1602,7 +1602,7 @@ cat ~/Developer/conscious-shell/src/components/AgentBattle.tsx
 
 - [ ] **Step 2: Rewrite Skyline2049**
 
-Canvas or SVG 2049-style city skyline with scrolling neon signs from `SkylineSign[]`. Each sign has `text` and `tone` (amber/cyan/red/ember). Parallax scroll effect. Signs cycle.
+Read existing `Skyline2049.tsx` in Step 1. The actual implementation uses **Three.js via `@react-three/fiber`** — not plain canvas or SVG. The camera follows the mouse pointer via a `CameraRig` function (interpolated pointer tracking), not a scroll parallax effect. Props are `{ signs: SkylineSign[] }`. Copy the Three.js scene structure, `CameraRig` logic, and sign rendering exactly from the existing file.
 
 - [ ] **Step 3: Rewrite AgentBattle**
 
