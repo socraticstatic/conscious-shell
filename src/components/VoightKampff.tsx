@@ -69,7 +69,7 @@ export default function VoightKampff({ questions }: { questions: VkQuestion[] })
                   <p className="text-xl md:text-2xl lg:text-3xl text-[#e8e4dc] leading-snug">
                     {q?.prompt}
                   </p>
-                  <AnimatePresence>
+                  <AnimatePresence mode="wait">
                     {revealed && q?.answer && (
                       <motion.p
                         key="answer"
