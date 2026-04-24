@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import CodeRain from './CodeRain';
 
-const lines: Array<{ prompt: string; cmd: string; out?: string[] }> = [
+type Line = { prompt: string; cmd: string; out?: string[] };
+
+const SCRIPT: Line[] = [
   {
     prompt: '~',
     cmd: 'whoami',
@@ -27,47 +29,46 @@ const lines: Array<{ prompt: string; cmd: string; out?: string[] }> = [
   },
 ];
 
+type RenderedLine = Line & { typed: string; outShown: number };
+
+const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
 export default function Hero() {
-  const [rendered, setRendered] = useState<
-    Array<{ prompt: string; cmd: string; typed: string; out?: string[]; outShown?: number }>
-  >([]);
+  const [lines, setLines] = useState<RenderedLine[]>([]);
   const [done, setDone] = useState(false);
 
   useEffect(() => {
-    let cancelled = false;
-    const run = async () => {
-      for (let i = 0; i < lines.length; i++) {
-        const l = lines[i];
-        setRendered((r) => [...r, { ...l, typed: '', outShown: 0 }]);
-        for (let c = 1; c <= l.cmd.length; c++) {
-          if (cancelled) return;
-          await wait(22 + Math.random() * 45);
-          setRendered((r) => {
-            const copy = [...r];
-            copy[i] = { ...copy[i], typed: l.cmd.slice(0, c) };
-            return copy;
+    let active = true;
+    (async () => {
+      for (let i = 0; i < SCRIPT.length; i++) {
+        const s = SCRIPT[i];
+        setLines((prev) => [...prev, { ...s, typed: '', outShown: 0 }]);
+        for (let c = 1; c <= s.cmd.length; c++) {
+          if (!active) return;
+          await wait(20 + Math.random() * 40);
+          setLines((prev) => {
+            const next = [...prev];
+            next[i] = { ...next[i], typed: s.cmd.slice(0, c) };
+            return next;
           });
         }
-        await wait(220);
-        if (l.out) {
-          for (let j = 1; j <= l.out.length; j++) {
-            if (cancelled) return;
-            await wait(90);
-            setRendered((r) => {
-              const copy = [...r];
-              copy[i] = { ...copy[i], outShown: j };
-              return copy;
+        await wait(200);
+        if (s.out) {
+          for (let j = 1; j <= s.out.length; j++) {
+            if (!active) return;
+            await wait(80);
+            setLines((prev) => {
+              const next = [...prev];
+              next[i] = { ...next[i], outShown: j };
+              return next;
             });
           }
-          await wait(260);
         }
+        await wait(120);
       }
-      setDone(true);
-    };
-    run();
-    return () => {
-      cancelled = true;
-    };
+      if (active) setDone(true);
+    })();
+    return () => { active = false; };
   }, []);
 
   const scrollTo = (id: string) =>
@@ -116,29 +117,23 @@ export default function Hero() {
             </div>
 
             <div className="mt-10 md:mt-12 text-sm md:text-[15px] leading-7">
-              {rendered.map((l, i) => (
+              {lines.map((l, i) => (
                 <div key={i} className="mb-3">
                   <div className="flex gap-2">
                     <span className="text-[#6b6660]">{l.prompt}</span>
                     <span className="text-[#e7b766]">$</span>
                     <span className="text-[#e8e4dc]">
                       {l.typed}
-                      {i === rendered.length - 1 && !done && (
+                      {i === lines.length - 1 && !done && (
                         <span className="text-[#e7b766] animate-pulse">▌</span>
                       )}
                     </span>
                   </div>
                   {l.out &&
-                    l.out.slice(0, l.outShown ?? 0).map((o, j) => (
-                      <motion.div
-                        key={j}
-                        initial={{ opacity: 0, x: -4 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="text-[#a8a29e] pl-6"
-                      >
+                    l.out.slice(0, l.outShown).map((o, j) => (
+                      <div key={j} className="text-[#a8a29e] pl-6">
                         {o}
-                      </motion.div>
+                      </div>
                     ))}
                 </div>
               ))}
@@ -247,6 +242,3 @@ function BiometricPanel() {
   );
 }
 
-function wait(ms: number) {
-  return new Promise((r) => setTimeout(r, ms));
-}
