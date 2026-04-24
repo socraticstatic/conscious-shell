@@ -408,6 +408,7 @@ export default function AgentBattle({ initial }: Props) {
   }, [running, step]);
 
   const transcript = rounds.slice(-10).reverse();
+  const maxScore = useMemo(() => Math.max(0, ...rounds.map((r) => r.score)), [rounds]);
 
   return (
     <section id="design-box" className="relative bg-black border-y border-white/5 py-20 md:py-28">
@@ -468,17 +469,22 @@ export default function AgentBattle({ initial }: Props) {
             <ul className="space-y-2">
               {transcript.map((r) => {
                 const v = VOCAB[r.agent];
+                const isTop = r.score === maxScore && maxScore > 0;
                 return (
                   <motion.li
                     key={`${r.round_number}-${r.title}`}
                     initial={{ opacity: 0, x: 6 }}
                     animate={{ opacity: 1, x: 0 }}
                     className="text-[11px] leading-relaxed border-l-2 pl-2"
-                    style={{ borderColor: v.accent }}
+                    style={{
+                      borderColor: isTop ? '#e7b766' : v.accent,
+                      background: isTop ? 'rgba(231,183,102,0.06)' : undefined,
+                    }}
                   >
                     <div className="flex items-center gap-2 text-[9px] tracking-[0.4em] uppercase">
-                      <span style={{ color: v.accent }}>{v.glyph}</span>
+                      <span style={{ color: isTop ? '#e7b766' : v.accent }}>{v.glyph}</span>
                       <span className="text-[#7a6e62]">#{String(r.round_number).padStart(3, '0')}</span>
+                      {isTop && <span className="text-[#e7b766]">· top</span>}
                     </div>
                     <div className="text-white/85 truncate">{r.title}</div>
                     <div className="text-[#7a6e62] truncate italic">&ldquo;{r.critique}&rdquo;</div>
