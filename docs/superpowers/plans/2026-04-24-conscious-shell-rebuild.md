@@ -1,0 +1,1503 @@
+# Conscious Shell Portfolio — Full Rebuild Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Rewrite the entire Bolt-generated portfolio codebase component-by-component, preserving the Blade Runner / noir aesthetic and Supabase data layer while producing clean, maintainable TypeScript.
+
+**Architecture:** Same stack (React 18 + Vite + TypeScript strict + Tailwind + Framer Motion + Supabase). All 15 Supabase tables unchanged. Components rewritten file-by-file in six phases: foundation → structural → ambient effects → timeline (screenshots) → interactive cinematic → complex interactive. Each phase is independently deployable.
+
+**Tech Stack:** React 18, Vite 5, TypeScript strict, Tailwind CSS 3, Framer Motion 11, Supabase JS v2, Three.js + @react-three/fiber, D3 v7, Lucide React
+
+---
+
+## File Map
+
+### Preserved (no changes)
+- `src/lib/supabase.ts` — all types + client (keep as-is)
+- `supabase/migrations/` — all migrations (keep as-is)
+- `package.json`, `vite.config.ts`, `tailwind.config.js`, `tsconfig*.json`
+
+### Rewritten (same path, clean implementation)
+- `src/lib/portfolio.ts` — data fetch consolidation
+- `src/lib/logger.ts` — console intercept + Supabase log writer
+- `src/lib/persona.ts` — static identity constants
+- `src/lib/intelligence.ts` — visitor analytics helpers
+- `src/App.tsx` — root shell
+- `src/index.css` — global styles (CRT grain, rain, chroma effects)
+- All 40 components in `src/components/`
+
+### New
+- `src/lib/timeline.ts` — screenshot-based archive data helpers
+- `public/timeline/` — local screenshot assets (Year_YYYY.png convention)
+- `docs/superpowers/plans/` — this plan
+
+---
+
+## Phase 1: Foundation
+
+### Task 1: Clean lib/portfolio.ts and lib/persona.ts
+
+**Files:**
+- Modify: `src/lib/portfolio.ts`
+- Modify: `src/lib/persona.ts`
+
+- [ ] **Step 1: Rewrite portfolio.ts with error isolation per query**
+
+Replace `src/lib/portfolio.ts` entirely:
+
+```typescript
+import {
+  supabase,
+  type Project, type Service, type Testimonial,
+  type Award, type Publication, type VkQuestion,
+  type ArchiveCapture, type GithubProject, type Trivia,
+  type Haiku, type Noir, type EsperHotspot, type SkylineSign,
+  type DesignRound, type WebDossierFact,
+} from './supabase';
+
+async function q<T>(table: string, opts: { order: string; asc?: boolean; limit?: number } = { order: 'order_index' }): Promise<T[]> {
+  let query = supabase.from(table).select('*').order(opts.order, { ascending: opts.asc ?? true });
+  if (opts.limit) query = query.limit(opts.limit);
+  const { data, error } = await query;
+  if (error) console.warn(`[portfolio] ${table}:`, error.message);
+  return (data ?? []) as T[];
+}
+
+export async function fetchPortfolio() {
+  const [
+    projects, services, testimonials, awards, publications,
+    vk, archive, github, trivia, haiku, noir, esper,
+    skyline, designRounds, dossier,
+  ] = await Promise.allSettled([
+    q<Project>('portfolio_projects'),
+    q<Service>('portfolio_services'),
+    q<Testimonial>('portfolio_testimonials'),
+    q<Award>('portfolio_awards'),
+    q<Publication>('portfolio_publications'),
+    q<VkQuestion>('vk_questions'),
+    q<ArchiveCapture>('archive_captures'),
+    q<GithubProject>('github_projects', { order: 'sort_order' }),
+    q<Trivia>('portfolio_trivia'),
+    q<Haiku>('portfolio_haiku'),
+    q<Noir>('portfolio_noir'),
+    q<EsperHotspot>('esper_hotspots'),
+    q<SkylineSign>('skyline_signs'),
+    q<DesignRound>('design_rounds', { order: 'round_number', asc: false, limit: 20 }),
+    q<WebDossierFact>('web_dossier_facts'),
+  ]);
+
+  const val = <T>(r: PromiseSettledResult<T[]>): T[] =>
+    r.status === 'fulfilled' ? r.value : [];
+
+  return {
+    projects: val(projects),
+    services: val(services),
+    testimonials: val(testimonials),
+    awards: val(awards),
+    publications: val(publications),
+    vk: val(vk),
+    archive: val(archive),
+    github: val(github),
+    trivia: val(trivia),
+    haiku: val(haiku),
+    noir: val(noir),
+    esper: val(esper),
+    skyline: val(skyline),
+    designRounds: val(designRounds).slice().reverse(),
+    dossier: val(dossier),
+  };
+}
+```
+
+- [ ] **Step 2: Rewrite persona.ts with static constants**
+
+Replace `src/lib/persona.ts`:
+
+```typescript
+export const PERSONA = {
+  name: 'Micah Boswell',
+  title: 'Design Leader',
+  domain: 'conscious-shell.com',
+  established: 2000,
+  years: 20,
+  projects: 126,
+  clients: 20,
+  handle: 'socraticstatic',
+  tagline: 'research → product → traction → organizations that ship',
+} as const;
+```
+
+- [ ] **Step 3: Verify build passes**
+
+```bash
+cd ~/Developer/conscious-shell && npm run build 2>&1 | tail -20
+```
+
+Expected: no TypeScript errors. Warnings about unused imports are okay at this stage.
+
+- [ ] **Step 4: Commit**
+
+```bash
+cd ~/Developer/conscious-shell
+git add src/lib/portfolio.ts src/lib/persona.ts
+git commit -m "refactor(lib): isolated query errors, static persona constants"
+```
+
+---
+
+### Task 2: Rebuild App.tsx skeleton
+
+**Files:**
+- Modify: `src/App.tsx`
+
+- [ ] **Step 1: Replace App.tsx with clean shell**
+
+```typescript
+import { useEffect, useState, lazy, Suspense } from 'react';
+import Nav from './components/Nav';
+import Hero from './components/Hero';
+import Work from './components/Work';
+import TimeMachine from './components/TimeMachine';
+import VoightKampff from './components/VoightKampff';
+import ForceGraph from './components/ForceGraph';
+import GithubLab from './components/GithubLab';
+import EsperScene from './components/EsperScene';
+import AgentBattle from './components/AgentBattle';
+import Manifesto from './components/Manifesto';
+import HumanLayer from './components/HumanLayer';
+import HaikuDeck from './components/HaikuDeck';
+import IndexList from './components/IndexList';
+import Impact from './components/Impact';
+import About from './components/About';
+import WebDossier from './components/WebDossier';
+import Services from './components/Services';
+import Recognition from './components/Recognition';
+import Contact from './components/Contact';
+import Footer from './components/Footer';
+import Cursor from './components/Cursor';
+import BootOverlay from './components/BootOverlay';
+import SessionHUD from './components/SessionHUD';
+import BaselineDrift from './components/BaselineDrift';
+import Spinner from './components/Spinner';
+import TearsInRain from './components/TearsInRain';
+import AmbientAudio from './components/AmbientAudio';
+import BlackLitany from './components/BlackLitany';
+import SystemBreach from './components/SystemBreach';
+import NoirSubtitles from './components/NoirSubtitles';
+import DeadDropConsole from './components/DeadDropConsole';
+import EsperPanel from './components/EsperPanel';
+import Skyline2049 from './components/Skyline2049';
+import CRTOverlay from './components/CRTOverlay';
+import CommandPalette from './components/CommandPalette';
+import LogViewer from './components/LogViewer';
+import IntelligenceHUD from './components/IntelligenceHUD';
+import OverrideMode from './components/OverrideMode';
+import { fetchPortfolio } from './lib/portfolio';
+import type {
+  Project, Service, Testimonial, Award, Publication,
+  VkQuestion, ArchiveCapture, GithubProject, Trivia,
+  Haiku, Noir, EsperHotspot, SkylineSign, DesignRound, WebDossierFact,
+} from './lib/supabase';
+
+type PortfolioData = {
+  projects: Project[];
+  services: Service[];
+  testimonials: Testimonial[];
+  awards: Award[];
+  publications: Publication[];
+  vk: VkQuestion[];
+  archive: ArchiveCapture[];
+  github: GithubProject[];
+  trivia: Trivia[];
+  haiku: Haiku[];
+  noir: Noir[];
+  esper: EsperHotspot[];
+  skyline: SkylineSign[];
+  designRounds: DesignRound[];
+  dossier: WebDossierFact[];
+};
+
+const EMPTY: PortfolioData = {
+  projects: [], services: [], testimonials: [], awards: [], publications: [],
+  vk: [], archive: [], github: [], trivia: [], haiku: [], noir: [],
+  esper: [], skyline: [], designRounds: [], dossier: [],
+};
+
+function toRound(r: DesignRound) {
+  return {
+    id: r.id,
+    round_number: r.round_number,
+    agent: (r.agent === 'goth' ? 'goth' : 'scifi') as 'goth' | 'scifi',
+    title: r.title,
+    palette: Array.isArray(r.palette) ? r.palette : [],
+    motif: r.motif,
+    material: r.material,
+    typography: r.typography,
+    critique: r.critique,
+    score: r.score,
+  };
+}
+
+function isTyping(e: KeyboardEvent) {
+  const t = e.target as HTMLElement | null;
+  if (!t) return false;
+  return t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable;
+}
+
+export default function App() {
+  const [data, setData] = useState<PortfolioData>(EMPTY);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+
+  useEffect(() => {
+    fetchPortfolio().then(setData).catch((e) => console.error('[portfolio] load failed', e));
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (isTyping(e)) return;
+      const isMeta = e.metaKey || e.ctrlKey;
+      if ((isMeta && e.key.toLowerCase() === 'k') || e.key === '/') {
+        e.preventDefault();
+        setPaletteOpen((v) => !v);
+        window.dispatchEvent(new CustomEvent('intel:command'));
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  return (
+    <div className="relative min-h-screen bg-[#07070a] text-[#e8e4dc] overflow-x-clip">
+      <BootOverlay />
+      <CRTOverlay />
+      <Spinner />
+      <Cursor />
+      <SessionHUD />
+      <BaselineDrift />
+      <AmbientAudio />
+      <TearsInRain />
+      <SystemBreach />
+      <NoirSubtitles lines={data.noir} />
+      <DeadDropConsole />
+      <OverrideMode />
+      <Nav onOpenPalette={() => setPaletteOpen(true)} />
+      <Hero />
+      <Skyline2049 signs={data.skyline} />
+      <Work projects={data.projects} />
+      <TimeMachine captures={data.archive} />
+      <VoightKampff questions={data.vk} />
+      <ForceGraph projects={data.projects} />
+      <GithubLab projects={data.github} />
+      <EsperScene hotspots={data.esper} />
+      <AgentBattle initial={data.designRounds.map(toRound)} />
+      <Manifesto />
+      <HumanLayer trivia={data.trivia} />
+      <HaikuDeck haiku={data.haiku} />
+      <IndexList projects={data.projects} />
+      <Impact />
+      <About testimonial={data.testimonials[0]} />
+      <WebDossier facts={data.dossier} />
+      <Services services={data.services} />
+      <Recognition awards={data.awards} publications={data.publications} />
+      <Contact />
+      <Footer />
+      <CommandPalette
+        open={paletteOpen}
+        onClose={() => setPaletteOpen(false)}
+        projects={data.projects}
+      />
+      <LogViewer />
+      <IntelligenceHUD />
+      <div className="site-rain slow" aria-hidden />
+      <div className="site-rain" aria-hidden />
+      <div className="site-grain" aria-hidden />
+      <BlackLitany />
+    </div>
+  );
+}
+```
+
+- [ ] **Step 2: Verify build**
+
+```bash
+cd ~/Developer/conscious-shell && npm run build 2>&1 | tail -20
+```
+
+- [ ] **Step 3: Commit**
+
+```bash
+cd ~/Developer/conscious-shell
+git add src/App.tsx
+git commit -m "refactor(app): clean App shell, EMPTY default state, isolated data load"
+```
+
+---
+
+## Phase 2: Core Structural Sections
+
+### Task 3: Nav
+
+**Files:**
+- Modify: `src/components/Nav.tsx`
+
+- [ ] **Step 1: Read existing Nav**
+
+```bash
+cat ~/Developer/conscious-shell/src/components/Nav.tsx
+```
+
+- [ ] **Step 2: Rewrite Nav**
+
+Rewrite `src/components/Nav.tsx` preserving all section anchors and the command palette trigger, but removing any Bolt-specific state bugs. Key requirements:
+- Fixed top bar, `bg-[#07070a]/80 backdrop-blur-sm`
+- Logo: `conscious-shell` in monospace with amber accent on `//`
+- Nav links: `#work`, `#time`, `#about`, `#contact`, `/`, `cmd-k` palette button
+- Mobile: hamburger toggling a full-screen drawer
+- Scroll-aware: adds `border-b border-[#1f1c17]` after 40px scroll
+- Props: `{ onOpenPalette: () => void }`
+
+```typescript
+import { useEffect, useState } from 'react';
+import { Menu, X, Terminal } from 'lucide-react';
+
+const LINKS = [
+  { href: '#work', label: 'work' },
+  { href: '#time', label: 'timeline' },
+  { href: '#about', label: 'about' },
+  { href: '#contact', label: 'contact' },
+];
+
+export default function Nav({ onOpenPalette }: { onOpenPalette: () => void }) {
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  return (
+    <header
+      className={`fixed top-0 inset-x-0 z-50 transition-colors duration-300 ${
+        scrolled ? 'border-b border-[#1f1c17] bg-[#07070a]/90 backdrop-blur-sm' : 'bg-transparent'
+      }`}
+    >
+      <div className="max-w-[1400px] mx-auto px-6 md:px-10 h-14 flex items-center justify-between">
+        <a href="#" className="font-mono text-sm text-[#e8e4dc] tracking-tight">
+          <span className="text-[#e7b766]">//</span>conscious-shell
+        </a>
+
+        {/* Desktop links */}
+        <nav className="hidden md:flex items-center gap-6">
+          {LINKS.map((l) => (
+            <a
+              key={l.href}
+              href={l.href}
+              className="text-xs text-[#6b6660] hover:text-[#e8e4dc] transition-colors tracking-widest uppercase"
+            >
+              {l.label}
+            </a>
+          ))}
+          <button
+            onClick={onOpenPalette}
+            className="flex items-center gap-1.5 text-xs text-[#6b6660] hover:text-[#e7b766] transition-colors border border-[#2a2620] hover:border-[#e7b766] px-2 py-1"
+            data-cursor="hover"
+          >
+            <Terminal size={11} />
+            <span className="font-mono">⌘K</span>
+          </button>
+        </nav>
+
+        {/* Mobile toggle */}
+        <button
+          onClick={() => setOpen((v) => !v)}
+          className="md:hidden text-[#6b6660] hover:text-[#e8e4dc]"
+        >
+          {open ? <X size={20} /> : <Menu size={20} />}
+        </button>
+      </div>
+
+      {/* Mobile drawer */}
+      {open && (
+        <div className="md:hidden bg-[#07070a] border-b border-[#1f1c17] px-6 pb-6 pt-2 flex flex-col gap-4">
+          {LINKS.map((l) => (
+            <a
+              key={l.href}
+              href={l.href}
+              onClick={() => setOpen(false)}
+              className="text-sm text-[#6b6660] hover:text-[#e8e4dc] transition-colors"
+            >
+              {l.label}
+            </a>
+          ))}
+          <button
+            onClick={() => { setOpen(false); onOpenPalette(); }}
+            className="text-left text-sm text-[#6b6660] hover:text-[#e7b766]"
+          >
+            ⌘K — command palette
+          </button>
+        </div>
+      )}
+    </header>
+  );
+}
+```
+
+- [ ] **Step 3: Start dev server and verify Nav renders correctly**
+
+```bash
+cd ~/Developer/conscious-shell && npm run dev
+```
+
+Open `http://localhost:5173`. Verify: logo visible, links present, mobile hamburger works, scroll adds border.
+
+- [ ] **Step 4: Commit**
+
+```bash
+cd ~/Developer/conscious-shell
+git add src/components/Nav.tsx
+git commit -m "refactor(nav): clean rewrite, scroll-aware, mobile drawer"
+```
+
+---
+
+### Task 4: Hero
+
+**Files:**
+- Modify: `src/components/Hero.tsx`
+
+- [ ] **Step 1: Read existing Hero in full**
+
+```bash
+cat ~/Developer/conscious-shell/src/components/Hero.tsx
+```
+
+- [ ] **Step 2: Rewrite Hero with clean terminal animation**
+
+Preserve: typing animation, CodeRain background, terminal prompt aesthetic, fade-in CTA.
+Remove: any Bolt-generated timing hacks, redundant state.
+
+```typescript
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import CodeRain from './CodeRain';
+
+type Line = { prompt: string; cmd: string; out?: string[] };
+
+const SCRIPT: Line[] = [
+  { prompt: '~', cmd: 'whoami', out: ['micah boswell · design leader · est. 2000'] },
+  {
+    prompt: '~',
+    cmd: 'cat /portfolio/summary',
+    out: ['20+ years · 126 projects · 20+ clients · 3 books', 'research → product → traction → organizations that ship'],
+  },
+  { prompt: '~', cmd: 'rep7 --classify subject', out: ['classification: human // aligned: design // status: active_duty'] },
+  { prompt: '~', cmd: './enter --archive' },
+];
+
+type RenderedLine = Line & { typed: string; outShown: number };
+
+const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
+export default function Hero() {
+  const [lines, setLines] = useState<RenderedLine[]>([]);
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      for (let i = 0; i < SCRIPT.length; i++) {
+        const s = SCRIPT[i];
+        setLines((prev) => [...prev, { ...s, typed: '', outShown: 0 }]);
+        for (let c = 1; c <= s.cmd.length; c++) {
+          if (!active) return;
+          await wait(20 + Math.random() * 40);
+          setLines((prev) => {
+            const next = [...prev];
+            next[i] = { ...next[i], typed: s.cmd.slice(0, c) };
+            return next;
+          });
+        }
+        await wait(200);
+        if (s.out) {
+          for (let j = 1; j <= s.out.length; j++) {
+            if (!active) return;
+            await wait(80);
+            setLines((prev) => {
+              const next = [...prev];
+              next[i] = { ...next[i], outShown: j };
+              return next;
+            });
+          }
+        }
+        await wait(120);
+      }
+      if (active) setDone(true);
+    })();
+    return () => { active = false; };
+  }, []);
+
+  return (
+    <section className="relative min-h-screen flex flex-col justify-center pt-14 overflow-hidden">
+      <CodeRain className="absolute inset-0 opacity-[0.06]" />
+      <div className="relative z-10 max-w-[1400px] mx-auto px-6 md:px-10 py-20">
+        <div className="font-mono text-sm md:text-base space-y-1 max-w-2xl">
+          {lines.map((l, i) => (
+            <div key={i}>
+              <div className="flex gap-2">
+                <span className="text-[#e7b766]">{l.prompt} $</span>
+                <span className="text-[#e8e4dc]">
+                  {l.typed}
+                  {l.typed.length < l.cmd.length && (
+                    <span className="inline-block w-[7px] h-[14px] bg-[#e7b766] animate-pulse align-middle ml-px" />
+                  )}
+                </span>
+              </div>
+              {l.out?.slice(0, l.outShown).map((o, j) => (
+                <div key={j} className="text-[#6b6660] pl-6">{o}</div>
+              ))}
+            </div>
+          ))}
+        </div>
+
+        {done && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="mt-16 flex gap-4 items-center"
+          >
+            <a
+              href="#work"
+              data-cursor="hover"
+              className="px-5 py-2.5 bg-[#e7b766] text-[#07070a] text-sm font-mono hover:bg-[#d4a554] transition-colors"
+            >
+              view work
+            </a>
+            <a
+              href="#contact"
+              data-cursor="hover"
+              className="px-5 py-2.5 border border-[#2a2620] text-sm font-mono text-[#a8a29e] hover:border-[#e7b766] hover:text-[#e7b766] transition-colors"
+            >
+              get in touch
+            </a>
+          </motion.div>
+        )}
+      </div>
+    </section>
+  );
+}
+```
+
+- [ ] **Step 3: Verify in browser — typing animation plays, CTA fades in**
+
+- [ ] **Step 4: Commit**
+
+```bash
+cd ~/Developer/conscious-shell
+git add src/components/Hero.tsx
+git commit -m "refactor(hero): clean terminal animation, no timing hacks"
+```
+
+---
+
+### Task 5: SectionHeader + Work
+
+**Files:**
+- Modify: `src/components/Work.tsx`
+- Modify: `src/components/EsperPanel.tsx`
+
+- [ ] **Step 1: Read EsperPanel in full**
+
+```bash
+cat ~/Developer/conscious-shell/src/components/EsperPanel.tsx
+```
+
+- [ ] **Step 2: Export SectionHeader from Work.tsx**
+
+SectionHeader is used by many components. Keep it in Work.tsx and export it.
+
+```typescript
+// At top of Work.tsx — export so other components can import
+export function SectionHeader({
+  path,
+  jp,
+  count,
+  right,
+}: {
+  path: string;
+  jp?: string;
+  count?: number;
+  right?: string;
+}) {
+  return (
+    <div className="border border-[#1f1c17] mb-0">
+      <div className="flex items-center justify-between px-4 py-2 text-[10px] font-mono">
+        <div className="flex items-center gap-2 text-[#e7b766]">
+          <span className="w-1.5 h-1.5 bg-[#e7b766] animate-pulse" />
+          <span>{path}</span>
+          {count !== undefined && <span className="text-[#4a453e]">({count})</span>}
+        </div>
+        <div className="flex items-center gap-3">
+          {jp && <span className="text-[#5ec8d8] font-jp hidden md:inline">{jp}</span>}
+          {right && <span className="text-[#4a453e]">{right}</span>}
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+- [ ] **Step 3: Rewrite Work.tsx fully**
+
+Read the existing full file first (step 1), then rewrite preserving all visual logic but cleaning Bolt artifacts. The Work section is a two-column layout: left = project list, right = EsperPanel detail.
+
+```typescript
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import EsperPanel from './EsperPanel';
+import type { Project } from '../lib/supabase';
+export { SectionHeader } from './Work'; // re-export (see above)
+
+// ... (full clean rewrite preserving existing layout)
+```
+
+(Implement using patterns from the existing file — project row hover, active state, tag chips, sticky panel on desktop.)
+
+- [ ] **Step 4: Verify Work section renders with Supabase data**
+
+- [ ] **Step 5: Commit**
+
+```bash
+cd ~/Developer/conscious-shell
+git add src/components/Work.tsx src/components/EsperPanel.tsx
+git commit -m "refactor(work): clean two-column layout, exported SectionHeader"
+```
+
+---
+
+### Task 6: About, Services, Recognition, Contact, Footer
+
+**Files:**
+- Modify: `src/components/About.tsx`
+- Modify: `src/components/Services.tsx`
+- Modify: `src/components/Recognition.tsx`
+- Modify: `src/components/Contact.tsx`
+- Modify: `src/components/Footer.tsx`
+
+- [ ] **Step 1: Read all five in full**
+
+```bash
+cat ~/Developer/conscious-shell/src/components/About.tsx
+cat ~/Developer/conscious-shell/src/components/Services.tsx
+cat ~/Developer/conscious-shell/src/components/Recognition.tsx
+cat ~/Developer/conscious-shell/src/components/Contact.tsx
+cat ~/Developer/conscious-shell/src/components/Footer.tsx
+```
+
+- [ ] **Step 2: Rewrite About.tsx**
+
+Preserve: testimonial quote display, personal statement, headshot if present, timeline stat chips. Remove Bolt timing artifacts.
+
+- [ ] **Step 3: Rewrite Services.tsx**
+
+Grid of service cards from `services: Service[]`. Each card: icon (lucide), title, description. Consistent with noir palette.
+
+- [ ] **Step 4: Rewrite Recognition.tsx**
+
+Two columns: awards list, publications list. Both from Supabase data. Publication rows are links.
+
+- [ ] **Step 5: Rewrite Contact.tsx**
+
+Form with name, email, message. On submit: write row to `app_logs` table (existing migration). Clear form on success. No external service needed.
+
+- [ ] **Step 6: Rewrite Footer.tsx**
+
+Logo, nav links, social links (GitHub, LinkedIn), copyright. No data dependencies.
+
+- [ ] **Step 7: Verify all sections render top-to-bottom in browser**
+
+- [ ] **Step 8: Commit**
+
+```bash
+cd ~/Developer/conscious-shell
+git add src/components/About.tsx src/components/Services.tsx \
+        src/components/Recognition.tsx src/components/Contact.tsx \
+        src/components/Footer.tsx
+git commit -m "refactor(content): About, Services, Recognition, Contact, Footer"
+```
+
+---
+
+## Phase 3: Ambient Effects Layer
+
+### Task 7: CSS global effects
+
+**Files:**
+- Modify: `src/index.css`
+
+- [ ] **Step 1: Read existing index.css**
+
+```bash
+cat ~/Developer/conscious-shell/src/index.css
+```
+
+- [ ] **Step 2: Rewrite with clean global effect classes**
+
+Preserve all custom properties, `.site-grain`, `.site-rain`, `.chroma`, `.font-jp`. Remove Bolt-generated dead classes.
+
+- [ ] **Step 3: Verify grain + rain overlays visible in browser at low opacity**
+
+- [ ] **Step 4: Commit**
+
+```bash
+cd ~/Developer/conscious-shell
+git add src/index.css
+git commit -m "refactor(css): clean global effects, grain, rain, chroma"
+```
+
+---
+
+### Task 8: CRTOverlay, TearsInRain, CodeRain
+
+**Files:**
+- Modify: `src/components/CRTOverlay.tsx`
+- Modify: `src/components/TearsInRain.tsx`
+- Modify: `src/components/CodeRain.tsx`
+
+- [ ] **Step 1: Read all three**
+
+```bash
+cat ~/Developer/conscious-shell/src/components/CRTOverlay.tsx
+cat ~/Developer/conscious-shell/src/components/TearsInRain.tsx
+cat ~/Developer/conscious-shell/src/components/CodeRain.tsx
+```
+
+- [ ] **Step 2: Rewrite CRTOverlay**
+
+Fixed `pointer-events-none` overlay. Scanlines via CSS `repeating-linear-gradient`. Subtle vignette. No JS animation — pure CSS.
+
+- [ ] **Step 3: Rewrite TearsInRain**
+
+Canvas-based rain. `useRef<HTMLCanvasElement>`, `requestAnimationFrame` loop via `useEffect`. Drops are vertical white lines with alpha fade. `position: fixed`, `pointer-events-none`, `z-index: 0`.
+
+- [ ] **Step 4: Rewrite CodeRain**
+
+Same canvas pattern as TearsInRain but with katakana characters falling. Accepts `className` prop for positioning by parent.
+
+- [ ] **Step 5: Commit**
+
+```bash
+cd ~/Developer/conscious-shell
+git add src/components/CRTOverlay.tsx src/components/TearsInRain.tsx src/components/CodeRain.tsx
+git commit -m "refactor(ambient): CRT overlay, tears rain, code rain — clean canvas"
+```
+
+---
+
+### Task 9: BootOverlay, Spinner, Cursor, BaselineDrift
+
+**Files:**
+- Modify: `src/components/BootOverlay.tsx`
+- Modify: `src/components/Spinner.tsx`
+- Modify: `src/components/Cursor.tsx`
+- Modify: `src/components/BaselineDrift.tsx`
+
+- [ ] **Step 1: Read all four**
+
+```bash
+cat ~/Developer/conscious-shell/src/components/BootOverlay.tsx
+cat ~/Developer/conscious-shell/src/components/Spinner.tsx
+cat ~/Developer/conscious-shell/src/components/Cursor.tsx
+cat ~/Developer/conscious-shell/src/components/BaselineDrift.tsx
+```
+
+- [ ] **Step 2: Rewrite BootOverlay**
+
+Full-screen black overlay that animates out after 1.8s. Shows `rep7 // initializing` text. Uses Framer Motion `AnimatePresence`. Unmounts after exit.
+
+- [ ] **Step 3: Rewrite Spinner**
+
+Global loading indicator. Fixed top-right. Small amber dot that pulses while Supabase data is loading. Dispatches a `portfolio:ready` CustomEvent when data arrives. Reads from window event.
+
+- [ ] **Step 4: Rewrite Cursor**
+
+Custom cursor dot + trailing ring. Tracks `mousemove`. Scales up on `[data-cursor="hover"]` elements. Hidden on touch devices via `@media (pointer: coarse)`.
+
+- [ ] **Step 5: Rewrite BaselineDrift**
+
+Subtle periodic color temperature shift of the page background (warm → cool). Uses CSS custom property animation via JS, 8s cycle. `pointer-events-none`.
+
+- [ ] **Step 6: Commit**
+
+```bash
+cd ~/Developer/conscious-shell
+git add src/components/BootOverlay.tsx src/components/Spinner.tsx \
+        src/components/Cursor.tsx src/components/BaselineDrift.tsx
+git commit -m "refactor(ambient): boot overlay, spinner, cursor, baseline drift"
+```
+
+---
+
+### Task 10: SessionHUD, AmbientAudio, BlackLitany, OverrideMode, NoirSubtitles, SystemBreach, DeadDropConsole, LogViewer, IntelligenceHUD
+
+**Files:** All components listed above
+
+- [ ] **Step 1: Read all nine**
+
+```bash
+for f in SessionHUD AmbientAudio BlackLitany OverrideMode \
+          NoirSubtitles SystemBreach DeadDropConsole LogViewer IntelligenceHUD; do
+  echo "=== $f ===" && cat ~/Developer/conscious-shell/src/components/${f}.tsx | head -60
+done
+```
+
+- [ ] **Step 2: Rewrite SessionHUD**
+
+Fixed bottom-right HUD. Shows session start time, scroll depth %, a pulsing amber dot. Font mono, tiny text, `bg-[#07070a]/80`.
+
+- [ ] **Step 3: Rewrite AmbientAudio**
+
+Web Audio API — generates subtle ambient drone (sine oscillator + reverb via ConvolutionReverb or simple delay). Toggle button fixed bottom-left. Auto-suspended until user gesture.
+
+- [ ] **Step 4: Rewrite BlackLitany**
+
+Periodic `console.log` output of poetic phrases. Pure JS, no DOM. Runs on mount, clears on unmount.
+
+- [ ] **Step 5: Rewrite OverrideMode**
+
+Keyboard shortcut (`Shift+O`) triggers a full-screen "OVERRIDE MODE" flash effect. Framer Motion AnimatePresence. Dispatches `override:mode` CustomEvent.
+
+- [ ] **Step 6: Rewrite NoirSubtitles**
+
+Fixed bottom-center. Cycles through `noir: Noir[]` lines with typewriter effect. 6s per line. Fades in/out. Skips if array empty.
+
+- [ ] **Step 7: Rewrite SystemBreach**
+
+Rare (random 0.3% chance per minute) full-screen glitch effect. Flashes red scanlines, plays a brief sound burst via Web Audio, shows "SYSTEM BREACH DETECTED". Auto-dismisses after 2s.
+
+- [ ] **Step 8: Rewrite DeadDropConsole**
+
+Hidden terminal that appears on `~` key. Accepts freeform input. Responds to commands: `whoami`, `ls`, `help`, `contact`, `clear`. Fake response delay. Fixed overlay.
+
+- [ ] **Step 9: Rewrite LogViewer**
+
+Fixed panel (toggle via `L` key). Shows last 20 rows from `app_logs` Supabase table, polling every 30s. Filterable by log level.
+
+- [ ] **Step 10: Rewrite IntelligenceHUD**
+
+Visitor analytics overlay (toggle via `I` key). Shows browser, OS, screen size, referrer, time-on-site. Listens for `intel:command` CustomEvent from CommandPalette.
+
+- [ ] **Step 11: Commit all**
+
+```bash
+cd ~/Developer/conscious-shell
+git add src/components/SessionHUD.tsx src/components/AmbientAudio.tsx \
+        src/components/BlackLitany.tsx src/components/OverrideMode.tsx \
+        src/components/NoirSubtitles.tsx src/components/SystemBreach.tsx \
+        src/components/DeadDropConsole.tsx src/components/LogViewer.tsx \
+        src/components/IntelligenceHUD.tsx
+git commit -m "refactor(ambient): HUD, audio, litany, override, subtitles, breach, console, log, intel"
+```
+
+---
+
+## Phase 4: Timeline with Screenshots
+
+### Task 11: TimeMachine — screenshot-first rebuild
+
+**Files:**
+- Modify: `src/components/TimeMachine.tsx`
+- Create: `src/lib/timeline.ts`
+
+The `ArchiveCapture` type already has `custom_screenshot_url`. This task replaces the archive.org iframe embed with a plain `<img>` sourced from `custom_screenshot_url` (Supabase Storage URL or public path). Fallback: `screenshot_url`. No iframes.
+
+- [ ] **Step 1: Create src/lib/timeline.ts**
+
+```typescript
+import type { ArchiveCapture } from './supabase';
+
+/** Returns the best available screenshot URL for a capture, or null if none. */
+export function screenshotUrl(capture: ArchiveCapture): string | null {
+  return capture.custom_screenshot_url || capture.screenshot_url || null;
+}
+
+/** Sort captures by year ascending */
+export function sortCaptures(captures: ArchiveCapture[]): ArchiveCapture[] {
+  return [...captures].sort((a, b) => a.year - b.year);
+}
+```
+
+- [ ] **Step 2: Rewrite TimeMachine.tsx**
+
+```typescript
+import { useMemo, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { SectionHeader } from './Work';
+import { screenshotUrl, sortCaptures } from '../lib/timeline';
+import type { ArchiveCapture } from '../lib/supabase';
+
+export default function TimeMachine({ captures }: { captures: ArchiveCapture[] }) {
+  const sorted = useMemo(() => sortCaptures(captures), [captures]);
+  const [idx, setIdx] = useState(0);
+
+  if (!sorted.length) return null;
+
+  const current = sorted[idx];
+  const imgSrc = screenshotUrl(current);
+  const minYear = sorted[0].year;
+  const maxYear = sorted[sorted.length - 1].year;
+  const pct = ((current.year - minYear) / Math.max(1, maxYear - minYear)) * 100;
+
+  const step = (dir: number) =>
+    setIdx((i) => Math.max(0, Math.min(sorted.length - 1, i + dir)));
+
+  return (
+    <section id="time" className="relative py-20 md:py-28 border-b border-[#1f1c17]">
+      <div className="max-w-[1400px] mx-auto px-6 md:px-10">
+        <SectionHeader
+          path="wayback --unroll /conscious-shell"
+          jp="時間旅行"
+          count={sorted.length}
+          right={`year=${current.year}`}
+        />
+
+        <div className="mt-8 grid grid-cols-12 gap-4">
+          {/* Scrubber */}
+          <div className="col-span-12 border border-[#1f1c17] bg-[#0b0a08]/60">
+            <div className="flex items-center justify-between px-4 py-2 border-b border-[#1f1c17] text-[10px]">
+              <span className="flex items-center gap-2 text-[#e7b766]">
+                <span className="w-1.5 h-1.5 bg-[#e7b766] animate-pulse" />
+                TEMPORAL ARCHIVE — 25 YEARS OF CONSCIOUS-SHELL
+              </span>
+              <span className="text-[#5ec8d8] font-jp hidden md:inline">自分の過去</span>
+            </div>
+
+            <div className="px-4 pt-4 pb-2">
+              <div className="flex items-end justify-between mb-3">
+                <div className="flex items-baseline gap-4">
+                  <motion.div
+                    key={current.year}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-5xl md:text-7xl text-[#e7b766] tabular-nums leading-none chroma"
+                  >
+                    {current.year}
+                  </motion.div>
+                  <div className="text-xs text-[#6b6660]">
+                    <div>era: <span className="text-[#e8e4dc]">{current.era_label}</span></div>
+                  </div>
+                </div>
+                <div className="hidden md:flex items-center gap-2">
+                  <button
+                    onClick={() => step(-1)}
+                    disabled={idx === 0}
+                    className="px-2 py-1 border border-[#2a2620] text-[#a8a29e] hover:border-[#e7b766] hover:text-[#e7b766] disabled:opacity-30 transition-colors text-xs"
+                  >
+                    ← rewind
+                  </button>
+                  <button
+                    onClick={() => step(1)}
+                    disabled={idx === sorted.length - 1}
+                    className="px-2 py-1 border border-[#2a2620] text-[#a8a29e] hover:border-[#e7b766] hover:text-[#e7b766] disabled:opacity-30 transition-colors text-xs"
+                  >
+                    forward →
+                  </button>
+                </div>
+              </div>
+
+              {/* Year scrub bar */}
+              <div className="relative h-1 bg-[#1f1c17] mt-2 mb-1">
+                <div className="absolute h-full bg-[#e7b766]" style={{ width: `${pct}%` }} />
+              </div>
+              <div className="flex justify-between text-[9px] text-[#4a453e] font-mono">
+                <span>{minYear}</span>
+                <span>{maxYear}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Year pills */}
+          <div className="col-span-12 flex flex-wrap gap-1.5 pt-1">
+            {sorted.map((c, i) => (
+              <button
+                key={c.id}
+                onClick={() => setIdx(i)}
+                className={`px-2.5 py-1 text-[10px] font-mono border transition-colors ${
+                  i === idx
+                    ? 'border-[#e7b766] text-[#e7b766] bg-[#e7b766]/10'
+                    : 'border-[#2a2620] text-[#4a453e] hover:border-[#a8a29e] hover:text-[#a8a29e]'
+                }`}
+              >
+                {c.year}
+              </button>
+            ))}
+          </div>
+
+          {/* Screenshot display */}
+          <div className="col-span-12 md:col-span-9 border border-[#1f1c17] bg-[#0b0a08] min-h-[320px] md:min-h-[500px] flex items-center justify-center relative overflow-hidden">
+            <AnimatePresence mode="wait">
+              {imgSrc ? (
+                <motion.img
+                  key={current.id}
+                  src={imgSrc}
+                  alt={`conscious-shell.com — ${current.year}`}
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="w-full h-full object-cover object-top"
+                />
+              ) : (
+                <motion.div
+                  key={`no-img-${current.id}`}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="text-center text-[#4a453e] font-mono text-xs p-8"
+                >
+                  <div className="text-[#e7b766] text-2xl mb-3">{current.year}</div>
+                  <div>[ capture not available ]</div>
+                  {current.era_label && <div className="mt-1 text-[#6b6660]">era: {current.era_label}</div>}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Metadata sidebar */}
+          <div className="col-span-12 md:col-span-3 border border-[#1f1c17] bg-[#0b0a08]/60 p-4 font-mono text-[10px] space-y-3">
+            <div>
+              <div className="text-[#4a453e] mb-0.5">YEAR</div>
+              <div className="text-[#e7b766] text-lg">{current.year}</div>
+            </div>
+            <div>
+              <div className="text-[#4a453e] mb-0.5">ERA</div>
+              <div className="text-[#e8e4dc]">{current.era_label || '—'}</div>
+            </div>
+            <div>
+              <div className="text-[#4a453e] mb-0.5">ORIGINAL URL</div>
+              <a
+                href={current.original_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#5ec8d8] hover:text-[#7dd8e8] break-all"
+              >
+                {current.original_url || '—'}
+              </a>
+            </div>
+            {current.wayback_url && (
+              <div>
+                <div className="text-[#4a453e] mb-0.5">WAYBACK</div>
+                <a
+                  href={current.wayback_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#5ec8d8] hover:text-[#7dd8e8] break-all"
+                >
+                  view archive →
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+```
+
+- [ ] **Step 3: Upload your screenshots to Supabase Storage**
+
+```bash
+# Create bucket via Supabase dashboard: Storage → New bucket → "timeline" (public)
+# Upload your screenshot files there (naming: YYYY.png or Year_YYYY.png)
+# Then update archive_captures rows: set custom_screenshot_url to the public storage URL
+# Example URL pattern: https://<project>.supabase.co/storage/v1/object/public/timeline/2000.png
+```
+
+- [ ] **Step 4: Alternatively — use local public/ assets**
+
+If you prefer local files over Supabase Storage:
+```bash
+mkdir -p ~/Developer/conscious-shell/public/timeline
+# Copy screenshots: cp ~/path/to/screenshot_2000.png public/timeline/2000.png
+# Then set custom_screenshot_url = "/timeline/2000.png" in the DB row
+```
+
+- [ ] **Step 5: Verify TimeMachine in browser**
+
+Navigate to `#time`. Scrubber works. Year pills switch captures. Screenshot displays in image frame. "No capture" fallback renders cleanly when image missing.
+
+- [ ] **Step 6: Commit**
+
+```bash
+cd ~/Developer/conscious-shell
+git add src/components/TimeMachine.tsx src/lib/timeline.ts
+git commit -m "feat(timeline): screenshot-first TimeMachine, no iframes, sortCaptures util"
+```
+
+---
+
+## Phase 5: Interactive Cinematic Sections
+
+### Task 12: VoightKampff, HaikuDeck, HumanLayer
+
+**Files:**
+- Modify: `src/components/VoightKampff.tsx`
+- Modify: `src/components/HaikuDeck.tsx`
+- Modify: `src/components/HumanLayer.tsx`
+
+- [ ] **Step 1: Read all three in full**
+
+```bash
+cat ~/Developer/conscious-shell/src/components/VoightKampff.tsx
+cat ~/Developer/conscious-shell/src/components/HaikuDeck.tsx
+cat ~/Developer/conscious-shell/src/components/HumanLayer.tsx
+```
+
+- [ ] **Step 2: Rewrite VoightKampff**
+
+Blade Runner-themed Q&A experience. Displays one `VkQuestion` at a time from the DB. User clicks to reveal the "answer" (a poetic statement about Micah). Navigation: prev/next. Category filter. Typewriter reveal on question change.
+
+- [ ] **Step 3: Rewrite HaikuDeck**
+
+Card carousel of `Haiku[]` records. Each card shows 3 haiku lines + source + mood tag. Auto-advances every 8s. Click to pause. Swipe-friendly (touch events).
+
+- [ ] **Step 4: Rewrite HumanLayer**
+
+Grid of `Trivia[]` records. Each trivia item has `category`, `label`, `value`, `glyph`. Grouped by category. Hover reveals value (hidden by default behind redaction bar).
+
+- [ ] **Step 5: Commit**
+
+```bash
+cd ~/Developer/conscious-shell
+git add src/components/VoightKampff.tsx src/components/HaikuDeck.tsx src/components/HumanLayer.tsx
+git commit -m "refactor(cinematic): VoightKampff, HaikuDeck, HumanLayer"
+```
+
+---
+
+### Task 13: Manifesto, Impact, IndexList, ScrambleText
+
+**Files:**
+- Modify: `src/components/Manifesto.tsx`
+- Modify: `src/components/Impact.tsx`
+- Modify: `src/components/IndexList.tsx`
+- Modify: `src/components/ScrambleText.tsx`
+
+- [ ] **Step 1: Read all four**
+
+```bash
+cat ~/Developer/conscious-shell/src/components/Manifesto.tsx
+cat ~/Developer/conscious-shell/src/components/Impact.tsx
+cat ~/Developer/conscious-shell/src/components/IndexList.tsx
+cat ~/Developer/conscious-shell/src/components/ScrambleText.tsx
+```
+
+- [ ] **Step 2: Rewrite ScrambleText**
+
+Utility component. Props: `text: string`, `trigger: boolean`, `className?: string`. On `trigger=true`, scrambles through random chars before resolving to `text`. 30ms intervals, 12 scramble frames.
+
+```typescript
+import { useEffect, useRef, useState } from 'react';
+
+const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&';
+
+export default function ScrambleText({
+  text,
+  trigger,
+  className,
+}: {
+  text: string;
+  trigger: boolean;
+  className?: string;
+}) {
+  const [display, setDisplay] = useState(text);
+  const frame = useRef(0);
+  const raf = useRef<number>(0);
+
+  useEffect(() => {
+    if (!trigger) { setDisplay(text); return; }
+    frame.current = 0;
+    const total = 12;
+    const tick = () => {
+      frame.current++;
+      const progress = frame.current / total;
+      setDisplay(
+        text.split('').map((c, i) =>
+          i < Math.floor(progress * text.length) || c === ' '
+            ? c
+            : CHARS[Math.floor(Math.random() * CHARS.length)]
+        ).join('')
+      );
+      if (frame.current < total) raf.current = requestAnimationFrame(tick);
+      else setDisplay(text);
+    };
+    raf.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf.current);
+  }, [trigger, text]);
+
+  return <span className={className}>{display}</span>;
+}
+```
+
+- [ ] **Step 3: Rewrite Manifesto**
+
+Static section. Long-form personal statement in noir voice. No data dependencies. Uses ScrambleText on section header when scrolled into view (IntersectionObserver).
+
+- [ ] **Step 4: Rewrite Impact**
+
+Static stats section. Numbers: years, projects, clients, books. Each number uses a count-up animation on scroll entry. Font mono, amber accents.
+
+- [ ] **Step 5: Rewrite IndexList**
+
+All projects as a filterable index table. Columns: year, client, title, role, tags. Filter by tag. Sort by year. Uses `projects: Project[]` from Supabase.
+
+- [ ] **Step 6: Commit**
+
+```bash
+cd ~/Developer/conscious-shell
+git add src/components/Manifesto.tsx src/components/Impact.tsx \
+        src/components/IndexList.tsx src/components/ScrambleText.tsx
+git commit -m "refactor(cinematic): Manifesto, Impact, IndexList, ScrambleText"
+```
+
+---
+
+## Phase 6: Complex Interactive Sections
+
+### Task 14: ForceGraph (IRIS Archive)
+
+**Files:**
+- Modify: `src/components/ForceGraph.tsx`
+
+This is the largest component (641 lines) — a D3/SVG iris visualization where each project is a photoreceptor. High-value section; clean rewrite required.
+
+- [ ] **Step 1: Read ForceGraph.tsx in full**
+
+```bash
+cat ~/Developer/conscious-shell/src/components/ForceGraph.tsx
+```
+
+- [ ] **Step 2: Identify the exact SVG constants and layout math**
+
+Copy down: `VIEW=720`, `CENTER=360`, `PUPIL_R=64`, `IRIS_R_INNER=78`, `IRIS_R_OUTER=322`, `LIMBUS_R=334`, `FIBER_COUNT=280`, `GAP_DEG=38`. These drive the layout.
+
+- [ ] **Step 3: Rewrite ForceGraph.tsx**
+
+Keep all visual math intact. Clean up: extract `ProjectLayout` computation into a pure function, separate SVG fiber generation from project dot rendering, remove any Bolt-generated redundant `useEffect` chains.
+
+Structure:
+```typescript
+// Pure function — no React deps
+function computeLayout(projects: Project[]): ProjectLayout[] { ... }
+
+// Fiber generation — pure, called once per render
+function buildFibers(count: number): JSX.Element[] { ... }
+
+export default function ForceGraph({ projects }: { projects: Project[] }) { ... }
+```
+
+- [ ] **Step 4: Verify iris renders with project dots, hover state works**
+
+- [ ] **Step 5: Commit**
+
+```bash
+cd ~/Developer/conscious-shell
+git add src/components/ForceGraph.tsx
+git commit -m "refactor(iris): clean D3 iris archive, pure layout computation"
+```
+
+---
+
+### Task 15: GithubLab, WebDossier
+
+**Files:**
+- Modify: `src/components/GithubLab.tsx`
+- Modify: `src/components/WebDossier.tsx`
+
+- [ ] **Step 1: Read both**
+
+```bash
+cat ~/Developer/conscious-shell/src/components/GithubLab.tsx
+cat ~/Developer/conscious-shell/src/components/WebDossier.tsx
+```
+
+- [ ] **Step 2: Rewrite GithubLab**
+
+Grid of `GithubProject[]` cards. Each card: repo name, tagline, description, tags, stars, language badge, links to repo + pages. Featured projects first. Filter by language/tag.
+
+- [ ] **Step 3: Rewrite WebDossier**
+
+`WebDossierFact[]` displayed as an intelligence dossier. Facts grouped by `category`. Each fact: text, source label (link). Weight drives visual prominence (larger text or amber color for weight > 7).
+
+- [ ] **Step 4: Commit**
+
+```bash
+cd ~/Developer/conscious-shell
+git add src/components/GithubLab.tsx src/components/WebDossier.tsx
+git commit -m "refactor(sections): GithubLab, WebDossier"
+```
+
+---
+
+### Task 16: EsperScene + EsperPanel
+
+**Files:**
+- Modify: `src/components/EsperScene.tsx`
+- Modify: `src/components/EsperPanel.tsx`
+
+- [ ] **Step 1: Read both in full**
+
+```bash
+cat ~/Developer/conscious-shell/src/components/EsperScene.tsx
+cat ~/Developer/conscious-shell/src/components/EsperPanel.tsx
+```
+
+- [ ] **Step 2: Rewrite EsperScene**
+
+Blade Runner Esper-machine UX. Shows a photograph with hotspot overlays from `EsperHotspot[]`. Clicking a hotspot triggers a 3-phase animation: `track → enhance → resolve`. Each phase types a command sequence. Uses `AnimatePresence` for phase transitions.
+
+Extract phase sequencing to a hook: `useEsperSequence(hotspot, onReset)`.
+
+- [ ] **Step 3: Rewrite EsperPanel**
+
+Used in Work section. Shows active project image with scanline overlay, project title, subtle zoom animation. Props: `{ project: Project | null }`.
+
+- [ ] **Step 4: Commit**
+
+```bash
+cd ~/Developer/conscious-shell
+git add src/components/EsperScene.tsx src/components/EsperPanel.tsx
+git commit -m "refactor(esper): clean hotspot sequence, extracted useEsperSequence hook"
+```
+
+---
+
+### Task 17: Skyline2049, AgentBattle
+
+**Files:**
+- Modify: `src/components/Skyline2049.tsx`
+- Modify: `src/components/AgentBattle.tsx`
+
+- [ ] **Step 1: Read both**
+
+```bash
+cat ~/Developer/conscious-shell/src/components/Skyline2049.tsx
+cat ~/Developer/conscious-shell/src/components/AgentBattle.tsx
+```
+
+- [ ] **Step 2: Rewrite Skyline2049**
+
+Canvas or SVG 2049-style city skyline with scrolling neon signs from `SkylineSign[]`. Each sign has `text` and `tone` (amber/cyan/red/ember). Parallax scroll effect. Signs cycle.
+
+- [ ] **Step 3: Rewrite AgentBattle**
+
+Design round battle log. Two AI agents (scifi vs goth) debating design decisions. `DesignRound[]` from Supabase. Each round: round number, agent, title, palette swatches, motif, critique, score. Displayed as a debate transcript. Winner highlighted.
+
+- [ ] **Step 4: Commit**
+
+```bash
+cd ~/Developer/conscious-shell
+git add src/components/Skyline2049.tsx src/components/AgentBattle.tsx
+git commit -m "refactor(cinematic): Skyline2049 parallax signs, AgentBattle debate log"
+```
+
+---
+
+### Task 18: CommandPalette
+
+**Files:**
+- Modify: `src/components/CommandPalette.tsx`
+
+- [ ] **Step 1: Read CommandPalette**
+
+```bash
+cat ~/Developer/conscious-shell/src/components/CommandPalette.tsx
+```
+
+- [ ] **Step 2: Rewrite CommandPalette**
+
+Full-screen modal triggered by `⌘K` or `/`. Shows searchable list of: all projects, section navigation links, keyboard shortcuts. Keyboard navigable (arrow keys, Enter, Escape). Fuzzy search over project titles + clients. Props: `{ open, onClose, projects }`.
+
+- [ ] **Step 3: Verify palette opens, search works, keyboard nav works**
+
+- [ ] **Step 4: Commit**
+
+```bash
+cd ~/Developer/conscious-shell
+git add src/components/CommandPalette.tsx
+git commit -m "refactor(palette): clean command palette, fuzzy search, keyboard nav"
+```
+
+---
+
+## Phase 7: Final Polish
+
+### Task 19: Type-check, build, deploy
+
+- [ ] **Step 1: Full type-check**
+
+```bash
+cd ~/Developer/conscious-shell && npm run typecheck 2>&1
+```
+
+Fix any errors. Common: mismatched prop types, missing imports, unused variables.
+
+- [ ] **Step 2: Lint**
+
+```bash
+cd ~/Developer/conscious-shell && npm run lint 2>&1
+```
+
+Fix lint errors. Warnings are okay.
+
+- [ ] **Step 3: Production build**
+
+```bash
+cd ~/Developer/conscious-shell && npm run build 2>&1
+```
+
+Expected: build completes, no errors, bundle sizes reasonable (Three.js + D3 will be large — that's expected).
+
+- [ ] **Step 4: Preview build locally**
+
+```bash
+cd ~/Developer/conscious-shell && npm run preview
+```
+
+Open `http://localhost:4173`. Verify: boot overlay shows, hero types in, all sections visible, TimeMachine shows screenshots.
+
+- [ ] **Step 5: Final commit**
+
+```bash
+cd ~/Developer/conscious-shell
+git add -A
+git commit -m "feat: complete portfolio rebuild — all 40 components, screenshot timeline, clean TypeScript"
+```
+
+- [ ] **Step 6: Push**
+
+```bash
+cd ~/Developer/conscious-shell && git push origin master
+```
+
+---
+
+## Screenshot Upload Reference
+
+When you're ready to populate the TimeMachine:
+
+**Option A — Supabase Storage (preferred for production):**
+1. Supabase dashboard → Storage → Create bucket `timeline` (public)
+2. Upload files named `2000.png`, `2003.png`, etc.
+3. Get public URL: `https://<project-ref>.supabase.co/storage/v1/object/public/timeline/2000.png`
+4. Update `archive_captures` rows: `custom_screenshot_url = <url>`
+
+**Option B — Local public assets (dev/simple):**
+1. `mkdir -p ~/Developer/conscious-shell/public/timeline`
+2. Copy screenshots: `cp ~/Downloads/screenshot_2000.png public/timeline/2000.png`
+3. Update `archive_captures` rows: `custom_screenshot_url = /timeline/2000.png`
+
+Both approaches use the same `screenshotUrl()` util from `src/lib/timeline.ts`.
