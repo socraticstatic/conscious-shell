@@ -58,12 +58,28 @@ function useEsperSequence(onReset?: () => void) {
 }
 // --- end useEsperSequence ---
 
-export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
-  const { active, phase, typed, run, reset } = useEsperSequence();
+// Group hotspots by photo_url so each photo's annotations stay together.
+function groupByPhoto(hotspots: EsperHotspot[]): EsperHotspot[][] {
+  const map = new Map<string, EsperHotspot[]>();
+  for (const h of hotspots) {
+    const key = h.photo_url;
+    if (!map.has(key)) map.set(key, []);
+    map.get(key)!.push(h);
+  }
+  return [...map.values()];
+}
 
-  const photo = hotspots[0]?.photo_url ?? '';
-  const caption = hotspots[0]?.photo_caption ?? '';
-  const credit = hotspots[0]?.photo_credit ?? '';
+export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
+  const groups = useMemo(() => groupByPhoto(hotspots), [hotspots]);
+  const [groupIdx, setGroupIdx] = useState(() => Math.floor(Math.random() * Math.max(1, groups.length)));
+
+  const cycleGroup = () => setGroupIdx((i) => (i + 1) % Math.max(1, groups.length));
+  const { active, phase, typed, run, reset } = useEsperSequence(cycleGroup);
+
+  const group = groups[groupIdx] ?? hotspots;
+  const photo = group[0]?.photo_url ?? '';
+  const caption = group[0]?.photo_caption ?? '';
+  const credit = group[0]?.photo_credit ?? '';
 
   const zoomStyle = useMemo(() => {
     if (!active) return { transform: 'scale(1) translate(0%,0%)' };
@@ -137,7 +153,7 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
                 }}
               />
 
-              {hotspots.map((h) => {
+              {group.map((h) => {
                 const isActive = active?.id === h.id;
                 return (
                   <button
