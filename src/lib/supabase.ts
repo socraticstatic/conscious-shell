@@ -72,6 +72,7 @@ export type VkQuestion = {
   id: string;
   prompt: string;
   prompt_jp: string;
+  answer: string;
   category: string;
   order_index: number;
 };

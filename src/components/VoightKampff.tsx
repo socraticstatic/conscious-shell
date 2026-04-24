@@ -5,6 +5,7 @@ import type { VkQuestion } from '../lib/supabase';
 
 export default function VoightKampff({ questions }: { questions: VkQuestion[] }) {
   const [i, setI] = useState(0);
+  const [revealed, setRevealed] = useState(false);
   const [baseline, setBaseline] = useState({ iris: 68, pulse: 72, resp: 16, gsr: 1.3 });
 
   const q = questions[i];
@@ -23,11 +24,19 @@ export default function VoightKampff({ questions }: { questions: VkQuestion[] })
 
   if (!questions.length) return null;
 
-  const next = () => {
-    setI((v) => (v + 1) % questions.length);
-    window.dispatchEvent(new CustomEvent('intel:vk_answer'));
+  const handleRespond = () => {
+    if (!revealed) {
+      setRevealed(true);
+    } else {
+      setI((v) => (v + 1) % questions.length);
+      setRevealed(false);
+      window.dispatchEvent(new CustomEvent('intel:vk_answer'));
+    }
   };
-  const prev = () => setI((v) => (v - 1 + questions.length) % questions.length);
+  const prev = () => {
+    setI((v) => (v - 1 + questions.length) % questions.length);
+    setRevealed(false);
+  };
 
   return (
     <section id="empathy" className="relative py-20 md:py-28 border-b border-[#1f1c17]">
@@ -60,6 +69,20 @@ export default function VoightKampff({ questions }: { questions: VkQuestion[] })
                   <p className="text-xl md:text-2xl lg:text-3xl text-[#e8e4dc] leading-snug">
                     {q?.prompt}
                   </p>
+                  <AnimatePresence>
+                    {revealed && q?.answer && (
+                      <motion.p
+                        key="answer"
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        transition={{ duration: 0.35 }}
+                        className="mt-5 text-base md:text-lg text-[#e7b766] leading-relaxed border-l-2 border-[#e7b766]/40 pl-4"
+                      >
+                        {q.answer}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -74,11 +97,11 @@ export default function VoightKampff({ questions }: { questions: VkQuestion[] })
                   ← prev
                 </button>
                 <button
-                  onClick={next}
+                  onClick={handleRespond}
                   data-cursor="hover"
                   className="px-3 py-1.5 text-xs border border-[#e7b766] text-[#e7b766] hover:bg-[#e7b766] hover:text-[#0b0a08] transition-colors"
                 >
-                  respond / next →
+                  {revealed ? 'next →' : 'respond →'}
                 </button>
               </div>
               <div className="text-[10px] text-[#6b6660]">enter = next · esc = dismiss</div>
