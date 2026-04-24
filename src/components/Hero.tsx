@@ -71,9 +71,6 @@ export default function Hero() {
     return () => { active = false; };
   }, []);
 
-  const scrollTo = (id: string) =>
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
   return (
     <section className="relative min-h-screen flex flex-col justify-center pt-14 overflow-hidden">
       <CodeRain className="absolute inset-0 opacity-[0.06]" />
@@ -131,7 +128,7 @@ export default function Hero() {
                   </div>
                   {l.out &&
                     l.out.slice(0, l.outShown).map((o, j) => (
-                      <div key={j} className="text-[#a8a29e] pl-6">
+                      <div key={j} className="text-[#6b6660] pl-6">
                         {o}
                       </div>
                     ))}
