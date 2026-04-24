@@ -2,35 +2,14 @@ import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AlertOctagon, Power } from 'lucide-react';
 
-const SEQUENCE = [
-  'ArrowUp', 'ArrowUp',
-  'ArrowDown', 'ArrowDown',
-  'ArrowLeft', 'ArrowRight',
-  'ArrowLeft', 'ArrowRight',
-  'b', 'a',
-];
-
 export default function OverrideMode() {
   const [on, setOn] = useState(false);
   const [flash, setFlash] = useState(false);
 
   useEffect(() => {
-    let buf: string[] = [];
-    const onKey = (e: KeyboardEvent) => {
-      const t = e.target as HTMLElement | null;
-      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
-      const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
-      buf = [...buf, k].slice(-SEQUENCE.length);
-      if (buf.length === SEQUENCE.length && buf.every((v, i) => v === SEQUENCE[i])) {
-        buf = [];
-        toggle();
-      }
-    };
     const onEvent = () => toggle();
-    window.addEventListener('keydown', onKey);
     window.addEventListener('override:toggle', onEvent);
     return () => {
-      window.removeEventListener('keydown', onKey);
       window.removeEventListener('override:toggle', onEvent);
     };
   }, []);
