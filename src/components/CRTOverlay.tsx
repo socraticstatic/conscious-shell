@@ -1,7 +1,7 @@
 export default function CRTOverlay() {
   return (
     <div
-      className="pointer-events-none fixed inset-0 z-[999]"
+      className="pointer-events-none fixed inset-0 z-[45]"
       aria-hidden
       style={{
         background: `repeating-linear-gradient(
