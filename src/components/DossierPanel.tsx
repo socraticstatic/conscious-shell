@@ -54,7 +54,7 @@ export default function DossierPanel({ project, onClose }: DossierPanelProps) {
           role="dialog"
           aria-modal="true"
           aria-label={`Project dossier: ${project.title}`}
-          className="fixed inset-0 z-50 bg-[#080706] overflow-y-auto font-mono"
+          className="fixed inset-0 z-[60] bg-[#080706] overflow-y-auto font-mono"
           initial={{ y: '100%' }}
           animate={{ y: 0 }}
           exit={{ y: '100%' }}
