@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import EsperPanel from './EsperPanel';
+import DossierPanel from './DossierPanel';
 import type { Project } from '../lib/supabase';
 
 // Exported so other sections can import it — do NOT also import from here, just define it here.
@@ -26,14 +27,21 @@ export function SectionHeader({ path, jp, count, right }: {
 export default function Work({ projects }: { projects: Project[] }) {
   const featured = useMemo(() => projects.filter((p) => p.featured), [projects]);
   const [active, setActive] = useState<Project | null>(null);
+  const [activeDossier, setActiveDossier] = useState<Project | null>(null);
 
   useEffect(() => {
     if (!active && featured[0]) setActive(featured[0]);
   }, [featured, active]);
 
+  const closeDossier = useCallback(() => setActiveDossier(null), []);
+
   return (
     <section id="work" className="relative py-20 md:py-28 border-b border-[#1f1c17]">
-      <div className="max-w-[1400px] mx-auto px-6 md:px-10">
+      <div
+        className={`max-w-[1400px] mx-auto px-6 md:px-10 transition-[filter,opacity] duration-300 ${
+          activeDossier ? 'blur-sm opacity-15 pointer-events-none' : ''
+        }`}
+      >
         <SectionHeader path="/work/featured" jp="セレクト・ワーク" count={featured.length} right="esper_mode=auto" />
         <div className="grid grid-cols-12 gap-6 md:gap-10 mt-10">
           <ul className="col-span-12 lg:col-span-7 border-t border-[#1f1c17]">
@@ -41,7 +49,7 @@ export default function Work({ projects }: { projects: Project[] }) {
               <li
                 key={p.id}
                 onMouseEnter={() => setActive(p)}
-                onClick={() => setActive(p)}
+                onClick={() => setActiveDossier(p)}
                 className={`flex items-start gap-4 py-4 px-2 border-b border-[#1f1c17] cursor-pointer transition-colors ${
                   active?.id === p.id ? 'bg-[#0f0e0b]' : 'hover:bg-[#0b0a08]'
                 }`}
@@ -73,6 +81,11 @@ export default function Work({ projects }: { projects: Project[] }) {
           </div>
         </div>
       </div>
+
+      <DossierPanel
+        project={activeDossier}
+        onClose={closeDossier}
+      />
     </section>
   );
 }
