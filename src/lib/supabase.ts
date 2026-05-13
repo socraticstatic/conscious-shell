@@ -20,6 +20,11 @@ export type Project = {
   year: string;
   order_index: number;
   featured: boolean;
+  situation: string | null;
+  task: string | null;
+  action: string | null;
+  result: string | null;
+  gallery_urls: string[];
 };
 
 export type Service = {
