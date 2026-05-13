@@ -51,6 +51,9 @@ export default function DossierPanel({ project, onClose }: DossierPanelProps) {
     <AnimatePresence>
       {project && (
         <motion.div
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Project dossier: ${project.title}`}
           className="fixed inset-0 z-50 bg-[#080706] overflow-y-auto font-mono"
           initial={{ y: '100%' }}
           animate={{ y: 0 }}
@@ -78,6 +81,7 @@ export default function DossierPanel({ project, onClose }: DossierPanelProps) {
             <div className="flex items-center gap-4 text-[#4a453e]">
               <span>REP-7 File #{fileNumber}</span>
               <button
+                type="button"
                 onClick={onClose}
                 className="border border-[#1f1c17] px-3 py-1 text-[#6b6660] hover:text-[#e7b766] hover:border-[#e7b766] transition-colors"
               >
