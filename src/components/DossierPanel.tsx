@@ -17,12 +17,12 @@ const starSections = [
 
 const staggerContainer = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.05, delayChildren: 0.25 } },
+  show: { transition: { staggerChildren: 0.04, delayChildren: 0 } },
 };
 
 const fadeIn = {
   hidden: { opacity: 0 },
-  show:   { opacity: 1, transition: { duration: 0.3 } },
+  show:   { opacity: 1, transition: { duration: 0.2 } },
 };
 
 export default function DossierPanel({ project, onClose }: DossierPanelProps) {
@@ -55,18 +55,13 @@ export default function DossierPanel({ project, onClose }: DossierPanelProps) {
           aria-modal="true"
           aria-label={`Project dossier: ${project.title}`}
           className="fixed inset-0 z-[60] bg-[#080706] overflow-y-auto font-mono"
-          initial={{ y: '100%' }}
-          animate={{ y: 0 }}
-          exit={{ y: '100%' }}
-          transition={{ duration: 0.3, ease: 'easeOut' }}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 16 }}
+          transition={{ duration: 0.18, ease: 'easeOut' }}
         >
-          {/* Top amber border — draws left to right */}
-          <motion.div
-            className="absolute top-0 left-0 h-[2px] bg-[#e7b766]"
-            initial={{ width: 0 }}
-            animate={{ width: '100%' }}
-            transition={{ duration: 0.35, ease: 'easeOut', delay: 0.1 }}
-          />
+          {/* Top amber border */}
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#e7b766]" />
 
           {/* Topbar */}
           <div className="flex items-center justify-between px-6 py-3 border-b border-[#1f1c17] text-[9px] tracking-[0.4em] uppercase mt-[2px]">
