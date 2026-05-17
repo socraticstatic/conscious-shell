@@ -29,7 +29,6 @@ import BlackLitany from './components/BlackLitany';
 import SystemBreach from './components/SystemBreach';
 import NoirSubtitles from './components/NoirSubtitles';
 import DeadDropConsole from './components/DeadDropConsole';
-import Skyline2049 from './components/Skyline2049';
 import CRTOverlay from './components/CRTOverlay';
 import CommandPalette from './components/CommandPalette';
 import LogViewer from './components/LogViewer';
@@ -39,7 +38,7 @@ import { fetchPortfolio } from './lib/portfolio';
 import type {
   Project, Service, Testimonial, Award, Publication,
   VkQuestion, ArchiveCapture, GithubProject, Trivia,
-  Haiku, Noir, EsperHotspot, SkylineSign, DesignRound, WebDossierFact,
+  Haiku, Noir, EsperHotspot, DesignRound, WebDossierFact,
 } from './lib/supabase';
 
 type PortfolioData = {
@@ -55,7 +54,6 @@ type PortfolioData = {
   haiku: Haiku[];
   noir: Noir[];
   esper: EsperHotspot[];
-  skyline: SkylineSign[];
   designRounds: DesignRound[];
   dossier: WebDossierFact[];
 };
@@ -63,7 +61,7 @@ type PortfolioData = {
 const EMPTY: PortfolioData = {
   projects: [], services: [], testimonials: [], awards: [], publications: [],
   vk: [], archive: [], github: [], trivia: [], haiku: [], noir: [],
-  esper: [], skyline: [], designRounds: [], dossier: [],
+  esper: [], designRounds: [], dossier: [],
 };
 
 function toRound(r: DesignRound) {
@@ -132,7 +130,6 @@ export default function App() {
       <OverrideMode />
       <Nav onOpenPalette={() => setPaletteOpen(true)} />
       <Hero />
-      <Skyline2049 signs={data.skyline} />
       <Work projects={data.projects} />
       <TimeMachine captures={data.archive} />
       <VoightKampff questions={data.vk} />
