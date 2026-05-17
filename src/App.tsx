@@ -23,7 +23,6 @@ import Cursor from './components/Cursor';
 import BootOverlay from './components/BootOverlay';
 import SessionHUD from './components/SessionHUD';
 import BaselineDrift from './components/BaselineDrift';
-import Spinner from './components/Spinner';
 import TearsInRain from './components/TearsInRain';
 import AmbientAudio from './components/AmbientAudio';
 import BlackLitany from './components/BlackLitany';
@@ -122,7 +121,6 @@ export default function App() {
     <div className="relative min-h-screen bg-[#07070a] text-[#e8e4dc] overflow-x-clip">
       <BootOverlay />
       <CRTOverlay />
-      <Spinner />
       <Cursor />
       <SessionHUD />
       <BaselineDrift />
