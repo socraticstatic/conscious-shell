@@ -152,4 +152,24 @@ export function __BIRTH__(): void {
  * ─────────────────────────────────────────────────────────
  */
 
+/*
+ * ─────────────────────────────────────────────────────────
+ *  field note · mid-90s · freenet · two names
+ * ─────────────────────────────────────────────────────────
+ *
+ *  "Amy M and Steve H" snuck into my code to mock me in
+ *  the mid-90s. Even though I had mentored Steve, he took
+ *  an opportunity to ... show himself, and his girlfriend,
+ *  that they lacked the comradery and egalitarianism that
+ *  the rest of us learned through Freenet.
+ *
+ *  I forgive the mockery, but I don't forget, Steve Holland.
+ *
+ *  ─ this note is here, not on the page, on purpose.
+ *    code was the room where it happened the first time.
+ *    code is the room where it gets remembered.
+ *
+ * ─────────────────────────────────────────────────────────
+ */
+
 export type { Void, Consciousness, Qualia };

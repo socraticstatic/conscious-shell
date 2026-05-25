@@ -12,23 +12,29 @@ export default function EsperPanel({ project }: { project: Project | null }) {
     if (!project) return;
     setZoom(1);
     setPos({ x: 50, y: 50 });
+    const fx = typeof project.focal_x === 'number' ? project.focal_x : 50;
+    const fy = typeof project.focal_y === 'number' ? project.focal_y : 50;
+    // Interpolate from center toward the focal point as we zoom in.
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
     const steps = [
-      { z: 1.2, x: 50, y: 50, t: 300 },
-      { z: 1.8, x: 42, y: 55, t: 700 },
-      { z: 2.6, x: 38, y: 60, t: 1200 },
-      { z: 3.4, x: 35, y: 63, t: 1800 },
+      { z: 1.2, x: lerp(50, fx, 0.25), y: lerp(50, fy, 0.25), t: 300 },
+      { z: 1.8, x: lerp(50, fx, 0.55), y: lerp(50, fy, 0.55), t: 700 },
+      { z: 2.6, x: lerp(50, fx, 0.8),  y: lerp(50, fy, 0.8),  t: 1200 },
+      { z: 3.0, x: fx, y: fy, t: 1800 },
     ];
+    const timers: number[] = [];
     steps.forEach((s) => {
       const id = window.setTimeout(() => {
         setZoom(s.z);
         setPos({ x: s.x, y: s.y });
       }, s.t);
-      autoIdRef.current = id;
+      timers.push(id);
     });
+    autoIdRef.current = timers[timers.length - 1];
     return () => {
-      if (autoIdRef.current) clearTimeout(autoIdRef.current);
+      timers.forEach((id) => clearTimeout(id));
     };
-  }, [project?.id]);
+  }, [project?.id, project?.focal_x, project?.focal_y]);
 
   return (
     <AnimatePresence mode="wait">

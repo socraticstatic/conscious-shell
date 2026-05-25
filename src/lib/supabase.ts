@@ -27,6 +27,8 @@ export type Project = {
   year: string;
   order_index: number;
   featured: boolean;
+  focal_x?: number;
+  focal_y?: number;
 };
 
 export type Service = {

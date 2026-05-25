@@ -73,7 +73,7 @@ export default function ArticleConstellation({
         shared: r.shared,
         x: cx + Math.cos(angle) * radius,
         y: cy + Math.sin(angle) * radius,
-        radius: 3 + Math.min(6, (r.article.reading_minutes || 1) * 0.4),
+        radius: 7 + Math.min(10, (r.article.reading_minutes || 1) * 0.7),
         hue: articleHue(r.article.tags),
       };
     });
@@ -139,7 +139,7 @@ export default function ArticleConstellation({
           <motion.circle
             cx={layout.cx}
             cy={layout.cy}
-            r="6"
+            r="11"
             fill={`hsl(${layout.currentHue}, 80%, 65%)`}
             initial={{ scale: 0 }}
             animate={{ scale: [0, 1.4, 1] }}
@@ -148,11 +148,11 @@ export default function ArticleConstellation({
           <motion.circle
             cx={layout.cx}
             cy={layout.cy}
-            r="6"
+            r="11"
             fill="none"
             stroke={`hsl(${layout.currentHue}, 80%, 65%)`}
             strokeOpacity="0.5"
-            animate={{ r: [6, 14, 6], strokeOpacity: [0.5, 0, 0.5] }}
+            animate={{ r: [11, 22, 11], strokeOpacity: [0.5, 0, 0.5] }}
             transition={{ duration: 2.6, repeat: Infinity }}
           />
           <text
