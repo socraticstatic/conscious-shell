@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SectionHeader } from './Work';
 import type { GithubProject, LinkedInArticle } from '../lib/supabase';
@@ -18,7 +18,15 @@ export default function GithubLab({
   const [view, setView] = useState<Record<string, ViewMode>>({});
   const [tag, setTag] = useState<string | 'all'>('all');
   const [openArticleId, setOpenArticleId] = useState<string | null>(null);
-  const openArticle = articles.find((a) => a.id === openArticleId) ?? null;
+  const transmissionPanelRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!openArticleId) return;
+    const t = window.setTimeout(() => {
+      transmissionPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 80);
+    return () => clearTimeout(t);
+  }, [openArticleId]);
 
   const allTags = useMemo(() => {
     const counts = new Map<string, number>();
@@ -257,41 +265,62 @@ export default function GithubLab({
               </div>
             </div>
 
-            <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              {articles.map((a) => {
-                const isOpen = a.id === openArticleId;
-                return (
-                  <li key={a.id}>
-                    <button
-                      onClick={() => setOpenArticleId(isOpen ? null : a.id)}
-                      className={`group w-full text-left border bg-[#0a0a0e]/60 px-4 py-3 transition-colors ${
-                        isOpen
-                          ? 'border-[#7dd6e8]/60'
-                          : 'border-[#1f1c17] hover:border-[#7dd6e8]/40'
-                      }`}
-                      aria-expanded={isOpen}
-                    >
-                      <div className="flex items-center justify-between text-[10px] font-mono mb-1.5">
-                        <span className="text-[#7dd6e8] tracking-widest">{a.published_date}</span>
-                        <span className="text-[#6b6660]">
-                          {a.reading_minutes}m · {a.tags.slice(0, 2).join(' · ')}
-                        </span>
-                      </div>
-                      <div className="text-[13px] text-[#efe6d4] leading-snug">{a.title}</div>
-                      <div className="text-[11px] text-[#6b6660] mt-1 italic line-clamp-1">
-                        // {a.intercept_line}
-                      </div>
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-
-            <AnimatePresence>
-              {openArticle && (
-                <TransmissionPanel article={openArticle} onClose={() => setOpenArticleId(null)} />
-              )}
-            </AnimatePresence>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              {(() => {
+                const rowSize = 2;
+                const rows: LinkedInArticle[][] = [];
+                for (let i = 0; i < articles.length; i += rowSize) {
+                  rows.push(articles.slice(i, i + rowSize));
+                }
+                return rows.map((row, rowIdx) => {
+                  const openInRow = row.find((a) => a.id === openArticleId);
+                  return (
+                    <Fragment key={rowIdx}>
+                      {row.map((a) => {
+                        const isOpen = a.id === openArticleId;
+                        return (
+                          <button
+                            key={a.id}
+                            onClick={() => setOpenArticleId(isOpen ? null : a.id)}
+                            className={`group w-full text-left border bg-[#0a0a0e]/60 px-4 py-3 transition-colors ${
+                              isOpen
+                                ? 'border-[#7dd6e8]/60'
+                                : 'border-[#1f1c17] hover:border-[#7dd6e8]/40'
+                            }`}
+                            aria-expanded={isOpen}
+                          >
+                            <div className="flex items-center justify-between text-[10px] font-mono mb-1.5">
+                              <span className="text-[#7dd6e8] tracking-widest">{a.published_date}</span>
+                              <span className="text-[#6b6660]">
+                                {a.reading_minutes}m · {a.tags.slice(0, 2).join(' · ')}
+                              </span>
+                            </div>
+                            <div className="text-[13px] text-[#efe6d4] leading-snug">{a.title}</div>
+                            <div className="text-[11px] text-[#6b6660] mt-1 italic line-clamp-1">
+                              // {a.intercept_line}
+                            </div>
+                          </button>
+                        );
+                      })}
+                      <AnimatePresence>
+                        {openInRow && (
+                          <div
+                            ref={transmissionPanelRef}
+                            className="md:col-span-2"
+                            style={{ scrollMarginTop: '80px' }}
+                          >
+                            <TransmissionPanel
+                              article={openInRow}
+                              onClose={() => setOpenArticleId(null)}
+                            />
+                          </div>
+                        )}
+                      </AnimatePresence>
+                    </Fragment>
+                  );
+                });
+              })()}
+            </div>
           </div>
         )}
       </div>

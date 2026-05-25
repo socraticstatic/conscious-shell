@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { SectionHeader } from './Work';
 import type { LinkedInArticle } from '../lib/supabase';
@@ -14,6 +14,15 @@ const lines: Array<[string, string]> = [
 export default function Manifesto({ articles = [] }: { articles?: LinkedInArticle[] }) {
   const [openId, setOpenId] = useState<string | null>(null);
   const openArticle = articles.find((a) => a.id === openId);
+  const panelRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!openId) return;
+    const t = window.setTimeout(() => {
+      panelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 80);
+    return () => clearTimeout(t);
+  }, [openId]);
 
   return (
     <section id="manifesto" className="relative py-20 md:py-28 border-b border-[#1f1c17]">
@@ -108,7 +117,9 @@ export default function Manifesto({ articles = [] }: { articles?: LinkedInArticl
 
                     <AnimatePresence>
                       {isOpen && openArticle && (
-                        <TransmissionPanel article={openArticle} onClose={() => setOpenId(null)} />
+                        <div ref={panelRef} style={{ scrollMarginTop: '80px' }}>
+                          <TransmissionPanel article={openArticle} onClose={() => setOpenId(null)} />
+                        </div>
                       )}
                     </AnimatePresence>
                   </li>
