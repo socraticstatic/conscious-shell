@@ -118,7 +118,12 @@ export default function Manifesto({ articles = [] }: { articles?: LinkedInArticl
                     <AnimatePresence>
                       {isOpen && openArticle && (
                         <div ref={panelRef} style={{ scrollMarginTop: '80px' }}>
-                          <TransmissionPanel article={openArticle} onClose={() => setOpenId(null)} />
+                          <TransmissionPanel
+                            article={openArticle}
+                            onClose={() => setOpenId(null)}
+                            siblings={articles}
+                            onSelectSibling={setOpenId}
+                          />
                         </div>
                       )}
                     </AnimatePresence>

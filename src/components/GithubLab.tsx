@@ -312,6 +312,8 @@ export default function GithubLab({
                             <TransmissionPanel
                               article={openInRow}
                               onClose={() => setOpenArticleId(null)}
+                              siblings={articles}
+                              onSelectSibling={setOpenArticleId}
                             />
                           </div>
                         )}

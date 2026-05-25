@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
 import type { LinkedInArticle } from '../lib/supabase';
+import ArticleConstellation from './ArticleConstellation';
 
 // The signal arrived months, sometimes years, before anyone tuned in.
 // Now it sits here, monospaced, waiting to be read again.
@@ -8,9 +9,13 @@ import type { LinkedInArticle } from '../lib/supabase';
 export default function TransmissionPanel({
   article,
   onClose,
+  siblings = [],
+  onSelectSibling,
 }: {
   article: LinkedInArticle;
   onClose: () => void;
+  siblings?: LinkedInArticle[];
+  onSelectSibling?: (id: string) => void;
 }) {
   return (
     <motion.div
@@ -55,6 +60,14 @@ export default function TransmissionPanel({
               <p key={i}>{p}</p>
             ))}
         </article>
+
+        {siblings.length > 1 && onSelectSibling && (
+          <ArticleConstellation
+            articles={siblings}
+            currentId={article.id}
+            onSelect={onSelectSibling}
+          />
+        )}
 
         <div className="mt-8 pt-4 border-t border-dashed border-[#1f1c17] text-[10px] uppercase tracking-[0.2em] text-[#4a453e]">
           // end transmission · signal source: micah.boswell · channel: linkedin.archive
