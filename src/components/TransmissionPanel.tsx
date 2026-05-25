@@ -46,7 +46,7 @@ export default function TransmissionPanel({
           // {article.intercept_line}
         </div>
 
-        <article className="text-[#c8c2b7] text-[14px] leading-[1.75] font-mono space-y-4 max-w-[68ch]">
+        <article className="text-[#c8c2b7] text-[14px] leading-[1.75] font-mono space-y-4">
           {article.body_markdown
             .split(/\n{2,}/)
             .map((p) => p.trim())
