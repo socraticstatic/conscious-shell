@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { supabase } from '../lib/supabase';
+import { supabase, type LinkedInRecommendation } from '../lib/supabase';
 
 type Traits = { empathy: number; logic: number; creativity: number; darkness: number; honesty: number };
 type Option = { text: string; traits: Traits; next_idx: number };
@@ -27,7 +27,17 @@ const BOOT_LINES = [
   'Interviewer: READY',
 ];
 
-export default function VKInterview() {
+function pickCorroboration(
+  recs: LinkedInRecommendation[],
+  dominantTrait: string,
+): LinkedInRecommendation | null {
+  if (!recs.length) return null;
+  const matches = recs.filter((r) => r.traits_signal?.includes(dominantTrait));
+  const pool = matches.length ? matches : recs;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+export default function VKInterview({ recommendations = [] }: { recommendations?: LinkedInRecommendation[] }) {
   const [state, setState] = useState<State>('idle');
   const [questions, setQuestions] = useState<Question[]>([]);
   const [profiles, setProfiles] = useState<Profile[]>([]);
@@ -242,6 +252,8 @@ export default function VKInterview() {
   if (state === 'result' && matchedProfile) {
     const traits = accumulatedTraits();
     const maxVal = Math.max(...TRAIT_KEYS.map((k) => traits[k]), 1);
+    const dominantTrait = TRAIT_KEYS.reduce((a, b) => (traits[a] >= traits[b] ? a : b), 'empathy');
+    const corroboration = pickCorroboration(recommendations, dominantTrait);
     return (
       <section className="relative min-h-screen bg-[#0b0a08] flex items-center justify-center py-20">
         <div className="max-w-xl w-full px-6 space-y-8">
@@ -269,6 +281,25 @@ export default function VKInterview() {
                 <div key={i} className="w-6 h-6 rounded-sm border border-[#1f1c17]" style={{ backgroundColor: c }} title={c} />
               ))}
             </div>
+          )}
+
+          {corroboration && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.2, duration: 0.6 }}
+              className="border border-[#5ec8d8]/30 p-4 bg-[#091418]/40"
+            >
+              <div className="text-[10px] font-mono text-[#5ec8d8] tracking-widest mb-3">
+                CROSS-REFERENCE · FIELD LOG · {dominantTrait.toUpperCase()}
+              </div>
+              <p className="text-sm md:text-base text-[#dfd9cd] leading-relaxed italic border-l border-[#5ec8d8]/40 pl-4">
+                &ldquo;{corroboration.recommendation_text}&rdquo;
+              </p>
+              <div className="mt-3 text-[10px] font-mono text-[#7a6e62] tracking-widest">
+                — {corroboration.recommender_name.toLowerCase()} · {corroboration.recommender_role.toLowerCase()} · {corroboration.given_date}
+              </div>
+            </motion.div>
           )}
 
           <div className="pt-4 border-t border-[#1f1c17] flex items-center justify-between">

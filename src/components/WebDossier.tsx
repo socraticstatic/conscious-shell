@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ExternalLink, Radar, RefreshCw } from 'lucide-react';
-import type { WebDossierFact } from '../lib/supabase';
+import type { WebDossierFact, LinkedInRecommendation } from '../lib/supabase';
 import { SectionHeader } from './Work';
 
 const CATEGORY_META: Record<string, { label: string; accent: string }> = {
@@ -13,7 +13,21 @@ const CATEGORY_META: Record<string, { label: string; accent: string }> = {
   opinion: { label: 'opinion', accent: '#c14a5b' },
   off_duty: { label: 'off duty', accent: '#7dd6e8' },
   bio: { label: 'bio', accent: '#a8a29e' },
+  testimony: { label: 'field testimony · cross-checked', accent: '#7dd6e8' },
 };
+
+function recsToFacts(recs: LinkedInRecommendation[]): WebDossierFact[] {
+  return recs.map((r) => ({
+    id: `rec:${r.id}`,
+    category: 'testimony',
+    text: r.excerpt && r.excerpt.length > 30 ? r.excerpt : r.recommendation_text.slice(0, 280),
+    source_label: `${r.recommender_name} · ${r.given_date}`,
+    source_url: '',
+    weight: 5,
+    order_index: r.order_index,
+    created_at: r.given_date,
+  }));
+}
 
 function weightedPick<T extends { weight: number }>(items: T[], rng: () => number): T {
   const total = items.reduce((a, b) => a + Math.max(1, b.weight), 0);
@@ -34,11 +48,22 @@ function shuffle<T>(input: T[], rng: () => number): T[] {
   return a;
 }
 
-export default function WebDossier({ facts }: { facts: WebDossierFact[] }) {
+export default function WebDossier({
+  facts,
+  recommendations = [],
+}: {
+  facts: WebDossierFact[];
+  recommendations?: LinkedInRecommendation[];
+}) {
   const [seed, setSeed] = useState(() => Math.floor(Math.random() * 1e9));
   const [active, setActive] = useState(0);
   const intervalRef = useRef<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
+
+  const merged = useMemo(
+    () => [...facts, ...recsToFacts(recommendations)],
+    [facts, recommendations],
+  );
 
   const rng = useMemo(() => {
     let s = seed;
@@ -48,7 +73,7 @@ export default function WebDossier({ facts }: { facts: WebDossierFact[] }) {
     };
   }, [seed]);
 
-  const order = useMemo(() => shuffle(facts, rng), [facts, rng]);
+  const order = useMemo(() => shuffle(merged, rng), [merged, rng]);
   const secondary = useMemo(() => {
     if (order.length <= 1) return [];
     const pool = order.filter((_, i) => i !== active % order.length);
@@ -56,16 +81,16 @@ export default function WebDossier({ facts }: { facts: WebDossierFact[] }) {
   }, [order, active, rng]);
 
   useEffect(() => {
-    if (!facts.length || isPaused) return;
+    if (!merged.length || isPaused) return;
     intervalRef.current = window.setInterval(() => {
       setActive((a) => (a + 1) % Math.max(1, order.length));
     }, 7000);
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [facts.length, isPaused, order.length]);
+  }, [merged.length, isPaused, order.length]);
 
-  if (!facts.length) return null;
+  if (!merged.length) return null;
 
   const current = order[active % order.length] ?? weightedPick(order, rng);
   const meta = CATEGORY_META[current.category] ?? CATEGORY_META.bio;
@@ -128,22 +153,36 @@ export default function WebDossier({ facts }: { facts: WebDossierFact[] }) {
                     <span className="text-white/90 ml-2">boswell, micah</span>
                   </div>
 
-                  <p className="text-xl md:text-2xl lg:text-[28px] leading-[1.35] text-[#efe6d4] font-light">
-                    {current.text}
-                  </p>
+                  {current.category === 'testimony' ? (
+                    <p className="text-xl md:text-2xl lg:text-[26px] leading-[1.4] text-[#efe6d4] font-light border-l-2 pl-5 italic" style={{ borderColor: `${meta.accent}aa` }}>
+                      &ldquo;{current.text}&rdquo;
+                    </p>
+                  ) : (
+                    <p className="text-xl md:text-2xl lg:text-[28px] leading-[1.35] text-[#efe6d4] font-light">
+                      {current.text}
+                    </p>
+                  )}
 
                   <div className="mt-6 flex items-center gap-4 text-[10px] tracking-[0.4em] uppercase">
-                    <span className="text-[#7a6e62]">cited from</span>
-                    <a
-                      href={current.source_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 underline decoration-dotted underline-offset-4 hover:text-white transition-colors"
-                      style={{ color: meta.accent }}
-                    >
-                      {current.source_label}
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
+                    <span className="text-[#7a6e62]">
+                      {current.category === 'testimony' ? 'on record · field' : 'cited from'}
+                    </span>
+                    {current.source_url ? (
+                      <a
+                        href={current.source_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 underline decoration-dotted underline-offset-4 hover:text-white transition-colors"
+                        style={{ color: meta.accent }}
+                      >
+                        {current.source_label}
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    ) : (
+                      <span className="flex items-center gap-1.5" style={{ color: meta.accent }}>
+                        — {current.source_label}
+                      </span>
+                    )}
                   </div>
                 </motion.div>
               </AnimatePresence>
@@ -164,7 +203,22 @@ export default function WebDossier({ facts }: { facts: WebDossierFact[] }) {
             </div>
             {secondary.map((f) => {
               const m = CATEGORY_META[f.category] ?? CATEGORY_META.bio;
-              return (
+              const isLink = !!f.source_url;
+              const Inner = (
+                <>
+                  <div className="flex items-center justify-between text-[9px] tracking-[0.4em] uppercase mb-1">
+                    <span style={{ color: m.accent }}>{m.label}</span>
+                    <span className="text-[#55504a] flex items-center gap-1 group-hover:text-white/70 transition-colors">
+                      {f.source_label}
+                      {isLink && <ExternalLink className="w-2.5 h-2.5" />}
+                    </span>
+                  </div>
+                  <div className="text-[12px] text-[#c9c2b4] leading-snug line-clamp-3">
+                    {f.category === 'testimony' ? <>&ldquo;{f.text}&rdquo;</> : f.text}
+                  </div>
+                </>
+              );
+              return isLink ? (
                 <motion.a
                   key={f.id}
                   href={f.source_url}
@@ -175,17 +229,18 @@ export default function WebDossier({ facts }: { facts: WebDossierFact[] }) {
                   transition={{ duration: 0.35 }}
                   className="block border border-[#1f1c17] bg-black/50 px-3 py-2.5 hover:border-[#e7b766]/60 transition-colors group"
                 >
-                  <div className="flex items-center justify-between text-[9px] tracking-[0.4em] uppercase mb-1">
-                    <span style={{ color: m.accent }}>{m.label}</span>
-                    <span className="text-[#55504a] flex items-center gap-1 group-hover:text-white/70 transition-colors">
-                      {f.source_label}
-                      <ExternalLink className="w-2.5 h-2.5" />
-                    </span>
-                  </div>
-                  <div className="text-[12px] text-[#c9c2b4] leading-snug line-clamp-3">
-                    {f.text}
-                  </div>
+                  {Inner}
                 </motion.a>
+              ) : (
+                <motion.div
+                  key={f.id}
+                  initial={{ opacity: 0, x: 6 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.35 }}
+                  className="block border border-[#1f1c17] bg-black/50 px-3 py-2.5 group"
+                >
+                  {Inner}
+                </motion.div>
               );
             })}
           </div>

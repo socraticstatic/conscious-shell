@@ -16,6 +16,8 @@ import {
   type DesignRound,
   type WebDossierFact,
   type Certification,
+  type LinkedInRecommendation,
+  type LinkedInArticle,
 } from './supabase';
 
 // 15 parallel queries fired at the speed of Promise.all.
@@ -27,6 +29,7 @@ export async function fetchPortfolio() {
   const [
     projects, services, testimonials, awards, publications,
     vk, archive, github, trivia, haiku, noir, esper, skyline, designRounds, dossier, certs,
+    recs, articles,
   ] = await Promise.all([
     supabase.from('portfolio_projects').select('*').order('order_index'),
     supabase.from('portfolio_services').select('*').order('order_index'),
@@ -44,6 +47,8 @@ export async function fetchPortfolio() {
     supabase.from('design_rounds').select('*').order('round_number', { ascending: false }).limit(20),
     supabase.from('web_dossier_facts').select('*').order('order_index'),
     supabase.from('certifications').select('*').order('order_index'),
+    supabase.from('linkedin_recommendations').select('*').order('given_date', { ascending: false }),
+    supabase.from('linkedin_articles').select('*').order('published_date', { ascending: false }),
   ]);
 
   return {
@@ -63,5 +68,7 @@ export async function fetchPortfolio() {
     designRounds: ((designRounds.data ?? []) as DesignRound[]).slice().reverse(),
     dossier: (dossier.data ?? []) as WebDossierFact[],
     certifications: (certs.data ?? []) as Certification[],
+    recommendations: (recs.data ?? []) as LinkedInRecommendation[],
+    articles: (articles.data ?? []) as LinkedInArticle[],
   };
 }

@@ -69,6 +69,8 @@ import type {
   DesignRound,
   WebDossierFact,
   Certification,
+  LinkedInRecommendation,
+  LinkedInArticle,
 } from './lib/supabase';
 
 // If you are reading this source, you are now part of the performance.
@@ -93,6 +95,8 @@ export default function App() {
     designRounds: DesignRound[];
     dossier: WebDossierFact[];
     certifications: Certification[];
+    recommendations: LinkedInRecommendation[];
+    articles: LinkedInArticle[];
   } | null>(null);
   const [paletteOpen, setPaletteOpen] = useState(false);
 
@@ -142,12 +146,12 @@ export default function App() {
       <Work projects={data?.projects ?? []} />
       <TimeMachine captures={data?.archive ?? []} />
       <VoightKampff questions={data?.vk ?? []} />
-      <VKInterview />
-      <GithubLab projects={data?.github ?? []} />
+      <VKInterview recommendations={data?.recommendations ?? []} />
+      <GithubLab projects={data?.github ?? []} articles={data?.articles ?? []} />
       <Certifications certs={data?.certifications ?? []} />
       <EsperScene hotspots={data?.esper ?? []} />
       <AgentBattle initial={(data?.designRounds ?? []).map(toRound)} />
-      <Manifesto />
+      <Manifesto articles={data?.articles ?? []} />
       <BaselineGate>
         <BaselineUnlocked />
         <HumanLayer trivia={data?.trivia ?? []} />
@@ -156,7 +160,7 @@ export default function App() {
       <IndexList projects={data?.projects ?? []} />
       <Impact />
       <About testimonial={data?.testimonials[0]} />
-      <WebDossier facts={data?.dossier ?? []} />
+      <WebDossier facts={data?.dossier ?? []} recommendations={data?.recommendations ?? []} />
       <Services services={data?.services ?? []} />
       <Recognition awards={data?.awards ?? []} publications={data?.publications ?? []} />
       <GitArchaeology />

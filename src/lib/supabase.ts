@@ -188,6 +188,31 @@ export type Certification = {
   order_index: number;
 };
 
+export type LinkedInRecommendation = {
+  id: string;
+  recommender_name: string;
+  recommender_role: string;
+  recommendation_text: string;
+  excerpt: string;
+  relationship: 'mentee' | 'colleague' | 'peer' | 'report' | 'partner' | string;
+  traits_signal: string[];
+  given_date: string;
+  order_index: number;
+};
+
+export type LinkedInArticle = {
+  id: string;
+  slug: string;
+  title: string;
+  published_date: string;
+  excerpt: string;
+  intercept_line: string;
+  body_markdown: string;
+  tags: string[];
+  reading_minutes: number;
+  order_index: number;
+};
+
 export type LogRow = {
   id: string;
   level: LogLevel;
