@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Nav from './components/Nav';
 import Hero from './components/Hero';
+import DevtoolsEasterEggs from './components/DevtoolsEasterEggs';
 import GithubLab from './components/GithubLab';
 import Work from './components/Work';
 import VoightKampff from './components/VoightKampff';
@@ -121,6 +122,7 @@ export default function App() {
     <NarratorProvider>
     <PersonalizationProvider>
     <div className="relative min-h-screen bg-[#07070a] text-[#e8e4dc] overflow-x-clip" data-pid={crypto.randomUUID()} data-witness="true" data-last-words="all-those-moments-will-be-lost-in-time">
+      <DevtoolsEasterEggs />
       <BootOverlay />
       <CRTOverlay />
       <Cursor />
