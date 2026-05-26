@@ -16,16 +16,17 @@ export const PersonalizationContext = createContext<PersonalizationState>({
   applyProfile() {}, resetProfile() {}, getTone: () => 'formal',
 })
 
-function activateProfile(profile: Profile) {
+function activateProfile(profile: Profile | null | undefined) {
+  if (!profile || !profile.palette || typeof profile.palette !== 'object') return
   const el = document.documentElement
   const p = profile.palette
-  el.style.setProperty('--p-primary', p.primary)
-  el.style.setProperty('--p-secondary', p.secondary)
-  el.style.setProperty('--p-accent', p.accent)
-  el.style.setProperty('--p-bg', p.bg)
-  el.style.setProperty('--p-text', p.text)
-  el.dataset.personality = profile.name.toLowerCase().replace(' ', '-')
-  window.dispatchEvent(new CustomEvent('personalization:applied', { detail: { sectionOrder: profile.sectionOrder } }))
+  if (p.primary) el.style.setProperty('--p-primary', p.primary)
+  if (p.secondary) el.style.setProperty('--p-secondary', p.secondary)
+  if (p.accent) el.style.setProperty('--p-accent', p.accent)
+  if (p.bg) el.style.setProperty('--p-bg', p.bg)
+  if (p.text) el.style.setProperty('--p-text', p.text)
+  if (profile.name) el.dataset.personality = profile.name.toLowerCase().replace(' ', '-')
+  window.dispatchEvent(new CustomEvent('personalization:applied', { detail: { sectionOrder: profile.sectionOrder ?? [] } }))
 }
 
 export function PersonalizationProvider({ children }: { children: ReactNode }) {
@@ -50,15 +51,28 @@ export function PersonalizationProvider({ children }: { children: ReactNode }) {
   const getTone = () => profile?.tone || 'formal'
 
   useEffect(() => {
-    const stored = localStorage.getItem('vk-dossier')
-    if (stored) {
-      const { profile: p, traits: t } = JSON.parse(stored)
-      setProfile(p); setTraits(t || null); setActive(true)
-      activateProfile(p)
+    try {
+      const stored = localStorage.getItem('vk-dossier')
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        const p = parsed?.profile
+        const t = parsed?.traits
+        if (p && p.palette && typeof p.palette === 'object') {
+          setProfile(p); setTraits(t || null); setActive(true)
+          activateProfile(p)
+        } else {
+          // Older flat-shape dossier from a previous build crashes if loaded; discard it.
+          localStorage.removeItem('vk-dossier')
+        }
+      }
+    } catch {
+      localStorage.removeItem('vk-dossier')
     }
     const handler = (e: Event) => {
-      const { profile: p, traits: t } = (e as CustomEvent).detail
-      applyProfile(p, t)
+      const detail = (e as CustomEvent).detail
+      const p = detail?.profile
+      const t = detail?.traits
+      if (p) applyProfile(p, t)
     }
     window.addEventListener('vk:profile', handler)
     return () => window.removeEventListener('vk:profile', handler)

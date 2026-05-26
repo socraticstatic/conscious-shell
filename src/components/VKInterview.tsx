@@ -10,7 +10,9 @@ type Question = {
 };
 type Profile = {
   id: string; name: string; description: string;
-  trait_weights: Traits; palette: string[]; section_order: string[]; tone: string;
+  trait_weights: Traits;
+  palette: Record<string, string> | string[] | null;
+  section_order: string[]; tone: string;
 };
 type Answer = { question_id: string; answer_index: number; traits: Traits };
 type State = 'idle' | 'intro' | 'interviewing' | 'calculating' | 'result';
@@ -136,7 +138,19 @@ export default function VKInterview({ recommendations = [] }: { recommendations?
     setState('result');
 
     if (best) {
-      const detail = { profileId: best.id, traits: t, tone: best.tone, palette: best.palette, sectionOrder: best.section_order };
+      // PersonalizationProvider expects detail = { profile, traits } where profile carries name/palette/sectionOrder/tone.
+      // Its activateProfile reads profile.palette.{primary,secondary,accent,bg,text}, so palette must be the object shape.
+      const paletteObj =
+        best.palette && !Array.isArray(best.palette) && typeof best.palette === 'object'
+          ? (best.palette as Record<string, string>)
+          : {};
+      const profile = {
+        name: best.name,
+        palette: paletteObj,
+        sectionOrder: best.section_order ?? [],
+        tone: best.tone,
+      };
+      const detail = { profile, traits: t };
       window.dispatchEvent(new CustomEvent('vk:profile', { detail }));
       localStorage.setItem('vk-dossier', JSON.stringify(detail));
     }
@@ -274,14 +288,20 @@ export default function VKInterview({ recommendations = [] }: { recommendations?
             ))}
           </div>
 
-          {matchedProfile.palette && (
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-mono text-[#6b6660] mr-2">PALETTE</span>
-              {matchedProfile.palette.map((c, i) => (
-                <div key={i} className="w-6 h-6 rounded-sm border border-[#1f1c17]" style={{ backgroundColor: c }} title={c} />
-              ))}
-            </div>
-          )}
+          {matchedProfile.palette && (() => {
+            const swatches = Array.isArray(matchedProfile.palette)
+              ? matchedProfile.palette
+              : (typeof matchedProfile.palette === 'object' ? Object.values(matchedProfile.palette as Record<string, string>) : []);
+            if (!swatches.length) return null;
+            return (
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-mono text-[#6b6660] mr-2">PALETTE</span>
+                {swatches.map((c, i) => (
+                  <div key={i} className="w-6 h-6 rounded-sm border border-[#1f1c17]" style={{ backgroundColor: c }} title={c} />
+                ))}
+              </div>
+            );
+          })()}
 
           {corroboration && (
             <motion.div
