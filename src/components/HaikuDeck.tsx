@@ -40,37 +40,40 @@ export default function HaikuDeck({ haiku }: { haiku: Haiku[] }) {
     return () => cancelAnimationFrame(raf);
   }, [idx, haiku.length, paused]);
 
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
   useEffect(() => {
     return () => {
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-      }
+      audioRef.current?.pause();
+      audioRef.current = null;
     };
   }, []);
 
+  // Stop playback on haiku change.
+  useEffect(() => {
+    audioRef.current?.pause();
+    audioRef.current = null;
+    setSpeaking(false);
+  }, [idx]);
+
   const speak = () => {
-    if (!('speechSynthesis' in window) || !current) return;
-    const synth = window.speechSynthesis;
-    synth.cancel();
+    if (!current) return;
     if (speaking) {
+      audioRef.current?.pause();
+      audioRef.current = null;
       setSpeaking(false);
       return;
     }
-    const text = [current.line1, current.line2, current.line3].join('. ');
-    const u = new SpeechSynthesisUtterance(text);
-    u.rate = 0.82;
-    u.pitch = 0.9;
-    u.volume = 0.95;
-    const voices = synth.getVoices();
-    const preferred =
-      voices.find((v) => /en-US/i.test(v.lang) && /male|neutral|david|daniel|fred/i.test(v.name)) ??
-      voices.find((v) => /en/i.test(v.lang));
-    if (preferred) u.voice = preferred;
-    u.onend = () => setSpeaking(false);
-    u.onerror = () => setSpeaking(false);
+    // Pre-rendered via ElevenLabs Adam voice. Base URL respects GH Pages subpath.
+    const src = `${import.meta.env.BASE_URL}audio/haiku/${current.id}.mp3`;
+    const audio = new Audio(src);
+    audio.preload = 'auto';
+    audio.onended = () => { setSpeaking(false); audioRef.current = null; };
+    audio.onerror = () => { setSpeaking(false); audioRef.current = null; };
+    audioRef.current = audio;
     setSpeaking(true);
     setPaused(true);
-    synth.speak(u);
+    audio.play().catch(() => { setSpeaking(false); audioRef.current = null; });
   };
 
   if (!haiku.length || !current) return null;
