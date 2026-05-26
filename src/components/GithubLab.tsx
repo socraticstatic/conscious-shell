@@ -30,7 +30,7 @@ export default function GithubLab({ projects }: { projects: GithubProject[] }) {
     <section id="lab" className="relative py-20 md:py-28 border-b border-[#1f1c17]">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10">
         <SectionHeader
-          path="ls -l /lab/github"
+          path="/lab/github"
           jp="研究所"
           count={projects.length}
           right="github pages · live embeds"

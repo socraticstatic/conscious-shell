@@ -31,7 +31,7 @@ export default function VisitorDossier() {
   }
 
   return (
-    <div className="fixed z-30 top-20 right-4 sm:right-6 lg:right-6">
+    <div className="hidden md:block fixed z-30 top-20 right-4 sm:right-6 lg:right-6">
       <AnimatePresence mode="wait">
         {!open ? (
           <motion.button

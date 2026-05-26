@@ -76,9 +76,9 @@ function Row({ project, index }: { project: Project; index: number }) {
       <div className="col-span-2 md:col-span-1 text-[11px] tabular-nums text-[#4a453e] group-hover:text-[#e7b766]">
         {String(index + 1).padStart(3, '0')}
       </div>
-      <div className="col-span-6 md:col-span-5 text-sm md:text-base text-[#e8e4dc] group-hover:text-[#e7b766] transition-colors truncate">
+      <div className="col-span-6 md:col-span-5 min-w-0 text-sm md:text-base text-[#e8e4dc] group-hover:text-[#e7b766] transition-colors truncate">
+        {project.featured && <span className="mr-1 text-[10px] text-[#e7b766]">◉</span>}
         {project.title}
-        {project.featured && <span className="ml-2 text-[10px] text-[#e7b766]">◉</span>}
       </div>
       <div className="hidden md:block md:col-span-3 text-xs text-[#a8a29e] truncate">{project.role}</div>
       <div className="hidden md:block md:col-span-2 text-xs text-[#6b6660] truncate">{project.client}</div>

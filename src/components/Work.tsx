@@ -28,7 +28,9 @@ export default function Work({ projects }: { projects: Project[] }) {
             ))}
           </ul>
 
-          <div className="col-span-12 lg:col-span-5 lg:sticky lg:top-20 self-start">
+          {/* Esper panel — desktop sticky preview. Hidden on mobile because
+              each row already shows its own inline thumb. */}
+          <div className="hidden lg:block lg:col-span-5 lg:sticky lg:top-20 self-start">
             <EsperPanel project={active} />
             <div className="mt-3 grid grid-cols-3 gap-px bg-[#1f1c17] border border-[#1f1c17] text-[10px]">
               <Stat k="subject" v={active ? active.client : '—'} />
@@ -77,7 +79,7 @@ function ProjectRow({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-20px' }}
       transition={{ duration: 0.35, delay: index * 0.04 }}
-      className={`relative grid grid-cols-12 gap-3 md:gap-6 items-center py-6 md:py-7 border-b border-[#1f1c17] cursor-pointer transition-colors ${
+      className={`relative py-5 md:py-7 px-3 md:px-0 border-b border-[#1f1c17] cursor-pointer transition-colors ${
         active ? 'bg-[#0f0e0b]' : 'hover:bg-[#0f0e0b]/60'
       }`}
     >
@@ -86,38 +88,65 @@ function ProjectRow({
           active ? 'bg-[#e7b766]' : 'bg-transparent'
         }`}
       />
-      <div
-        className={`col-span-2 md:col-span-1 text-xs tabular-nums transition-colors pl-2 ${
-          active ? 'text-[#e7b766]' : 'text-[#4a453e]'
-        }`}
-      >
-        {String(index + 1).padStart(2, '0')}
-      </div>
-      <div className="col-span-10 md:col-span-7">
-        <div className="text-[11px] text-[#6b6660] mb-1 flex gap-2">
-          <span>./{project.role.toLowerCase().replace(/\s+/g, '_')}</span>
-          <span className="text-[#4a453e]">·</span>
-          <span>{project.client}</span>
+
+      {/* Mobile: stacked card. Desktop: 12-col grid. */}
+      <div className="md:hidden">
+        <div className="flex items-baseline justify-between text-[11px] font-mono mb-2">
+          <span className={active ? 'text-[#e7b766]' : 'text-[#4a453e]'}>
+            {String(index + 1).padStart(2, '0')}
+          </span>
+          <span className={`tabular-nums ${active ? 'text-[#5ec8d8]' : 'text-[#a8a29e]'}`}>
+            {project.year}
+          </span>
         </div>
-        <div
-          className={`text-lg sm:text-xl md:text-3xl lg:text-4xl leading-tight transition-colors ${
-            active ? 'text-[#e7b766]' : 'text-[#e8e4dc]'
-          }`}
-        >
+        <div className="text-[11px] text-[#6b6660] mb-1.5 break-words">
+          ./{project.role.toLowerCase().replace(/\s+/g, '_')}
+          <span className="text-[#4a453e]"> · </span>
+          {project.client}
+        </div>
+        <div className={`text-[22px] leading-tight font-light mb-3 break-words ${active ? 'text-[#e7b766]' : 'text-[#e8e4dc]'}`}>
           {project.title}
         </div>
+        {project.image_url && (
+          <div className="aspect-[16/10] bg-[#0a0908] border border-[#1f1c17] overflow-hidden mb-3">
+            <img src={project.image_url} alt="" loading="lazy" className="w-full h-full object-cover" />
+          </div>
+        )}
+        <div className="flex flex-wrap gap-1.5 text-[10px] text-[#6b6660]">
+          {project.tags.slice(0, 4).map((t) => (
+            <span key={t} className="border border-[#2a2620] px-1.5 py-0.5 break-all">
+              {t}
+            </span>
+          ))}
+        </div>
       </div>
-      <div className="hidden md:flex col-span-3 text-[10px] text-[#6b6660] flex-wrap gap-1">
-        {project.tags.slice(0, 3).map((t) => (
-          <span key={t} className="border border-[#2a2620] px-1.5 py-0.5">
-            {t}
+
+      <div className="hidden md:grid md:grid-cols-12 md:gap-6 md:items-center">
+        <div className={`md:col-span-1 text-xs tabular-nums transition-colors pl-2 ${active ? 'text-[#e7b766]' : 'text-[#4a453e]'}`}>
+          {String(index + 1).padStart(2, '0')}
+        </div>
+        <div className="md:col-span-7 min-w-0">
+          <div className="text-[11px] text-[#6b6660] mb-1 flex gap-2 flex-wrap">
+            <span>./{project.role.toLowerCase().replace(/\s+/g, '_')}</span>
+            <span className="text-[#4a453e]">·</span>
+            <span>{project.client}</span>
+          </div>
+          <div className={`text-xl md:text-3xl lg:text-4xl leading-tight transition-colors ${active ? 'text-[#e7b766]' : 'text-[#e8e4dc]'}`}>
+            {project.title}
+          </div>
+        </div>
+        <div className="md:col-span-3 text-[10px] text-[#6b6660] flex flex-wrap gap-1">
+          {project.tags.slice(0, 3).map((t) => (
+            <span key={t} className="border border-[#2a2620] px-1.5 py-0.5">
+              {t}
+            </span>
+          ))}
+        </div>
+        <div className="md:col-span-1 md:justify-end flex items-center">
+          <span className={`text-xs tabular-nums ${active ? 'text-[#5ec8d8]' : 'text-[#a8a29e]'}`}>
+            {project.year}
           </span>
-        ))}
-      </div>
-      <div className="col-span-12 md:col-span-1 flex md:justify-end items-center gap-2">
-        <span className={`text-xs tabular-nums ${active ? 'text-[#5ec8d8]' : 'text-[#a8a29e]'}`}>
-          {project.year}
-        </span>
+        </div>
       </div>
     </motion.li>
   );

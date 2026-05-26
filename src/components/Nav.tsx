@@ -100,7 +100,7 @@ export default function Nav({ onOpenPalette }: { onOpenPalette: () => void }) {
 
       {/* Mobile drawer */}
       <div
-        className={`md:hidden fixed inset-0 z-[60] transition-opacity duration-200 ${
+        className={`md:hidden fixed inset-0 z-[60] overflow-hidden transition-opacity duration-200 ${
           drawerOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         aria-hidden={!drawerOpen}

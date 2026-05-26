@@ -108,15 +108,15 @@ export default function WebDossier({
         <div className="mt-10 grid grid-cols-12 gap-5">
           <div className="col-span-12 lg:col-span-8">
             <div className="relative border bg-[#0b0a08]/80 overflow-hidden" style={{ borderColor: `${meta.accent}55` }}>
-              <div className="flex items-center justify-between px-4 py-2 border-b text-[10px] tracking-[0.4em] uppercase"
+              <div className="flex flex-wrap items-center justify-between gap-y-1 gap-x-3 px-4 py-2 border-b text-[10px] tracking-[0.25em] sm:tracking-[0.4em] uppercase"
                 style={{ borderColor: `${meta.accent}33`, color: meta.accent }}
               >
-                <div className="flex items-center gap-2">
-                  <Radar className="w-3.5 h-3.5" />
-                  <span>surveillance · {meta.label}</span>
+                <div className="flex items-center gap-2 min-w-0">
+                  <Radar className="w-3.5 h-3.5 shrink-0" />
+                  <span className="truncate">surveillance · {meta.label}</span>
                 </div>
-                <div className="flex items-center gap-3 text-[9px] text-[#7a6e62]">
-                  <span>acquired · {acquired}</span>
+                <div className="flex items-center gap-3 text-[9px] text-[#7a6e62] flex-wrap">
+                  <span className="hidden sm:inline">acquired · {acquired}</span>
                   <button
                     onClick={() => {
                       setSeed(Math.floor(Math.random() * 1e9));
