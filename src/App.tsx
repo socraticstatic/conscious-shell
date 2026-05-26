@@ -105,6 +105,24 @@ export default function App() {
     fetchPortfolio().then(setData).catch((e) => console.error('[portfolio] load failed', e));
   }, []);
 
+  // Clamp body scrollHeight to actual content. Some fixed/animated overlays
+  // were inflating documentElement.scrollHeight by several thousand pixels
+  // on mobile, creating phantom blank space below the footer.
+  useEffect(() => {
+    const root = document.getElementById('root');
+    if (!root) return;
+    const sync = () => {
+      const inner = root.firstElementChild as HTMLElement | null;
+      const h = inner?.offsetHeight;
+      if (h && h > 0) document.body.style.height = `${h}px`;
+    };
+    sync();
+    const ro = new ResizeObserver(sync);
+    const inner = root.firstElementChild;
+    if (inner) ro.observe(inner);
+    return () => ro.disconnect();
+  }, [data]);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const isMeta = e.metaKey || e.ctrlKey;
@@ -121,7 +139,7 @@ export default function App() {
   return (
     <NarratorProvider>
     <PersonalizationProvider>
-    <div className="relative min-h-screen bg-[#07070a] text-[#e8e4dc] overflow-x-clip" data-pid={crypto.randomUUID()} data-witness="true" data-last-words="all-those-moments-will-be-lost-in-time">
+    <div className="relative min-h-[100dvh] bg-[#07070a] text-[#e8e4dc] overflow-clip" data-pid={crypto.randomUUID()} data-witness="true" data-last-words="all-those-moments-will-be-lost-in-time">
       <DevtoolsEasterEggs />
       <BootOverlay />
       <CRTOverlay />

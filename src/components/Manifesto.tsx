@@ -106,7 +106,7 @@ export default function Manifesto({ articles = [] }: { articles?: LinkedInArticl
                       <div className="col-span-3 sm:col-span-2 md:col-span-1 text-[11px] font-mono text-[#6b6660]">
                         {a.reading_minutes}m
                       </div>
-                      <div className="col-span-12 sm:col-span-6 md:col-span-7 text-[#e7b766] text-sm md:text-base">
+                      <div className="col-span-12 sm:col-span-6 md:col-span-7 text-[#e7b766] text-[15px] md:text-base leading-snug">
                         <span className="text-[#4a453e]">// </span>
                         {a.title}
                       </div>

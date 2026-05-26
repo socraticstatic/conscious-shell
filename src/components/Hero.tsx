@@ -114,7 +114,7 @@ export default function Hero() {
               </span>
             </div>
 
-            <div className="mt-6 sm:mt-10 md:mt-12 text-xs sm:text-sm md:text-[15px] leading-6 sm:leading-7">
+            <div className="mt-6 sm:mt-10 md:mt-12 text-[13px] sm:text-sm md:text-[15px] leading-6 sm:leading-7">
               {rendered.map((l, i) => (
                 <div key={i} className="mb-3">
                   <div className="flex gap-2">

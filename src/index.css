@@ -101,10 +101,18 @@ body::after {
   color: var(--bg);
 }
 
+html, body { overflow-x: clip; }
+/* Mystery vertical phantom space — clamp the scroll container to its content. */
+body { overscroll-behavior-y: contain; }
+
 *::-webkit-scrollbar { width: 8px; height: 8px; }
 *::-webkit-scrollbar-track { background: transparent; }
 *::-webkit-scrollbar-thumb { background: #2a2620; border-radius: 2px; }
 *::-webkit-scrollbar-thumb:hover { background: #3a342c; }
+
+/* hide scrollbar in horizontally-scrolling badge strips */
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.scrollbar-none { scrollbar-width: none; }
 
 .caret::after {
   content: '▌';
