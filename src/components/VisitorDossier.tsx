@@ -31,7 +31,7 @@ export default function VisitorDossier() {
   }
 
   return (
-    <div className="fixed z-30 left-4 bottom-[16rem] sm:left-auto sm:bottom-auto sm:top-20 sm:right-6 lg:right-6 max-w-[calc(100vw-1.5rem)]">
+    <div className="fixed z-30 left-4 bottom-44 sm:left-auto sm:bottom-auto sm:top-20 sm:right-6 lg:right-6 max-w-[calc(100vw-1.5rem)]">
       <AnimatePresence mode="wait">
         {!open ? (
           <motion.button
