@@ -149,7 +149,7 @@ export default function App() {
       <TimeMachine captures={data?.archive ?? []} />
       <VoightKampff questions={data?.vk ?? []} />
       <VKInterview recommendations={data?.recommendations ?? []} />
-      <GithubLab projects={data?.github ?? []} articles={data?.articles ?? []} />
+      <GithubLab projects={data?.github ?? []} />
       <Certifications certs={data?.certifications ?? []} />
       <EsperScene hotspots={data?.esper ?? []} />
       <AgentBattle initial={(data?.designRounds ?? []).map(toRound)} />
