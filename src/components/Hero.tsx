@@ -5,7 +5,7 @@ const lines: Array<{ prompt: string; cmd: string; out?: string[] }> = [
   {
     prompt: '~',
     cmd: 'whoami',
-    out: ['micah boswell · design leader · est. 2000'],
+    out: ['micah boswell · design leader · designing since 1996 · on the web since 2000'],
   },
   {
     prompt: '~',
@@ -110,7 +110,7 @@ export default function Hero() {
               <span className="font-jp text-base sm:text-xl md:text-2xl text-[#5ec8d8]">ミカ・ボズウェル</span>
               <span className="text-[#4a453e]">//</span>
               <span className="text-xs uppercase tracking-widest text-[#a8a29e]">
-                design_leader · unit 2000 · active
+                design_leader · unit 1996 · active
               </span>
             </div>
 
