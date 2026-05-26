@@ -1,39 +1,19 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { Project } from '../lib/supabase';
 
 export default function EsperPanel({ project }: { project: Project | null }) {
   const [zoom, setZoom] = useState(1);
   const [pos, setPos] = useState({ x: 50, y: 50 });
-  const imgRef = useRef<HTMLDivElement>(null);
-  const autoIdRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!project) return;
+    // Hold the full image at 1.0× — the Esper chrome is decoration, not a crop.
     setZoom(1);
-    setPos({ x: 50, y: 50 });
-    const fx = typeof project.focal_x === 'number' ? project.focal_x : 50;
-    const fy = typeof project.focal_y === 'number' ? project.focal_y : 50;
-    // Interpolate from center toward the focal point as we zoom in.
-    const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-    const steps = [
-      { z: 1.2, x: lerp(50, fx, 0.25), y: lerp(50, fy, 0.25), t: 300 },
-      { z: 1.8, x: lerp(50, fx, 0.55), y: lerp(50, fy, 0.55), t: 700 },
-      { z: 2.6, x: lerp(50, fx, 0.8),  y: lerp(50, fy, 0.8),  t: 1200 },
-      { z: 3.0, x: fx, y: fy, t: 1800 },
-    ];
-    const timers: number[] = [];
-    steps.forEach((s) => {
-      const id = window.setTimeout(() => {
-        setZoom(s.z);
-        setPos({ x: s.x, y: s.y });
-      }, s.t);
-      timers.push(id);
+    setPos({
+      x: typeof project.focal_x === 'number' ? project.focal_x : 50,
+      y: typeof project.focal_y === 'number' ? project.focal_y : 50,
     });
-    autoIdRef.current = timers[timers.length - 1];
-    return () => {
-      timers.forEach((id) => clearTimeout(id));
-    };
   }, [project?.id, project?.focal_x, project?.focal_y]);
 
   return (
@@ -55,13 +35,13 @@ export default function EsperPanel({ project }: { project: Project | null }) {
             <div className="text-[#5ec8d8]">TRACK {String(Math.round(zoom * 37)).padStart(3, '0')}</div>
           </div>
 
-          <div ref={imgRef} className="absolute inset-0 pt-6 overflow-hidden">
+          <div className="absolute inset-0 pt-6 overflow-hidden">
             <motion.div
               animate={{ scale: zoom, x: `${(50 - pos.x) * 0.8}%`, y: `${(50 - pos.y) * 0.8}%` }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
               className="absolute inset-0"
             >
-              <img src={project.image_url} alt="" className="w-full h-full object-cover" />
+              <img src={project.image_url} alt="" className="w-full h-full object-contain" />
               <div
                 className="absolute inset-0 mix-blend-overlay opacity-50"
                 style={{
