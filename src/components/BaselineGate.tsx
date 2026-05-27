@@ -65,7 +65,7 @@ export default function BaselineGate({ children }: { children: React.ReactNode }
   }
 
   return (
-    <section className="relative py-20 md:py-28 border-b border-[#1f1c17]">
+    <section id="haiku" className="relative py-20 md:py-28 border-b border-[#1f1c17]">
       <div className="max-w-3xl mx-auto px-6 md:px-10">
         <div className="text-center mb-12">
           <div className="text-[10px] tracking-[0.5em] uppercase text-[#ff7a5c]/80 mb-3">
