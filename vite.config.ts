@@ -8,7 +8,7 @@ import react from '@vitejs/plugin-react';
 // Mostly.
 
 export default defineConfig({
-  base: process.env.GITHUB_ACTIONS ? '/tears-in-rain/' : '/',
+  base: '/',
   plugins: [react()],
   optimizeDeps: {
     exclude: ['lucide-react'],
