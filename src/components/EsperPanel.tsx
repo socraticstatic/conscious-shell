@@ -8,7 +8,6 @@ export default function EsperPanel({ project }: { project: Project | null }) {
 
   useEffect(() => {
     if (!project) return;
-    // Hold the full image at 1.0× — the Esper chrome is decoration, not a crop.
     setZoom(1);
     setPos({
       x: typeof project.focal_x === 'number' ? project.focal_x : 50,
@@ -41,7 +40,7 @@ export default function EsperPanel({ project }: { project: Project | null }) {
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
               className="absolute inset-0"
             >
-              <img src={project.image_url} alt="" className="w-full h-full object-contain" />
+              <img src={project.image_url} alt="" className="w-full h-full object-cover" />
               <div
                 className="absolute inset-0 mix-blend-overlay opacity-50"
                 style={{
