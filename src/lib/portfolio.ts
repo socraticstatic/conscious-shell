@@ -6,7 +6,6 @@ import {
   type Award,
   type Publication,
   type VkQuestion,
-  type ArchiveCapture,
   type GithubProject,
   type Trivia,
   type Haiku,
@@ -28,7 +27,7 @@ import {
 export async function fetchPortfolio() {
   const [
     projects, services, testimonials, awards, publications,
-    vk, archive, github, trivia, haiku, noir, esper, skyline, designRounds, dossier, certs,
+    vk, github, trivia, haiku, noir, esper, skyline, designRounds, dossier, certs,
     recs, articles,
   ] = await Promise.all([
     supabase.from('portfolio_projects').select('*').order('order_index'),
@@ -37,7 +36,6 @@ export async function fetchPortfolio() {
     supabase.from('portfolio_awards').select('*').order('order_index'),
     supabase.from('portfolio_publications').select('*').order('order_index'),
     supabase.from('vk_questions').select('*').order('order_index'),
-    supabase.from('archive_captures').select('*').order('order_index'),
     supabase.from('github_projects').select('*').order('sort_order'),
     supabase.from('portfolio_trivia').select('*').order('order_index'),
     supabase.from('portfolio_haiku').select('*').order('order_index'),
@@ -58,7 +56,6 @@ export async function fetchPortfolio() {
     awards: (awards.data ?? []) as Award[],
     publications: (publications.data ?? []) as Publication[],
     vk: (vk.data ?? []) as VkQuestion[],
-    archive: (archive.data ?? []) as ArchiveCapture[],
     github: (github.data ?? []) as GithubProject[],
     trivia: (trivia.data ?? []) as Trivia[],
     haiku: (haiku.data ?? []) as Haiku[],

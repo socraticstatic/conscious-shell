@@ -19,7 +19,6 @@ import type {
   Award,
   Publication,
   VkQuestion,
-  ArchiveCapture,
   GithubProject,
   Trivia,
   Haiku,
@@ -92,7 +91,6 @@ export default function App() {
     awards: Award[];
     publications: Publication[];
     vk: VkQuestion[];
-    archive: ArchiveCapture[];
     github: GithubProject[];
     trivia: Trivia[];
     haiku: Haiku[];
@@ -192,7 +190,7 @@ export default function App() {
           <SelfDestruct />
           <Heartbeat />
           <TypingEchoes />
-          <TimeMachine captures={data?.archive ?? []} />
+          <TimeMachine />
           <VoightKampff questions={data?.vk ?? []} />
           <VKInterview recommendations={data?.recommendations ?? []} />
           <GithubLab projects={data?.github ?? []} />

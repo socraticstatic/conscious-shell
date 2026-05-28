@@ -1,24 +1,68 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SectionHeader } from './Work';
-import type { ArchiveCapture } from '../lib/supabase';
 
-export default function TimeMachine({ captures }: { captures: ArchiveCapture[] }) {
-  const sorted = useMemo(() => [...captures].sort((a, b) => a.year - b.year), [captures]);
+type Plate = {
+  year: number;
+  era_label: string;
+  captured_at: string;
+  note: string;
+  src: string;
+};
+
+// Six hand-picked snapshots of conscious-shell across the years. Lives
+// in /public/archive so it ships with the build — no Archive.org wait,
+// no temporal-plate "developing" state, no missing frames.
+const PLATES: Plate[] = [
+  {
+    year: 2000,
+    era_label: 'tables & gifs',
+    captured_at: '2000-10-24',
+    note: 'online galleries · usability consulting · personal information feed',
+    src: `${import.meta.env.BASE_URL}archive/2000.png`,
+  },
+  {
+    year: 2002,
+    era_label: 'post-dotcom',
+    captured_at: '2002-09-16',
+    note: 'grey grid · mp3 jukebox · poems on the homepage',
+    src: `${import.meta.env.BASE_URL}archive/2002.png`,
+  },
+  {
+    year: 2005,
+    era_label: 'tenth anniversary',
+    captured_at: '2005-01-25',
+    note: 'celebration redesign · ten years online · the portal',
+    src: `${import.meta.env.BASE_URL}archive/2005.png`,
+  },
+  {
+    year: 2006,
+    era_label: 'gradients & glass',
+    captured_at: '2006-11-28',
+    note: 'cs mark · wave + sepia · peer testimonials',
+    src: `${import.meta.env.BASE_URL}archive/2006.png`,
+  },
+  {
+    year: 2009,
+    era_label: 'golden mean',
+    captured_at: '2009-03-12',
+    note: 'orange spiral · photo grid · kabbalah notes',
+    src: `${import.meta.env.BASE_URL}archive/2009.png`,
+  },
+  {
+    year: 2014,
+    era_label: 'social era',
+    captured_at: '2014-05-17',
+    note: 'flat design · cs serif · twitter, vimeo, pinterest, g+',
+    src: `${import.meta.env.BASE_URL}archive/2014.png`,
+  },
+];
+
+export default function TimeMachine() {
+  const sorted = useMemo(() => [...PLATES].sort((a, b) => a.year - b.year), []);
   const [idx, setIdx] = useState(0);
-  const [loaded, setLoaded] = useState(false);
-  const [failed, setFailed] = useState(false);
 
   const current = sorted[idx];
-
-  useEffect(() => {
-    if (!current) return;
-    setLoaded(false);
-    setFailed(false);
-  }, [current?.id]);
-
-  if (!sorted.length) return null;
-
   const minYear = sorted[0].year;
   const maxYear = sorted[sorted.length - 1].year;
   const pct = ((current.year - minYear) / Math.max(1, maxYear - minYear)) * 100;
@@ -30,10 +74,10 @@ export default function TimeMachine({ captures }: { captures: ArchiveCapture[] }
     <section id="time" className="relative py-20 md:py-28 border-b border-[#1f1c17]">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10">
         <SectionHeader
-          path="wayback --unroll /conscious-shell"
+          path="archive --local /conscious-shell"
           jp="時間旅行"
           count={sorted.length}
-          right={`t=${current.timestamp_raw}`}
+          right={`t=${current.captured_at}`}
         />
 
         <div className="mt-8 grid grid-cols-12 gap-4">
@@ -42,7 +86,7 @@ export default function TimeMachine({ captures }: { captures: ArchiveCapture[] }
             <div className="flex items-center justify-between px-4 py-2 border-b border-[#1f1c17] text-[10px]">
               <span className="flex items-center gap-2 text-[#e7b766]">
                 <span className="w-1.5 h-1.5 bg-[#e7b766] animate-pulse" />
-                TEMPORAL ARCHIVE — 25 YEARS OF CONSCIOUS-SHELL
+                TEMPORAL ARCHIVE — {sorted.length} SNAPSHOTS OF CONSCIOUS-SHELL
               </span>
               <span className="text-[#5ec8d8] font-jp hidden md:inline">自分の過去</span>
             </div>
@@ -60,14 +104,13 @@ export default function TimeMachine({ captures }: { captures: ArchiveCapture[] }
                   </motion.div>
                   <div className="text-xs text-[#6b6660]">
                     <div>era: <span className="text-[#e8e4dc]">{current.era_label}</span></div>
-                    <div>captured: <span className="text-[#5ec8d8]">{current.captured_at.slice(0, 10)}</span></div>
+                    <div>captured: <span className="text-[#5ec8d8]">{current.captured_at}</span></div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => step(-1)}
                     disabled={idx === 0}
-                    data-cursor="hover"
                     className="px-2 py-1 border border-[#2a2620] text-[#a8a29e] hover:border-[#e7b766] hover:text-[#e7b766] active:border-[#e7b766] active:text-[#e7b766] disabled:opacity-30 disabled:hover:border-[#2a2620] disabled:hover:text-[#a8a29e] transition-colors text-[10px] sm:text-xs"
                   >
                     <span className="hidden sm:inline">← rewind</span>
@@ -76,7 +119,6 @@ export default function TimeMachine({ captures }: { captures: ArchiveCapture[] }
                   <button
                     onClick={() => step(1)}
                     disabled={idx === sorted.length - 1}
-                    data-cursor="hover"
                     className="px-2 py-1 border border-[#2a2620] text-[#a8a29e] hover:border-[#e7b766] hover:text-[#e7b766] active:border-[#e7b766] active:text-[#e7b766] disabled:opacity-30 disabled:hover:border-[#2a2620] disabled:hover:text-[#a8a29e] transition-colors text-[10px] sm:text-xs"
                   >
                     <span className="hidden sm:inline">forward →</span>
@@ -99,9 +141,8 @@ export default function TimeMachine({ captures }: { captures: ArchiveCapture[] }
                   const active = i === idx;
                   return (
                     <button
-                      key={c.id}
+                      key={c.year}
                       onClick={() => setIdx(i)}
-                      data-cursor="hover"
                       style={{ left: `${p}%` }}
                       className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 group"
                       aria-label={`view ${c.year}`}
@@ -132,80 +173,38 @@ export default function TimeMachine({ captures }: { captures: ArchiveCapture[] }
                 <span className="w-1.5 h-1.5 bg-[#ff7a5c] animate-pulse rounded-full" />
                 <span>ARCHIVE PLATE — conscious-shell.{current.year}</span>
               </div>
-              <div className="text-[#5ec8d8] hidden sm:block">
-                {loaded ? '● DEVELOPED' : failed ? '✕ UNDEVELOPED' : '◉ DEVELOPING'}
-              </div>
+              <div className="text-[#5ec8d8] hidden sm:block">● DEVELOPED</div>
             </div>
 
             <AnimatePresence mode="wait">
               <motion.div
-                key={current.id}
+                key={current.year}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
                 className="absolute inset-0 pt-6"
               >
-                {!failed && (
-                  <img
-                    src={current.custom_screenshot_url || current.screenshot_url}
-                    onLoad={() => {
-                      setLoaded(true);
-                      setFailed(false);
-                    }}
-                    onError={() => setFailed(true)}
-                    alt={`conscious-shell.com in ${current.year}`}
-                    className={`absolute inset-0 w-full h-full object-cover object-top bg-[#f5f2ea] transition-opacity duration-500 ${
-                      loaded ? 'opacity-100' : 'opacity-0'
-                    }`}
-                  />
-                )}
+                <img
+                  src={current.src}
+                  alt={`conscious-shell.com in ${current.year}`}
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute inset-0 w-full h-full object-cover object-top bg-[#0a0908]"
+                />
 
-                {/* sepia + scan overlay so it sits in the BR aesthetic */}
-                {loaded && !failed && (
-                  <>
-                    <div className="pointer-events-none absolute inset-0 mix-blend-overlay opacity-30"
-                      style={{
-                        backgroundImage:
-                          'repeating-linear-gradient(0deg, rgba(0,0,0,0.25) 0 1px, transparent 1px 3px)',
-                      }}
-                    />
-                    <div className="pointer-events-none absolute inset-0"
-                      style={{
-                        background: 'linear-gradient(180deg, rgba(231,183,102,0.06) 0%, transparent 30%, transparent 70%, rgba(7,7,10,0.5) 100%)',
-                      }}
-                    />
-                  </>
-                )}
-
-                {!loaded && !failed && (
-                  <div className="absolute inset-0 pt-6 flex items-center justify-center">
-                    <div className="text-xs text-[#e7b766] font-mono text-center">
-                      <div className="animate-pulse">developing temporal plate...</div>
-                      <div className="text-[#4a453e] mt-1">t = {current.timestamp_raw}</div>
-                      <div className="text-[#4a453e] mt-1 text-[10px]">first render may take a moment</div>
-                    </div>
-                  </div>
-                )}
-
-                {failed && (
-                  <div className="absolute inset-0 pt-6 flex items-center justify-center">
-                    <div className="text-center max-w-sm px-6">
-                      <div className="text-xs text-[#ff7a5c] mb-3">⚠ PLATE UNDEVELOPED</div>
-                      <div className="text-sm text-[#e8e4dc] mb-4">
-                        This frame's screenshot hasn't been captured yet. View the original archive:
-                      </div>
-                      <a
-                        href={current.wayback_url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-block px-4 py-2 border border-[#e7b766] text-[#e7b766] hover:bg-[#e7b766] hover:text-[#0b0a08] text-xs transition-colors"
-                      >
-                        open {current.year} on web.archive.org →
-                      </a>
-                    </div>
-                  </div>
-                )}
+                {/* scan + vignette overlays so plates sit in the BR aesthetic */}
+                <div className="pointer-events-none absolute inset-0 mix-blend-overlay opacity-30"
+                  style={{
+                    backgroundImage:
+                      'repeating-linear-gradient(0deg, rgba(0,0,0,0.25) 0 1px, transparent 1px 3px)',
+                  }}
+                />
+                <div className="pointer-events-none absolute inset-0"
+                  style={{
+                    background: 'linear-gradient(180deg, rgba(231,183,102,0.06) 0%, transparent 30%, transparent 70%, rgba(7,7,10,0.5) 100%)',
+                  }}
+                />
               </motion.div>
             </AnimatePresence>
 
@@ -220,15 +219,8 @@ export default function TimeMachine({ captures }: { captures: ArchiveCapture[] }
             <span className="absolute bottom-1 right-1 h-3 w-px bg-[#e7b766]" />
 
             <div className="absolute bottom-0 inset-x-0 z-10 px-3 py-1.5 text-[10px] bg-[#0b0a08]/90 border-t border-[#e7b766]/30 flex items-center justify-between">
-              <span className="text-[#6b6660] truncate">src: {current.original_url}</span>
-              <a
-                href={current.wayback_url}
-                target="_blank"
-                rel="noreferrer"
-                className="text-[#5ec8d8] hover:text-[#e7b766] transition-colors"
-              >
-                open on wayback ↗
-              </a>
+              <span className="text-[#6b6660] truncate">{current.note}</span>
+              <span className="text-[#5ec8d8] hidden sm:inline">local plate</span>
             </div>
           </div>
 
@@ -238,12 +230,11 @@ export default function TimeMachine({ captures }: { captures: ArchiveCapture[] }
               <span className="text-[#e7b766]">CAPTURE INDEX</span>
               <span className="font-jp text-[#5ec8d8]">記録</span>
             </div>
-            <ul className="divide-y divide-dashed divide-[#1f1c17] text-xs overflow-y-auto max-h-[420px]">
+            <ul className="divide-y divide-dashed divide-[#1f1c17] text-xs overflow-y-auto">
               {sorted.map((c, i) => (
-                <li key={c.id}>
+                <li key={c.year}>
                   <button
                     onClick={() => setIdx(i)}
-                    data-cursor="hover"
                     className={`w-full text-left px-3 py-2 flex items-baseline justify-between gap-2 transition-colors ${
                       i === idx
                         ? 'bg-[#1a1712] text-[#e7b766]'
@@ -257,15 +248,14 @@ export default function TimeMachine({ captures }: { captures: ArchiveCapture[] }
               ))}
             </ul>
             <div className="px-3 py-2 border-t border-[#1f1c17] text-[10px] text-[#4a453e]">
-              src: archive.org/cdx · {sorted.length} frames
+              src: /archive · {sorted.length} frames
             </div>
           </div>
         </div>
 
         <div className="mt-4 text-[11px] text-[#4a453e] leading-relaxed">
-          # plates are rendered via a headless screenshot service against the wayback capture.
-          <br /># first view of each year may take several seconds while the plate develops;
-          <br /># subsequent visits are cached. any frame can be viewed in full on web.archive.org.
+          # six snapshots from the personal archive — same domain, different decade.
+          <br /># conscious-shell has been online since 1995; these are the surviving plates.
         </div>
       </div>
     </section>
