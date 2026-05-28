@@ -1,55 +1,14 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import Nav from './components/Nav';
 import Hero from './components/Hero';
 import DevtoolsEasterEggs from './components/DevtoolsEasterEggs';
-import GithubLab from './components/GithubLab';
 import Work from './components/Work';
-import VoightKampff from './components/VoightKampff';
-import TimeMachine from './components/TimeMachine';
-import IndexList from './components/IndexList';
-import Impact from './components/Impact';
-import Manifesto from './components/Manifesto';
-import HumanLayer from './components/HumanLayer';
-import HaikuDeck from './components/HaikuDeck';
-import About from './components/About';
-import Services from './components/Services';
-import Recognition from './components/Recognition';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
-import Cursor from './components/Cursor';
 import BootOverlay from './components/BootOverlay';
 import SessionHUD from './components/SessionHUD';
 import BaselineDrift from './components/BaselineDrift';
-import TearsInRain from './components/TearsInRain';
 import AmbientAudio from './components/AmbientAudio';
-import BlackLitany from './components/BlackLitany';
-import SystemBreach from './components/SystemBreach';
-import NoirSubtitles from './components/NoirSubtitles';
-import DeadDropConsole from './components/DeadDropConsole';
-import EsperScene from './components/EsperScene';
-import AgentBattle from './components/AgentBattle';
-import WebDossier from './components/WebDossier';
-import OverrideMode from './components/OverrideMode';
 import CRTOverlay from './components/CRTOverlay';
-import CommandPalette from './components/CommandPalette';
-import LogViewer from './components/LogViewer';
-import IntelligenceHUD from './components/IntelligenceHUD';
-import SocraticStatic from './components/SocraticStatic';
-import OrigamiUnicorns from './components/OrigamiUnicorns';
-import HelenNarrates from './components/HelenNarrates';
-import GitArchaeology from './components/GitArchaeology';
-import BaselineGate, { BaselineUnlocked } from './components/BaselineGate';
-import ConsoleHijack from './components/ConsoleHijack';
-import GhostCursor from './components/GhostCursor';
-import LateNight from './components/LateNight';
-import SelfDestruct from './components/SelfDestruct';
-import Heartbeat from './components/Heartbeat';
-import TypingEchoes from './components/TypingEchoes';
-import VKInterview from './components/VKInterview';
-import Certifications from './components/Certifications';
 import SoulLayer from './components/SoulLayer';
-import NarratorOverlay from './components/NarratorOverlay';
-import VisitorDossier from './components/VisitorDossier';
 import { NarratorProvider } from './lib/narrator';
 import { PersonalizationProvider } from './lib/personalization';
 import { fetchPortfolio } from './lib/portfolio';
@@ -73,6 +32,53 @@ import type {
   LinkedInRecommendation,
   LinkedInArticle,
 } from './lib/supabase';
+
+// Heavy / below-the-fold / on-demand → split into separate chunks and
+// mount after the first paint settles. Saves ~hundreds of KB on the
+// critical path and stops the initial render from competing with
+// every ambient effect on the page.
+const GithubLab = lazy(() => import('./components/GithubLab'));
+const VoightKampff = lazy(() => import('./components/VoightKampff'));
+const TimeMachine = lazy(() => import('./components/TimeMachine'));
+const IndexList = lazy(() => import('./components/IndexList'));
+const Impact = lazy(() => import('./components/Impact'));
+const Manifesto = lazy(() => import('./components/Manifesto'));
+const HumanLayer = lazy(() => import('./components/HumanLayer'));
+const HaikuDeck = lazy(() => import('./components/HaikuDeck'));
+const About = lazy(() => import('./components/About'));
+const Services = lazy(() => import('./components/Services'));
+const Recognition = lazy(() => import('./components/Recognition'));
+const Contact = lazy(() => import('./components/Contact'));
+const Footer = lazy(() => import('./components/Footer'));
+const TearsInRain = lazy(() => import('./components/TearsInRain'));
+const BlackLitany = lazy(() => import('./components/BlackLitany'));
+const SystemBreach = lazy(() => import('./components/SystemBreach'));
+const NoirSubtitles = lazy(() => import('./components/NoirSubtitles'));
+const DeadDropConsole = lazy(() => import('./components/DeadDropConsole'));
+const EsperScene = lazy(() => import('./components/EsperScene'));
+const AgentBattle = lazy(() => import('./components/AgentBattle'));
+const WebDossier = lazy(() => import('./components/WebDossier'));
+const OverrideMode = lazy(() => import('./components/OverrideMode'));
+const CommandPalette = lazy(() => import('./components/CommandPalette'));
+const LogViewer = lazy(() => import('./components/LogViewer'));
+const IntelligenceHUD = lazy(() => import('./components/IntelligenceHUD'));
+const SocraticStatic = lazy(() => import('./components/SocraticStatic'));
+const OrigamiUnicorns = lazy(() => import('./components/OrigamiUnicorns'));
+const HelenNarrates = lazy(() => import('./components/HelenNarrates'));
+const GitArchaeology = lazy(() => import('./components/GitArchaeology'));
+const BaselineGate = lazy(() => import('./components/BaselineGate'));
+const BaselineUnlocked = lazy(() =>
+  import('./components/BaselineGate').then((m) => ({ default: m.BaselineUnlocked })),
+);
+const ConsoleHijack = lazy(() => import('./components/ConsoleHijack'));
+const LateNight = lazy(() => import('./components/LateNight'));
+const SelfDestruct = lazy(() => import('./components/SelfDestruct'));
+const Heartbeat = lazy(() => import('./components/Heartbeat'));
+const TypingEchoes = lazy(() => import('./components/TypingEchoes'));
+const VKInterview = lazy(() => import('./components/VKInterview'));
+const Certifications = lazy(() => import('./components/Certifications'));
+const NarratorOverlay = lazy(() => import('./components/NarratorOverlay'));
+const VisitorDossier = lazy(() => import('./components/VisitorDossier'));
 
 // If you are reading this source, you are now part of the performance.
 // Your devtools are the fourth wall. Congratulations.
@@ -100,9 +106,26 @@ export default function App() {
     articles: LinkedInArticle[];
   } | null>(null);
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     fetchPortfolio().then(setData).catch((e) => console.error('[portfolio] load failed', e));
+  }, []);
+
+  // Defer all non-critical chunks until the browser is idle. Initial paint
+  // ships with just Nav + Hero + Work + the ambient core.
+  useEffect(() => {
+    const cb = () => setHydrated(true);
+    const ric = (window as unknown as { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number }).requestIdleCallback;
+    if (typeof ric === 'function') {
+      const id = ric(cb, { timeout: 2000 });
+      return () => {
+        const cic = (window as unknown as { cancelIdleCallback?: (id: number) => void }).cancelIdleCallback;
+        if (typeof cic === 'function') cic(id);
+      };
+    }
+    const t = setTimeout(cb, 800);
+    return () => clearTimeout(t);
   }, []);
 
   // Clamp body scrollHeight to actual content. Some fixed/animated overlays
@@ -121,7 +144,7 @@ export default function App() {
     const inner = root.firstElementChild;
     if (inner) ro.observe(inner);
     return () => ro.disconnect();
-  }, [data]);
+  }, [data, hydrated]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -143,63 +166,66 @@ export default function App() {
       <DevtoolsEasterEggs />
       <BootOverlay />
       <CRTOverlay />
-      <Cursor />
       <SessionHUD />
       <BaselineDrift />
       <AmbientAudio />
-      <TearsInRain />
-      <SystemBreach />
-      <NoirSubtitles lines={data?.noir ?? []} />
-      <DeadDropConsole />
-      <OverrideMode />
-      <SocraticStatic />
-      <OrigamiUnicorns />
-      <HelenNarrates />
-      <ConsoleHijack />
-      <GhostCursor />
-      <LateNight />
-      <SelfDestruct />
-      <Heartbeat />
-      <TypingEchoes />
       <Nav onOpenPalette={() => setPaletteOpen(true)} />
       <Hero />
       <Work projects={data?.projects ?? []} />
-      <TimeMachine captures={data?.archive ?? []} />
-      <VoightKampff questions={data?.vk ?? []} />
-      <VKInterview recommendations={data?.recommendations ?? []} />
-      <GithubLab projects={data?.github ?? []} />
-      <Certifications certs={data?.certifications ?? []} />
-      <EsperScene hotspots={data?.esper ?? []} />
-      <AgentBattle initial={(data?.designRounds ?? []).map(toRound)} />
-      <Manifesto articles={data?.articles ?? []} />
-      <BaselineGate>
-        <BaselineUnlocked />
-        <HumanLayer trivia={data?.trivia ?? []} />
-        <HaikuDeck haiku={data?.haiku ?? []} />
-      </BaselineGate>
-      <IndexList projects={data?.projects ?? []} />
-      <Impact />
-      <About testimonial={data?.testimonials[0]} />
-      <WebDossier facts={data?.dossier ?? []} recommendations={data?.recommendations ?? []} />
-      <Services services={data?.services ?? []} />
-      <Recognition awards={data?.awards ?? []} publications={data?.publications ?? []} />
-      <GitArchaeology />
-      <Contact />
-      <Footer />
-      <CommandPalette
-        open={paletteOpen}
-        onClose={() => setPaletteOpen(false)}
-        projects={data?.projects ?? []}
-      />
-      <LogViewer />
-      <IntelligenceHUD />
       <SoulLayer />
       <div className="site-rain slow" aria-hidden />
       <div className="site-rain" aria-hidden />
       <div className="site-grain" aria-hidden />
-      <BlackLitany />
-      <NarratorOverlay />
-      <VisitorDossier />
+
+      {hydrated && (
+        <Suspense fallback={null}>
+          <TearsInRain />
+          <SystemBreach />
+          <NoirSubtitles lines={data?.noir ?? []} />
+          <DeadDropConsole />
+          <OverrideMode />
+          <SocraticStatic />
+          <OrigamiUnicorns />
+          <HelenNarrates />
+          <ConsoleHijack />
+          <LateNight />
+          <SelfDestruct />
+          <Heartbeat />
+          <TypingEchoes />
+          <TimeMachine captures={data?.archive ?? []} />
+          <VoightKampff questions={data?.vk ?? []} />
+          <VKInterview recommendations={data?.recommendations ?? []} />
+          <GithubLab projects={data?.github ?? []} />
+          <Certifications certs={data?.certifications ?? []} />
+          <EsperScene hotspots={data?.esper ?? []} />
+          <AgentBattle initial={(data?.designRounds ?? []).map(toRound)} />
+          <Manifesto articles={data?.articles ?? []} />
+          <BaselineGate>
+            <BaselineUnlocked />
+            <HumanLayer trivia={data?.trivia ?? []} />
+            <HaikuDeck haiku={data?.haiku ?? []} />
+          </BaselineGate>
+          <IndexList projects={data?.projects ?? []} />
+          <Impact />
+          <About testimonial={data?.testimonials[0]} />
+          <WebDossier facts={data?.dossier ?? []} recommendations={data?.recommendations ?? []} />
+          <Services services={data?.services ?? []} />
+          <Recognition awards={data?.awards ?? []} publications={data?.publications ?? []} />
+          <GitArchaeology />
+          <Contact />
+          <Footer />
+          <CommandPalette
+            open={paletteOpen}
+            onClose={() => setPaletteOpen(false)}
+            projects={data?.projects ?? []}
+          />
+          <LogViewer />
+          <IntelligenceHUD />
+          <BlackLitany />
+          <NarratorOverlay />
+          <VisitorDossier />
+        </Suspense>
+      )}
     </div>
     </PersonalizationProvider>
     </NarratorProvider>

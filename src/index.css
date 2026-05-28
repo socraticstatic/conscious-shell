@@ -439,6 +439,26 @@ html.late-night body {
   speak: never;
 }
 
+/* Respect the OS: if the visitor asks for less motion, give them less.
+   Cuts the continuous repaints from rain + grain + override jitter. */
+@media (prefers-reduced-motion: reduce) {
+  .site-rain,
+  .site-rain.slow,
+  .site-grain {
+    animation: none !important;
+  }
+  body.override-mode {
+    animation: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
 /*
  *   To whoever reads this last:
  *
