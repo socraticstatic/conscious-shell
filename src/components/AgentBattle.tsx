@@ -35,7 +35,7 @@ type Round = {
 const SCIFI = {
   label: 'SCI · ARCHIVIST',
   glyph: 'S-04',
-  accent: '#5ec8d8',
+  accent: '#00d4ff',
   titleMood: '#c9e8ef',
   prefixes: [
     'Cold Archive', 'Sector', 'Protocol', 'Lattice', 'Chrome', 'Subject', 'Vector', 'Axis', 'Cal',
@@ -51,9 +51,9 @@ const SCIFI = {
   ],
   numbers: ['IX', '44', '07', '2049', '11.7K', 'Δ', 'Σ', 'Ø', '∞', '00', '404', '3.14', 'NaN', '∂', '128', '256', '1024', '∅', 'Λ'],
   palettes: [
-    ['#05060a', '#0d1218', '#3aa7b8', '#e7b766', '#ff3b6e'],
-    ['#0a0a0f', '#1a1f28', '#5ec8d8', '#c9e8ef', '#ff9a3c'],
-    ['#04070a', '#121a22', '#ffffff', '#7ed7e4', '#ff7a5c'],
+    ['#05060a', '#0d1218', '#3aa7b8', '#e040fb', '#ff3b6e'],
+    ['#0a0a0f', '#1a1f28', '#00d4ff', '#c9e8ef', '#ff9a3c'],
+    ['#04070a', '#121a22', '#ffffff', '#7ed7e4', '#ff006e'],
     ['#000000', '#191d24', '#4af1d1', '#ffe06a', '#ff3b6e'],
     ['#010102', '#0c1016', '#a9d7e1', '#ffd89a', '#2c2a26'],
     ['#080c12', '#141e2a', '#00e5ff', '#b0bec5', '#ff1744'],
@@ -613,7 +613,7 @@ export default function AgentBattle({ initial }: Props) {
               — design·box · two agents, one frame
             </div>
             <h2 className="text-[2rem] sm:text-4xl md:text-5xl font-mono font-light tracking-tight text-white leading-tight">
-              the <span className="text-[#5ec8d8]">archivists</span> are <span className="text-[#c14a5b]">arguing</span>
+              the <span className="text-[#00d4ff]">archivists</span> are <span className="text-[#c14a5b]">arguing</span>
             </h2>
             <p className="text-[12px] tracking-[0.3em] uppercase text-[#6b6660] mt-3 max-w-xl">
               autonomous. turn-based. every proposal is appended to the ledger.

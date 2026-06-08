@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { usePersonalization } from '../lib/personalization'
 
 const TRAIT_COLORS: Record<string, string> = {
-  empathy: '#e7b766', logic: '#5ec8d8', creativity: '#7aff8c', darkness: '#ff7a5c', honesty: '#ffffff',
+  empathy: '#e040fb', logic: '#00d4ff', creativity: '#7aff8c', darkness: '#ff006e', honesty: '#ffffff',
 }
 
 export default function VisitorDossier() {
@@ -41,7 +41,7 @@ export default function VisitorDossier() {
             exit={{ opacity: 0 }}
             onClick={() => setOpen(true)}
             className="flex items-center gap-1 px-2 py-1 text-[9px] tracking-widest font-mono border rounded"
-            style={{ background: '#0b0a08', borderColor: '#e7b766', color: '#e7b766' }}
+            style={{ background: '#0b0a08', borderColor: '#e040fb', color: '#e040fb' }}
           >
             <svg width="10" height="12" viewBox="0 0 10 12" fill="none" stroke="currentColor" strokeWidth="1.2">
               <path d="M1 1h5l3 3v7H1z" /><path d="M6 1v3h3" />
@@ -59,10 +59,10 @@ export default function VisitorDossier() {
           >
             <div className="p-3 space-y-3">
               <div className="flex justify-between items-center">
-                <span className="text-[9px] tracking-widest" style={{ color: '#e7b766' }}>VISITOR DOSSIER</span>
+                <span className="text-[9px] tracking-widest" style={{ color: '#e040fb' }}>VISITOR DOSSIER</span>
                 <button onClick={() => setOpen(false)} className="text-[9px]" style={{ color: '#6b6660' }}>CLOSE</button>
               </div>
-              <div className="text-sm" style={{ color: '#5ec8d8' }}>{profile.name}</div>
+              <div className="text-sm" style={{ color: '#00d4ff' }}>{profile.name}</div>
 
               <div>
                 <div className="text-[9px] tracking-widest mb-1" style={{ color: '#6b6660' }}>TRAIT ANALYSIS</div>
@@ -85,7 +85,7 @@ export default function VisitorDossier() {
 
               <div>
                 <div className="text-[9px] tracking-widest mb-1" style={{ color: '#6b6660' }}>CLASSIFICATION</div>
-                <div className="text-lg" style={{ color: '#e7b766' }}>{profile.name}</div>
+                <div className="text-lg" style={{ color: '#e040fb' }}>{profile.name}</div>
                 <div className="text-[11px] italic" style={{ color: '#6b6660' }}>{(profile as any).description || 'No description available'}</div>
               </div>
 
@@ -109,7 +109,7 @@ export default function VisitorDossier() {
 
               <div className="border-t pt-2 flex justify-between items-center" style={{ borderColor: '#1f1c17' }}>
                 <span className="text-[9px] italic" style={{ color: '#6b6660' }}>// this dossier persists until cleared</span>
-                <button onClick={clear} className="text-[9px] tracking-widest px-1 py-0.5 border rounded" style={{ color: '#ff7a5c', borderColor: '#ff7a5c' }}>
+                <button onClick={clear} className="text-[9px] tracking-widest px-1 py-0.5 border rounded" style={{ color: '#ff006e', borderColor: '#ff006e' }}>
                   CLEAR
                 </button>
               </div>

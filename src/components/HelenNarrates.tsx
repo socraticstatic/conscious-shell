@@ -28,7 +28,7 @@ function Waveform() {
       {[0, 1, 2, 3].map((i) => (
         <motion.div
           key={i}
-          className="w-[2px] bg-[#e7b766] rounded-full"
+          className="w-[2px] bg-[#e040fb] rounded-full"
           animate={{ height: ['4px', '12px', '4px'] }}
           transition={{ duration: 0.6, repeat: Infinity, delay: i * 0.15, ease: 'easeInOut' }}
         />
@@ -102,13 +102,13 @@ export default function HelenNarrates() {
         onClick={() => setActive(!active)}
         className={`fixed z-40 flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full border transition-all duration-300 ${
           active
-            ? 'border-[#e7b766] bg-[#0b0a08] shadow-[0_0_12px_rgba(231,183,102,0.3)]'
-            : 'border-[#1f1c17] bg-[#0b0a08] hover:border-[#e7b766]/50 opacity-30 hover:opacity-70'
+            ? 'border-[#e040fb] bg-[#0b0a08] shadow-[0_0_12px_rgba(231,183,102,0.3)]'
+            : 'border-[#1f1c17] bg-[#0b0a08] hover:border-[#e040fb]/50 opacity-30 hover:opacity-70'
         }`}
         style={{ bottom: 'calc(6rem + env(safe-area-inset-bottom, 0px))', right: '1rem' }}
       >
-        <Mic className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${active ? 'text-[#e7b766]' : 'text-[#efe6d4]'}`} />
-        <span className={`text-[9px] sm:text-[10px] tracking-wider ${active ? 'text-[#e7b766]' : 'text-[#efe6d4]'}`}>
+        <Mic className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${active ? 'text-[#e040fb]' : 'text-[#efe6d4]'}`} />
+        <span className={`text-[9px] sm:text-[10px] tracking-wider ${active ? 'text-[#e040fb]' : 'text-[#efe6d4]'}`}>
           {active ? 'helen' : 'helen'}
         </span>
       </button>
@@ -124,9 +124,9 @@ export default function HelenNarrates() {
             className="fixed left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] sm:w-full max-w-[600px]"
             style={{ bottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px))' }}
           >
-            <div className="bg-[#0b0a08]/95 backdrop-blur border-t border-[#e7b766]/30 rounded-lg px-3 sm:px-5 py-3 sm:py-4">
+            <div className="bg-[#0b0a08]/95 backdrop-blur border-t border-[#e040fb]/30 rounded-lg px-3 sm:px-5 py-3 sm:py-4">
               <div className="flex items-center mb-1.5 sm:mb-2">
-                <span className="text-[8px] sm:text-[9px] tracking-[0.2em] text-[#e7b766] font-mono uppercase">
+                <span className="text-[8px] sm:text-[9px] tracking-[0.2em] text-[#e040fb] font-mono uppercase">
                   Helen // Narrator
                 </span>
                 {isTyping && <Waveform />}

@@ -52,9 +52,9 @@ export default function BootOverlay() {
           transition={{ duration: 0.5, ease: [0.77, 0, 0.175, 1] }}
           className="fixed inset-0 z-[200] bg-[#0b0a08] flex items-center justify-center px-6"
         >
-          <div className="w-full max-w-2xl text-xs md:text-sm text-[#e7b766] relative">
+          <div className="w-full max-w-2xl text-xs md:text-sm text-[#e040fb] relative">
             <div className="flex items-center gap-2 mb-5 text-[#4a453e] text-[10px] uppercase tracking-widest">
-              <span className="w-2 h-2 bg-[#e7b766]" />
+              <span className="w-2 h-2 bg-[#e040fb]" />
               <span>conscious_shell — /boot</span>
             </div>
             {shown.map((l, i) => (
@@ -69,7 +69,7 @@ export default function BootOverlay() {
               </motion.div>
             ))}
             <div className="inline-flex items-center">
-              <span className="text-[#e7b766]">{cursor ? '▌' : ' '}</span>
+              <span className="text-[#e040fb]">{cursor ? '▌' : ' '}</span>
             </div>
           </div>
         </motion.div>

@@ -4,14 +4,9 @@ import { motion } from 'framer-motion';
 const lines: Array<{ prompt: string; cmd: string; out?: string[] }> = [
   {
     prompt: '~',
-    cmd: 'whoami',
-    out: ['micah boswell · design leader · designing since 1996 · on the web since 2000'],
-  },
-  {
-    prompt: '~',
     cmd: 'cat /portfolio/summary',
     out: [
-      '20+ years · 126 projects · 20+ clients · 3 books',
+      '30 years · 126 projects · 20+ clients · 3 books',
       'research → product → traction → organizations that ship',
     ],
   },
@@ -34,6 +29,8 @@ export default function Hero() {
 
   useEffect(() => {
     let cancelled = false;
+    setRendered([]);
+    setDone(false);
     const run = async () => {
       for (let i = 0; i < lines.length; i++) {
         const l = lines[i];
@@ -73,10 +70,10 @@ export default function Hero() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   return (
-    <section id="top" className="relative min-h-[100svh] overflow-hidden border-b border-[#1f1c17]">
+    <section id="top" className="relative overflow-hidden border-b border-[#1f1c17]">
       <div className="absolute inset-0 bg-gradient-to-b from-[#07070a]/30 via-transparent to-[#07070a] pointer-events-none" />
 
-      <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10 pt-16 sm:pt-24 md:pt-28 pb-16 sm:pb-20">
+      <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10 pt-16 sm:pt-24 md:pt-28 pb-20 sm:pb-24">
         {/* Classification strip */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -84,11 +81,11 @@ export default function Hero() {
           transition={{ duration: 0.5 }}
           className="flex items-center flex-wrap gap-3 text-[10px] uppercase tracking-widest mb-8"
         >
-          <span className="px-2 py-1 bg-[#e7b766] text-[#0b0a08] font-bold">REP-7 DOSSIER</span>
-          <span className="px-2 py-1 border border-[#e7b766]/60 text-[#e7b766]">CLASSIFIED // PUBLIC</span>
-          <span className="px-2 py-1 border border-[#5ec8d8]/60 text-[#5ec8d8]">LOS ANGELES · 2049</span>
+          <span className="px-2 py-1 bg-[#e040fb] text-[#0b0a08] font-bold">REP-7 DOSSIER</span>
+          <span className="px-2 py-1 border border-[#e040fb]/60 text-[#e040fb]">CLASSIFIED // PUBLIC</span>
+          <span className="px-2 py-1 border border-[#00d4ff]/60 text-[#00d4ff]">DALLAS · 2049</span>
           <span className="inline-flex items-center gap-1.5 sm:gap-2 px-2 py-1 border border-[#2a2620] text-[#6b6660]">
-            <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-[#ff7a5c] rounded-full animate-pulse" />
+            <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-[#ff006e] rounded-full animate-pulse" />
             <span className="hidden sm:inline">recording</span>
             <span className="sm:hidden">rec</span>
           </span>
@@ -103,11 +100,11 @@ export default function Hero() {
               className="text-[2.6rem] sm:text-7xl md:text-8xl lg:text-[9rem] leading-[0.85] sm:leading-[0.9] text-[#e8e4dc] chroma"
             >
               <span className="block">MICAH</span>
-              <span className="block neon-amber">BOSWELL<span className="neon-pink">_</span></span>
+              <span className="block neon-amber">BOSWELL<span className="neon-amber">_</span></span>
             </motion.h1>
 
             <div className="mt-3 sm:mt-4 flex items-baseline gap-2 sm:gap-3 flex-wrap">
-              <span className="font-jp text-base sm:text-xl md:text-2xl text-[#5ec8d8]">ミカ・ボズウェル</span>
+              <span className="font-jp text-base sm:text-xl md:text-2xl text-[#00d4ff]">ミカ・ボズウェル</span>
               <span className="text-[#4a453e]">//</span>
               <span className="text-xs uppercase tracking-widest text-[#a8a29e]">
                 design_leader · unit 1996 · active
@@ -119,11 +116,11 @@ export default function Hero() {
                 <div key={i} className="mb-3">
                   <div className="flex gap-2">
                     <span className="text-[#6b6660]">{l.prompt}</span>
-                    <span className="text-[#e7b766]">$</span>
+                    <span className="text-[#e040fb]">$</span>
                     <span className="text-[#e8e4dc]">
                       {l.typed}
                       {i === rendered.length - 1 && !done && (
-                        <span className="text-[#e7b766] animate-pulse">▌</span>
+                        <span className="text-[#e040fb] animate-pulse">▌</span>
                       )}
                     </span>
                   </div>
@@ -152,21 +149,21 @@ export default function Hero() {
                   <button
                     onClick={() => scrollTo('work')}
                     data-cursor="hover"
-                    className="px-3 sm:px-4 py-2 border border-[#e7b766] text-[#e7b766] hover:bg-[#e7b766] hover:text-[#0b0a08] active:bg-[#e7b766] active:text-[#0b0a08] transition-colors text-xs sm:text-sm"
+                    className="px-3 sm:px-4 py-2 border border-[#e040fb] text-[#e040fb] hover:bg-[#e040fb] hover:text-[#0b0a08] active:bg-[#e040fb] active:text-[#0b0a08] transition-colors text-xs sm:text-sm"
                   >
                     [ enter archive ]
                   </button>
                   <button
                     onClick={() => scrollTo('empathy')}
                     data-cursor="hover"
-                    className="px-3 sm:px-4 py-2 border border-[#5ec8d8] text-[#5ec8d8] hover:bg-[#5ec8d8] hover:text-[#0b0a08] active:bg-[#5ec8d8] active:text-[#0b0a08] transition-colors text-xs sm:text-sm"
+                    className="px-3 sm:px-4 py-2 border border-[#00d4ff] text-[#00d4ff] hover:bg-[#00d4ff] hover:text-[#0b0a08] active:bg-[#00d4ff] active:text-[#0b0a08] transition-colors text-xs sm:text-sm"
                   >
                     [ begin v-k test ]
                   </button>
                   <button
                     onClick={() => scrollTo('contact')}
                     data-cursor="hover"
-                    className="px-3 sm:px-4 py-2 border border-[#2a2620] text-[#a8a29e] hover:border-[#ff7a5c] hover:text-[#ff7a5c] active:border-[#ff7a5c] active:text-[#ff7a5c] transition-colors text-xs sm:text-sm"
+                    className="px-3 sm:px-4 py-2 border border-[#2a2620] text-[#a8a29e] hover:border-[#ff006e] hover:text-[#ff006e] active:border-[#ff006e] active:text-[#ff006e] transition-colors text-xs sm:text-sm"
                   >
                     [ transmit ]
                   </button>
@@ -184,12 +181,12 @@ export default function Hero() {
       <div className="absolute bottom-0 inset-x-0 z-10 border-t border-[#1f1c17] bg-[#07070a]/90 backdrop-blur-sm">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10 py-2 sm:py-3 flex items-center justify-between text-[9px] sm:text-[11px] text-[#6b6660] flex-wrap gap-2">
           <span>
-            <span className="text-[#e7b766]">tyrell.shell</span> v4.7 — more human than human
+            <span className="text-[#e040fb]">tyrell.shell</span> v4.7 — more human than human
           </span>
-          <span className="font-jp text-[#5ec8d8]/70 hidden md:inline">
+          <span className="font-jp text-[#00d4ff]/70 hidden md:inline">
             応答時間 〜48時間
           </span>
-          <span>status: <span className="text-[#e7b766]">active</span></span>
+          <span>status: <span className="text-[#e040fb]">active</span></span>
         </div>
       </div>
     </section>
@@ -208,18 +205,18 @@ function BiometricPanel() {
         temp: Number((36.4 + Math.random() * 0.6).toFixed(1)),
         baseline: Math.random() > 0.88 ? 'drift' : 'stable',
       });
-    }, 1200);
+    }, 4000);
     return () => clearInterval(id);
   }, []);
 
   return (
     <div className="border border-[#1f1c17] bg-[#0b0a08]/70 backdrop-blur-sm">
       <div className="flex items-center justify-between px-3 py-2 border-b border-[#1f1c17] text-[10px]">
-        <span className="flex items-center gap-2 text-[#e7b766]">
-          <span className="w-1.5 h-1.5 bg-[#e7b766] animate-pulse" />
+        <span className="flex items-center gap-2 text-[#e040fb]">
+          <span className="w-1.5 h-1.5 bg-[#e040fb] animate-pulse" />
           SUBJECT BIOMETRICS
         </span>
-        <span className="font-jp text-[#5ec8d8]">生体認証</span>
+        <span className="font-jp text-[#00d4ff]">生体認証</span>
       </div>
       <dl className="p-3 text-xs space-y-2">
         {[
@@ -240,7 +237,7 @@ function BiometricPanel() {
       </dl>
       <div className="border-t border-[#1f1c17] px-3 py-2 text-[10px] text-[#4a453e] flex items-center justify-between">
         <span>// monitoring</span>
-        <span className="text-[#5ec8d8]">● live</span>
+        <span className="text-[#00d4ff]">● live</span>
       </div>
     </div>
   );

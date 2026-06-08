@@ -84,11 +84,11 @@ export default function TimeMachine() {
           {/* Year marquee / scrubber */}
           <div className="col-span-12 border border-[#1f1c17] bg-[#0b0a08]/60">
             <div className="flex items-center justify-between px-4 py-2 border-b border-[#1f1c17] text-[10px]">
-              <span className="flex items-center gap-2 text-[#e7b766]">
-                <span className="w-1.5 h-1.5 bg-[#e7b766] animate-pulse" />
+              <span className="flex items-center gap-2 text-[#e040fb]">
+                <span className="w-1.5 h-1.5 bg-[#e040fb] animate-pulse" />
                 TEMPORAL ARCHIVE — {sorted.length} SNAPSHOTS OF CONSCIOUS-SHELL
               </span>
-              <span className="text-[#5ec8d8] font-jp hidden md:inline">自分の過去</span>
+              <span className="text-[#00d4ff] font-jp hidden md:inline">自分の過去</span>
             </div>
 
             <div className="px-4 pt-4 pb-2">
@@ -98,20 +98,20 @@ export default function TimeMachine() {
                     key={current.year}
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-4xl sm:text-5xl md:text-7xl text-[#e7b766] tabular-nums leading-none chroma"
+                    className="text-4xl sm:text-5xl md:text-7xl text-[#e040fb] tabular-nums leading-none chroma"
                   >
                     {current.year}
                   </motion.div>
                   <div className="text-xs text-[#6b6660]">
                     <div>era: <span className="text-[#e8e4dc]">{current.era_label}</span></div>
-                    <div>captured: <span className="text-[#5ec8d8]">{current.captured_at}</span></div>
+                    <div>captured: <span className="text-[#00d4ff]">{current.captured_at}</span></div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => step(-1)}
                     disabled={idx === 0}
-                    className="px-2 py-1 border border-[#2a2620] text-[#a8a29e] hover:border-[#e7b766] hover:text-[#e7b766] active:border-[#e7b766] active:text-[#e7b766] disabled:opacity-30 disabled:hover:border-[#2a2620] disabled:hover:text-[#a8a29e] transition-colors text-[10px] sm:text-xs"
+                    className="px-2 py-1 border border-[#2a2620] text-[#a8a29e] hover:border-[#e040fb] hover:text-[#e040fb] active:border-[#e040fb] active:text-[#e040fb] disabled:opacity-30 disabled:hover:border-[#2a2620] disabled:hover:text-[#a8a29e] transition-colors text-[10px] sm:text-xs"
                   >
                     <span className="hidden sm:inline">← rewind</span>
                     <span className="sm:hidden">←</span>
@@ -119,7 +119,7 @@ export default function TimeMachine() {
                   <button
                     onClick={() => step(1)}
                     disabled={idx === sorted.length - 1}
-                    className="px-2 py-1 border border-[#2a2620] text-[#a8a29e] hover:border-[#e7b766] hover:text-[#e7b766] active:border-[#e7b766] active:text-[#e7b766] disabled:opacity-30 disabled:hover:border-[#2a2620] disabled:hover:text-[#a8a29e] transition-colors text-[10px] sm:text-xs"
+                    className="px-2 py-1 border border-[#2a2620] text-[#a8a29e] hover:border-[#e040fb] hover:text-[#e040fb] active:border-[#e040fb] active:text-[#e040fb] disabled:opacity-30 disabled:hover:border-[#2a2620] disabled:hover:text-[#a8a29e] transition-colors text-[10px] sm:text-xs"
                   >
                     <span className="hidden sm:inline">forward →</span>
                     <span className="sm:hidden">→</span>
@@ -133,8 +133,8 @@ export default function TimeMachine() {
                 <motion.div
                   animate={{ width: `${pct}%` }}
                   transition={{ duration: 0.35 }}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 h-px bg-[#e7b766]"
-                  style={{ boxShadow: '0 0 6px #e7b766' }}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 h-px bg-[#e040fb]"
+                  style={{ boxShadow: '0 0 6px #e040fb' }}
                 />
                 {sorted.map((c, i) => {
                   const p = ((c.year - minYear) / Math.max(1, maxYear - minYear)) * 100;
@@ -149,12 +149,12 @@ export default function TimeMachine() {
                     >
                       <span
                         className={`block w-[2px] h-3 transition-all ${
-                          active ? 'bg-[#e7b766] h-5' : 'bg-[#3a342c] group-hover:bg-[#5ec8d8]'
+                          active ? 'bg-[#e040fb] h-5' : 'bg-[#3a342c] group-hover:bg-[#00d4ff]'
                         }`}
                       />
                       <span
                         className={`absolute top-full mt-1 left-1/2 -translate-x-1/2 text-[9px] tabular-nums transition-colors ${
-                          active ? 'text-[#e7b766]' : 'text-[#4a453e] group-hover:text-[#5ec8d8]'
+                          active ? 'text-[#e040fb]' : 'text-[#4a453e] group-hover:text-[#00d4ff]'
                         }`}
                       >
                         {String(c.year).slice(2)}
@@ -167,13 +167,13 @@ export default function TimeMachine() {
           </div>
 
           {/* Viewport */}
-          <div className="col-span-12 lg:col-span-9 relative border border-[#e7b766]/40 bg-[#07070a] overflow-hidden aspect-[16/10]">
-            <div className="absolute top-0 inset-x-0 z-10 flex items-center justify-between px-3 py-1.5 text-[10px] bg-[#0b0a08]/90 border-b border-[#e7b766]/30">
-              <div className="flex items-center gap-2 text-[#e7b766]">
-                <span className="w-1.5 h-1.5 bg-[#ff7a5c] animate-pulse rounded-full" />
+          <div className="col-span-12 lg:col-span-9 relative border border-[#e040fb]/40 bg-[#07070a] overflow-hidden aspect-[16/10]">
+            <div className="absolute top-0 inset-x-0 z-10 flex items-center justify-between px-3 py-1.5 text-[10px] bg-[#0b0a08]/90 border-b border-[#e040fb]/30">
+              <div className="flex items-center gap-2 text-[#e040fb]">
+                <span className="w-1.5 h-1.5 bg-[#ff006e] animate-pulse rounded-full" />
                 <span>ARCHIVE PLATE — conscious-shell.{current.year}</span>
               </div>
-              <div className="text-[#5ec8d8] hidden sm:block">● DEVELOPED</div>
+              <div className="text-[#00d4ff] hidden sm:block">● DEVELOPED</div>
             </div>
 
             <AnimatePresence mode="wait">
@@ -209,26 +209,26 @@ export default function TimeMachine() {
             </AnimatePresence>
 
             {/* corner reticles */}
-            <span className="absolute top-7 left-1 w-3 h-px bg-[#e7b766]" />
-            <span className="absolute top-7 left-1 h-3 w-px bg-[#e7b766]" />
-            <span className="absolute top-7 right-1 w-3 h-px bg-[#e7b766]" />
-            <span className="absolute top-7 right-1 h-3 w-px bg-[#e7b766]" />
-            <span className="absolute bottom-1 left-1 w-3 h-px bg-[#e7b766]" />
-            <span className="absolute bottom-1 left-1 h-3 w-px bg-[#e7b766]" />
-            <span className="absolute bottom-1 right-1 w-3 h-px bg-[#e7b766]" />
-            <span className="absolute bottom-1 right-1 h-3 w-px bg-[#e7b766]" />
+            <span className="absolute top-7 left-1 w-3 h-px bg-[#e040fb]" />
+            <span className="absolute top-7 left-1 h-3 w-px bg-[#e040fb]" />
+            <span className="absolute top-7 right-1 w-3 h-px bg-[#e040fb]" />
+            <span className="absolute top-7 right-1 h-3 w-px bg-[#e040fb]" />
+            <span className="absolute bottom-1 left-1 w-3 h-px bg-[#e040fb]" />
+            <span className="absolute bottom-1 left-1 h-3 w-px bg-[#e040fb]" />
+            <span className="absolute bottom-1 right-1 w-3 h-px bg-[#e040fb]" />
+            <span className="absolute bottom-1 right-1 h-3 w-px bg-[#e040fb]" />
 
-            <div className="absolute bottom-0 inset-x-0 z-10 px-3 py-1.5 text-[10px] bg-[#0b0a08]/90 border-t border-[#e7b766]/30 flex items-center justify-between">
+            <div className="absolute bottom-0 inset-x-0 z-10 px-3 py-1.5 text-[10px] bg-[#0b0a08]/90 border-t border-[#e040fb]/30 flex items-center justify-between">
               <span className="text-[#6b6660] truncate">{current.note}</span>
-              <span className="text-[#5ec8d8] hidden sm:inline">local plate</span>
+              <span className="text-[#00d4ff] hidden sm:inline">local plate</span>
             </div>
           </div>
 
           {/* Year index */}
           <div className="col-span-12 lg:col-span-3 border border-[#1f1c17] bg-[#0b0a08]/60 flex flex-col">
             <div className="flex items-center justify-between px-3 py-2 border-b border-[#1f1c17] text-[10px]">
-              <span className="text-[#e7b766]">CAPTURE INDEX</span>
-              <span className="font-jp text-[#5ec8d8]">記録</span>
+              <span className="text-[#e040fb]">CAPTURE INDEX</span>
+              <span className="font-jp text-[#00d4ff]">記録</span>
             </div>
             <ul className="divide-y divide-dashed divide-[#1f1c17] text-xs overflow-y-auto">
               {sorted.map((c, i) => (
@@ -237,7 +237,7 @@ export default function TimeMachine() {
                     onClick={() => setIdx(i)}
                     className={`w-full text-left px-3 py-2 flex items-baseline justify-between gap-2 transition-colors ${
                       i === idx
-                        ? 'bg-[#1a1712] text-[#e7b766]'
+                        ? 'bg-[#1a1712] text-[#e040fb]'
                         : 'text-[#a8a29e] hover:bg-[#121008] hover:text-[#e8e4dc]'
                     }`}
                   >

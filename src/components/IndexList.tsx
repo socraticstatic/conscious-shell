@@ -24,7 +24,7 @@ export default function IndexList({ projects }: { projects: Project[] }) {
         <SectionHeader path="/index" jp="完全記録" count={projects.length} right={`grep "${q || '.*'}" ${filtered.length}/${projects.length}`} />
 
         <div className="mt-6 flex items-center gap-3 border-b border-[#1f1c17] pb-3">
-          <span className="text-[#e7b766]">$</span>
+          <span className="text-[#e040fb]">$</span>
           <span className="text-[#6b6660]">grep</span>
           <input
             value={q}
@@ -33,7 +33,7 @@ export default function IndexList({ projects }: { projects: Project[] }) {
             className="flex-1 bg-transparent outline-none text-[#e8e4dc] placeholder:text-[#4a453e] text-sm"
           />
           {q && (
-            <button onClick={() => setQ('')} className="text-xs text-[#6b6660] hover:text-[#e7b766]">
+            <button onClick={() => setQ('')} className="text-xs text-[#6b6660] hover:text-[#e040fb]">
               clear
             </button>
           )}
@@ -73,11 +73,11 @@ function Row({ project, index }: { project: Project; index: number }) {
       className="group grid grid-cols-12 gap-3 md:gap-6 items-center py-3 border-b border-[#1f1c17] border-dashed hover:bg-[#141210] transition-colors"
       data-cursor="hover"
     >
-      <div className="col-span-2 md:col-span-1 text-[11px] tabular-nums text-[#4a453e] group-hover:text-[#e7b766]">
+      <div className="col-span-2 md:col-span-1 text-[11px] tabular-nums text-[#4a453e] group-hover:text-[#e040fb]">
         {String(index + 1).padStart(3, '0')}
       </div>
-      <div className="col-span-6 md:col-span-5 min-w-0 text-sm md:text-base text-[#e8e4dc] group-hover:text-[#e7b766] transition-colors truncate">
-        {project.featured && <span className="mr-1 text-[10px] text-[#e7b766]">◉</span>}
+      <div className="col-span-6 md:col-span-5 min-w-0 text-sm md:text-base text-[#e8e4dc] group-hover:text-[#e040fb] transition-colors truncate">
+        {project.featured && <span className="mr-1 text-[10px] text-[#e040fb]">◉</span>}
         {project.title}
       </div>
       <div className="hidden md:block md:col-span-3 text-xs text-[#a8a29e] truncate">{project.role}</div>

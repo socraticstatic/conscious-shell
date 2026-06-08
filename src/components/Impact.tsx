@@ -46,7 +46,7 @@ export default function Impact() {
               {decades.map(([year, n], i) => (
                 <div key={year} className="flex gap-3">
                   <span className="text-[#4a453e] w-8">{year}</span>
-                  <span className="text-[#e7b766]">{bar(n, maxDec, 24)}</span>
+                  <span className="text-[#e040fb]">{bar(n, maxDec, 24)}</span>
                   <span className="text-[#e8e4dc] tabular-nums">{String(n).padStart(3, ' ')}</span>
                   {i === decades.length - 1 && <span className="text-[#4a453e]">← current</span>}
                 </div>
@@ -65,7 +65,7 @@ export default function Impact() {
               {disciplines.map(([name, n]) => (
                 <div key={name} className="flex gap-3">
                   <span className="text-[#4a453e] w-36 truncate">{name}</span>
-                  <span className="text-[#e7b766]">{bar(n, 100, 18)}</span>
+                  <span className="text-[#e040fb]">{bar(n, 100, 18)}</span>
                   <span className="text-[#e8e4dc] tabular-nums">{n}%</span>
                 </div>
               ))}
@@ -84,7 +84,7 @@ export default function Impact() {
               className="bg-[#0b0a08] p-6 md:p-8"
             >
               <div className="text-[11px] text-[#6b6660] uppercase tracking-wider">{k}</div>
-              <div className="mt-3 text-3xl sm:text-4xl md:text-5xl text-[#e7b766] tabular-nums leading-none">{v}</div>
+              <div className="mt-3 text-3xl sm:text-4xl md:text-5xl text-[#e040fb] tabular-nums leading-none">{v}</div>
             </motion.div>
           ))}
         </div>

@@ -54,9 +54,9 @@ export default function Nav({ onOpenPalette }: { onOpenPalette: () => void }) {
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10 h-14 md:h-12 flex items-center justify-between text-[11px] sm:text-[12px]">
           <button
             onClick={() => go('top')}
-            className="flex items-center gap-2 text-[#e8e4dc] hover:text-[#e7b766] transition-colors"
+            className="flex items-center gap-2 text-[#e8e4dc] hover:text-[#e040fb] transition-colors"
           >
-            <span className="w-1.5 h-1.5 bg-[#e7b766]" />
+            <span className="w-1.5 h-1.5 bg-[#e040fb]" />
             <span className="font-mono">conscious_shell</span>
             <span className="text-[#6b6660]">v4.7</span>
           </button>
@@ -67,7 +67,7 @@ export default function Nav({ onOpenPalette }: { onOpenPalette: () => void }) {
                 key={l.id}
                 onClick={() => go(l.id)}
                 data-cursor="hover"
-                className="hover:text-[#e7b766] transition-colors"
+                className="hover:text-[#e040fb] transition-colors"
               >
                 ./{l.label}
               </button>
@@ -78,7 +78,7 @@ export default function Nav({ onOpenPalette }: { onOpenPalette: () => void }) {
             <button
               data-cursor="hover"
               onClick={onOpenPalette}
-              className="hidden sm:flex text-[#a8a29e] hover:text-[#e7b766] transition-colors items-center gap-2"
+              className="hidden sm:flex text-[#a8a29e] hover:text-[#e040fb] transition-colors items-center gap-2"
               aria-label="open palette"
             >
               <span className="hidden md:inline">⌘K</span>
@@ -88,7 +88,7 @@ export default function Nav({ onOpenPalette }: { onOpenPalette: () => void }) {
             {/* Mobile hamburger */}
             <button
               onClick={() => setDrawerOpen(true)}
-              className="md:hidden inline-flex items-center justify-center w-11 h-11 -mr-2 text-[#e7b766] hover:bg-[#1a1712] active:bg-[#1a1712] transition-colors"
+              className="md:hidden inline-flex items-center justify-center w-11 h-11 -mr-2 text-[#e040fb] hover:bg-[#1a1712] active:bg-[#1a1712] transition-colors"
               aria-label="open navigation"
               aria-expanded={drawerOpen}
             >
@@ -116,13 +116,13 @@ export default function Nav({ onOpenPalette }: { onOpenPalette: () => void }) {
         >
           <div className="flex items-center justify-between px-5 h-14 border-b border-[#1f1c17]">
             <div className="flex items-center gap-2 text-[11px] font-mono">
-              <span className="w-1.5 h-1.5 bg-[#e7b766]" />
+              <span className="w-1.5 h-1.5 bg-[#e040fb]" />
               <span className="text-[#e8e4dc]">conscious_shell</span>
               <span className="text-[#6b6660]">v4.7</span>
             </div>
             <button
               onClick={() => setDrawerOpen(false)}
-              className="w-11 h-11 -mr-2 inline-flex items-center justify-center text-[#a8a29e] hover:text-[#e7b766]"
+              className="w-11 h-11 -mr-2 inline-flex items-center justify-center text-[#a8a29e] hover:text-[#e040fb]"
               aria-label="close navigation"
             >
               <X size={20} />
@@ -141,9 +141,9 @@ export default function Nav({ onOpenPalette }: { onOpenPalette: () => void }) {
               >
                 <div className="flex items-baseline gap-3">
                   <span className="text-[10px] font-mono text-[#5c544a] w-6 tabular-nums">{String(i + 1).padStart(2, '0')}</span>
-                  <span className="text-[18px] text-[#e7b766] font-mono">./{l.label}</span>
+                  <span className="text-[18px] text-[#e040fb] font-mono">./{l.label}</span>
                 </div>
-                <span className="font-jp text-xs text-[#5ec8d8]/70">{l.jp}</span>
+                <span className="font-jp text-xs text-[#00d4ff]/70">{l.jp}</span>
               </button>
             ))}
             <button
@@ -152,7 +152,7 @@ export default function Nav({ onOpenPalette }: { onOpenPalette: () => void }) {
             >
               <div className="flex items-baseline gap-3">
                 <span className="text-[10px] font-mono text-[#5c544a] w-6">⌘K</span>
-                <span className="text-[16px] text-[#5ec8d8] font-mono">/palette</span>
+                <span className="text-[16px] text-[#00d4ff] font-mono">/palette</span>
               </div>
               <span className="text-[10px] tracking-widest text-[#5c544a]">jump-to</span>
             </button>

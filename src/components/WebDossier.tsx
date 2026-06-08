@@ -5,15 +5,15 @@ import type { WebDossierFact, LinkedInRecommendation } from '../lib/supabase';
 import { SectionHeader } from './Work';
 
 const CATEGORY_META: Record<string, { label: string; accent: string }> = {
-  role: { label: 'active role', accent: '#ff3b6e' },
-  experience: { label: 'prior art', accent: '#e7b766' },
-  expertise: { label: 'specialty', accent: '#5ec8d8' },
-  mentoring: { label: 'mentoring', accent: '#c8a673' },
-  writing: { label: 'writing', accent: '#ffb267' },
-  opinion: { label: 'opinion', accent: '#c14a5b' },
-  off_duty: { label: 'off duty', accent: '#7dd6e8' },
+  role: { label: 'active role', accent: '#ff006e' },
+  experience: { label: 'prior art', accent: '#e040fb' },
+  expertise: { label: 'specialty', accent: '#00d4ff' },
+  mentoring: { label: 'mentoring', accent: '#a78bfa' },
+  writing: { label: 'writing', accent: '#e040fb' },
+  opinion: { label: 'opinion', accent: '#ff006e' },
+  off_duty: { label: 'off duty', accent: '#4fc3f7' },
   bio: { label: 'bio', accent: '#a8a29e' },
-  testimony: { label: 'field testimony · cross-checked', accent: '#7dd6e8' },
+  testimony: { label: 'field testimony · cross-checked', accent: '#00d4ff' },
 };
 
 function recsToFacts(recs: LinkedInRecommendation[]): WebDossierFact[] {
@@ -227,7 +227,7 @@ export default function WebDossier({
                   initial={{ opacity: 0, x: 6 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.35 }}
-                  className="block border border-[#1f1c17] bg-black/50 px-3 py-2.5 hover:border-[#e7b766]/60 transition-colors group"
+                  className="block border border-[#1f1c17] bg-black/50 px-3 py-2.5 hover:border-[#e040fb]/60 transition-colors group"
                 >
                   {Inner}
                 </motion.a>

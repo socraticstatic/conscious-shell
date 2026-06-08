@@ -76,7 +76,7 @@ export default function OverrideMode() {
             className="fixed top-3 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 border border-[#ff3b3b]/70 bg-[#1a0404]/90 backdrop-blur-sm px-3 py-1.5"
           >
             <AlertOctagon className="w-3.5 h-3.5 text-[#ff3b3b] animate-pulse" />
-            <span className="text-[10px] tracking-[0.4em] uppercase text-[#ff7a5c]">
+            <span className="text-[10px] tracking-[0.4em] uppercase text-[#ff006e]">
               override · engaged
             </span>
             <button

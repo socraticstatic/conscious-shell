@@ -38,7 +38,7 @@ export default function SelfDestruct() {
   const secs = remaining % 60
   const timeStr = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`
   const progress = remaining / TOTAL
-  const color = remaining < 30 ? '#ff7a5c' : remaining < 120 ? '#e7b766' : '#5ec8d8'
+  const color = remaining < 30 ? '#ff006e' : remaining < 120 ? '#e040fb' : '#00d4ff'
 
   if (minimized) return (
     <div className="fixed bottom-6 left-6 z-40 hidden md:block">
@@ -59,7 +59,7 @@ export default function SelfDestruct() {
       transition={{ borderColor: { duration: 1, repeat: Infinity }, x: { duration: 0.3, repeat: Infinity } }}
     >
       <div className="flex justify-between items-center">
-        <span className="text-[8px] tracking-[0.4em] uppercase" style={{ color: '#ff7a5c' }}>SELF-DESTRUCT</span>
+        <span className="text-[8px] tracking-[0.4em] uppercase" style={{ color: '#ff006e' }}>SELF-DESTRUCT</span>
         <button onClick={() => setMinimized(true)} className="text-[10px] text-[#4a453e] leading-none">-</button>
       </div>
       {phase === 'counting' || phase === 'zero' ? (
@@ -79,7 +79,7 @@ export default function SelfDestruct() {
         </>
       ) : phase === 'failed' ? (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <p className="text-[10px] text-[#ff7a5c] font-mono mt-1 tracking-wider">DETONATION FAILED</p>
+          <p className="text-[10px] text-[#ff006e] font-mono mt-1 tracking-wider">DETONATION FAILED</p>
           <p className="text-[8px] text-[#4a453e] font-mono mt-0.5">// just kidding. it&apos;s a portfolio.</p>
         </motion.div>
       ) : null}

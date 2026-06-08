@@ -3,11 +3,11 @@ import { AnimatePresence, motion } from 'framer-motion';
 import type { Noir } from '../lib/supabase';
 
 const MOOD_COLOR: Record<string, string> = {
-  rain: '#5ec8d8',
+  rain: '#00d4ff',
   smoke: '#c9b8a6',
-  neon: '#ff7a5c',
-  dread: '#ff3b3b',
-  wry: '#e7b766',
+  neon: '#ff006e',
+  dread: '#a78bfa',
+  wry: '#e040fb',
 };
 
 export default function NoirSubtitles({ lines }: { lines: Noir[] }) {

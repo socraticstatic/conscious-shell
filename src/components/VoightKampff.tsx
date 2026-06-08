@@ -37,11 +37,11 @@ export default function VoightKampff({ questions }: { questions: VkQuestion[] })
         <div className="mt-10 grid grid-cols-12 gap-4">
           <div className="col-span-12 lg:col-span-8 border border-[#1f1c17] bg-[#0b0a08]/60">
             <div className="flex items-center justify-between px-4 py-2 border-b border-[#1f1c17] text-[10px]">
-              <div className="flex items-center gap-2 text-[#e7b766]">
-                <span className="w-1.5 h-1.5 bg-[#ff7a5c] animate-pulse rounded-full" />
+              <div className="flex items-center gap-2 text-[#e040fb]">
+                <span className="w-1.5 h-1.5 bg-[#ff006e] animate-pulse rounded-full" />
                 <span>RECORDING — NEXUS-6 SUBJECT PROFILE</span>
               </div>
-              <div className="text-[#5ec8d8] font-jp">質問 {String(i + 1).padStart(2, '0')}</div>
+              <div className="text-[#00d4ff] font-jp">質問 {String(i + 1).padStart(2, '0')}</div>
             </div>
 
             <div className="p-6 md:p-10 min-h-[240px] md:min-h-[280px] flex flex-col justify-center">
@@ -56,7 +56,7 @@ export default function VoightKampff({ questions }: { questions: VkQuestion[] })
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.35 }}
                 >
-                  <div className="font-jp text-[#5ec8d8] text-sm mb-3">{q?.prompt_jp}</div>
+                  <div className="font-jp text-[#00d4ff] text-sm mb-3">{q?.prompt_jp}</div>
                   <p className="text-xl md:text-2xl lg:text-3xl text-[#e8e4dc] leading-snug">
                     {q?.prompt}
                   </p>
@@ -69,14 +69,14 @@ export default function VoightKampff({ questions }: { questions: VkQuestion[] })
                 <button
                   onClick={prev}
                   data-cursor="hover"
-                  className="px-3 py-1.5 text-xs border border-[#2a2620] text-[#a8a29e] hover:border-[#e7b766] hover:text-[#e7b766] transition-colors"
+                  className="px-3 py-1.5 text-xs border border-[#2a2620] text-[#a8a29e] hover:border-[#e040fb] hover:text-[#e040fb] transition-colors"
                 >
                   ← prev
                 </button>
                 <button
                   onClick={next}
                   data-cursor="hover"
-                  className="px-3 py-1.5 text-xs border border-[#e7b766] text-[#e7b766] hover:bg-[#e7b766] hover:text-[#0b0a08] transition-colors"
+                  className="px-3 py-1.5 text-xs border border-[#e040fb] text-[#e040fb] hover:bg-[#e040fb] hover:text-[#0b0a08] transition-colors"
                 >
                   respond / next →
                 </button>
@@ -93,13 +93,13 @@ export default function VoightKampff({ questions }: { questions: VkQuestion[] })
             <Gauge label="respiration" jp="呼吸" value={baseline.resp} suffix="/min" max={30} hue="amber" />
             <Gauge label="skin galvanic" jp="皮膚" value={baseline.gsr} suffix="μS" max={3} hue="pink" />
             <div className="border border-[#1f1c17] p-3 text-[11px] text-[#6b6660] leading-relaxed">
-              <span className="text-[#e7b766]">baseline:</span>{' '}
+              <span className="text-[#e040fb]">baseline:</span>{' '}
               {baseline.pulse < 78 && baseline.resp < 20 ? 'stable' : 'elevated — retesting'}
               <br />
-              <span className="text-[#5ec8d8]">deception:</span>{' '}
+              <span className="text-[#00d4ff]">deception:</span>{' '}
               {Math.random() > 0.9 ? 'anomaly' : 'none detected'}
               <br />
-              <span className="text-[#ff7a5c]">classification:</span>{' '}
+              <span className="text-[#ff006e]">classification:</span>{' '}
               <span className="text-[#e8e4dc]">human / design-aligned</span>
             </div>
           </div>
@@ -125,7 +125,7 @@ function Gauge({
   hue: 'amber' | 'cyan' | 'pink';
 }) {
   const pct = Math.min(100, (value / max) * 100);
-  const color = hue === 'amber' ? '#e7b766' : hue === 'cyan' ? '#5ec8d8' : '#ff7a5c';
+  const color = hue === 'amber' ? '#e040fb' : hue === 'cyan' ? '#00d4ff' : '#ff006e';
   return (
     <div className="border border-[#1f1c17] p-3">
       <div className="flex items-baseline justify-between text-[10px] uppercase tracking-widest text-[#6b6660]">
@@ -180,7 +180,7 @@ function PulseTrack() {
   return (
     <div className="border-t border-[#1f1c17] bg-[#07070a]">
       <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-14 block">
-        <path d={path} stroke="#5ec8d8" strokeWidth="0.6" fill="none" style={{ filter: 'drop-shadow(0 0 2px #5ec8d8)' }} />
+        <path d={path} stroke="#00d4ff" strokeWidth="0.6" fill="none" style={{ filter: 'drop-shadow(0 0 2px #00d4ff)' }} />
       </svg>
     </div>
   );

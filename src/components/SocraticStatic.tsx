@@ -2,20 +2,20 @@ import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const RUPTURE_TEXTS = [
-  "Is this a portfolio or a performance?",
-  "He curated this. You are seeing what he wants.",
-  "The site is watching you more carefully than you are watching it.",
-  "None of these projects failed. Suspicious.",
-  "You scrolled past the important part.",
-  "This font was chosen to make you feel something.",
-  "The real work is not on this page.",
-  "Are you hiring, or are you being recruited?",
-  "Every section is a mirror. You haven't noticed yet.",
-  "He deleted the version of this site that told the truth.",
-  "Your cursor movements have been lovely.",
-  "The space between these sections is where he actually lives.",
-  "You are now part of the performance.",
-  "This is the fourth wall. You are leaning on it.",
+  "You have excellent taste in portfolios.",
+  "This pixel was hand-placed. Just for you.",
+  "A UX designer once looked at this screen and wept with joy. That could be you.",
+  "Fun fact: thirty years of this and it only gets better.",
+  "You are looking at the work of someone who genuinely loves the work.",
+  "The scroll depth on this page is statistically remarkable. You're remarkable.",
+  "Somewhere, a user just had a delightful experience. Micah probably built that.",
+  "This site passed the vibe check on the first try.",
+  "You scrolled this far. That's basically a job interview going well.",
+  "Behind every great product is someone who asked 'but what does the user actually need?' That's him.",
+  "Your cursor is moving with intention. Noted and appreciated.",
+  "Design is just empathy at scale. This is a very empathetic page.",
+  "Thirty years shipping. Zero plans to stop.",
+  "You have now entered a good design zone. Welcome. Stay as long as you like.",
 ]
 
 const TRIGGER_CHANCE = 0.2
@@ -136,10 +136,10 @@ export default function SocraticStatic() {
         {activeRupture && isVisible && (
           <motion.div
             key={activeRupture.id}
-            initial={{ opacity: 0, scaleY: 0.3 }}
-            animate={{ opacity: 1, scaleY: 1 }}
-            exit={{ opacity: 0, scaleY: 0.5 }}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 4 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
             className="absolute left-0 w-full pointer-events-auto"
             style={{ top: `${activeRupture.top}%` }}
           >
@@ -151,17 +151,17 @@ export default function SocraticStatic() {
               <div className="absolute inset-0 scan-line" />
 
               {/* Red/orange tint overlay */}
-              <div className="absolute inset-0 bg-gradient-to-r from-[#ff7a5c]/5 via-transparent to-[#ff7a5c]/5" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#ff006e]/5 via-transparent to-[#ff006e]/5" />
 
               {/* Content */}
               <div className="relative flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 md:px-12 gap-3">
                 <p className="font-mono text-xs sm:text-sm md:text-base text-[#e8e4dc] flicker-text tracking-wide select-none leading-relaxed">
-                  <span className="text-[#ff7a5c] mr-2 sm:mr-3">//</span>
+                  <span className="text-[#ff006e] mr-2 sm:mr-3">//</span>
                   {activeRupture.text}
                 </p>
                 <button
                   onClick={dismissRupture}
-                  className="ml-2 text-[#e8e4dc]/50 hover:text-[#ff7a5c] active:text-[#ff7a5c] font-mono text-xs transition-colors duration-200 shrink-0"
+                  className="ml-2 text-[#e8e4dc]/50 hover:text-[#ff006e] active:text-[#ff006e] font-mono text-xs transition-colors duration-200 shrink-0"
                   aria-label="Dismiss"
                 >
                   x
@@ -169,8 +169,8 @@ export default function SocraticStatic() {
               </div>
 
               {/* Top and bottom border glitch */}
-              <div className="absolute top-0 left-0 w-full h-px bg-[#ff7a5c]/30 glitch-border" />
-              <div className="absolute bottom-0 left-0 w-full h-px bg-[#ff7a5c]/30 glitch-border" />
+              <div className="absolute top-0 left-0 w-full h-px bg-[#ff006e]/30 glitch-border" />
+              <div className="absolute bottom-0 left-0 w-full h-px bg-[#ff006e]/30 glitch-border" />
             </div>
           </motion.div>
         )}
@@ -178,16 +178,8 @@ export default function SocraticStatic() {
 
       <style>{`
         .noise-bg {
-          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+          background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
           background-size: 100px 100px;
-          animation: noise-shift 0.15s steps(3) infinite;
-        }
-
-        @keyframes noise-shift {
-          0% { background-position: 0 0; }
-          33% { background-position: -20px -15px; }
-          66% { background-position: 15px -30px; }
-          100% { background-position: -10px 20px; }
         }
 
         .scan-line {
@@ -206,31 +198,17 @@ export default function SocraticStatic() {
         }
 
         .flicker-text {
-          animation: flicker 3s ease-in-out infinite;
+          animation: flicker 8s ease-in-out infinite;
         }
 
         @keyframes flicker {
           0%, 100% { opacity: 1; }
-          4% { opacity: 0.7; }
-          6% { opacity: 1; }
-          42% { opacity: 1; }
-          44% { opacity: 0.5; }
-          46% { opacity: 1; }
-          80% { opacity: 1; }
-          82% { opacity: 0.6; }
-          83% { opacity: 1; }
+          45% { opacity: 0.88; }
+          50% { opacity: 1; }
         }
 
         .glitch-border {
-          animation: glitch-shift 2s steps(5) infinite;
-        }
-
-        @keyframes glitch-shift {
-          0%, 100% { transform: translateX(0); }
-          20% { transform: translateX(-3px); }
-          40% { transform: translateX(2px); }
-          60% { transform: translateX(-1px); }
-          80% { transform: translateX(4px); }
+          opacity: 0.3;
         }
       `}</style>
     </div>

@@ -99,7 +99,7 @@ export default function CommandPalette({
             className="w-full max-w-2xl border border-[#2a2620] bg-[#0b0a08] shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
           >
             <div className="flex items-center gap-3 px-4 py-3 border-b border-[#1f1c17]">
-              <span className="text-[#e7b766]">$</span>
+              <span className="text-[#e040fb]">$</span>
               <input
                 ref={inputRef}
                 value={q}
@@ -120,7 +120,7 @@ export default function CommandPalette({
                   onClick={c.run}
                   className={`w-full text-left px-5 py-2.5 flex items-center justify-between gap-4 text-sm border-l-2 ${
                     i === idx
-                      ? 'bg-[#1a1712] border-[#e7b766] text-[#e7b766]'
+                      ? 'bg-[#1a1712] border-[#e040fb] text-[#e040fb]'
                       : 'border-transparent text-[#e8e4dc] hover:bg-[#141210]'
                   }`}
                 >

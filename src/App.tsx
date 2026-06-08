@@ -5,7 +5,7 @@ import DevtoolsEasterEggs from './components/DevtoolsEasterEggs';
 import Work from './components/Work';
 import BootOverlay from './components/BootOverlay';
 import SessionHUD from './components/SessionHUD';
-import BaselineDrift from './components/BaselineDrift';
+
 import AmbientAudio from './components/AmbientAudio';
 import CRTOverlay from './components/CRTOverlay';
 import SoulLayer from './components/SoulLayer';
@@ -36,7 +36,7 @@ import type {
 // mount after the first paint settles. Saves ~hundreds of KB on the
 // critical path and stops the initial render from competing with
 // every ambient effect on the page.
-const GithubLab = lazy(() => import('./components/GithubLab'));
+const LiveSites = lazy(() => import('./components/LiveSites'));
 const VoightKampff = lazy(() => import('./components/VoightKampff'));
 const TimeMachine = lazy(() => import('./components/TimeMachine'));
 const IndexList = lazy(() => import('./components/IndexList'));
@@ -116,13 +116,13 @@ export default function App() {
     const cb = () => setHydrated(true);
     const ric = (window as unknown as { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number }).requestIdleCallback;
     if (typeof ric === 'function') {
-      const id = ric(cb, { timeout: 2000 });
+      const id = ric(cb, { timeout: 400 });
       return () => {
         const cic = (window as unknown as { cancelIdleCallback?: (id: number) => void }).cancelIdleCallback;
         if (typeof cic === 'function') cic(id);
       };
     }
-    const t = setTimeout(cb, 800);
+    const t = setTimeout(cb, 200);
     return () => clearTimeout(t);
   }, []);
 
@@ -165,7 +165,7 @@ export default function App() {
       <BootOverlay />
       <CRTOverlay />
       <SessionHUD />
-      <BaselineDrift />
+
       <AmbientAudio />
       <Nav onOpenPalette={() => setPaletteOpen(true)} />
       <Hero />
@@ -193,10 +193,9 @@ export default function App() {
           <TimeMachine />
           <VoightKampff questions={data?.vk ?? []} />
           <VKInterview recommendations={data?.recommendations ?? []} />
-          <GithubLab projects={data?.github ?? []} />
+          <LiveSites />
           <Certifications certs={data?.certifications ?? []} />
           <EsperScene hotspots={data?.esper ?? []} />
-          <AgentBattle initial={(data?.designRounds ?? []).map(toRound)} />
           <Manifesto articles={data?.articles ?? []} />
           <BaselineGate>
             <BaselineUnlocked />

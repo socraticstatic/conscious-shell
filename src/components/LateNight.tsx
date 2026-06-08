@@ -47,7 +47,7 @@ export default function LateNight() {
         className="fixed top-0 left-0 right-0 z-50 pointer-events-none flex items-center justify-between px-4"
         style={{ height: 28, background: 'rgba(20, 5, 5, 0.9)', boxShadow: '0 0 12px rgba(255, 60, 30, 0.15)' }}
       >
-        <span className="text-[11px] italic" style={{ color: '#ff7a5c' }}>
+        <span className="text-[11px] italic" style={{ color: '#ff006e' }}>
           you're up late. so is he.
         </span>
         <button
@@ -55,7 +55,7 @@ export default function LateNight() {
           className="pointer-events-auto opacity-60 hover:opacity-100 transition-opacity"
           aria-label="Dismiss"
         >
-          <X size={12} color="#ff7a5c" />
+          <X size={12} color="#ff006e" />
         </button>
       </div>
 

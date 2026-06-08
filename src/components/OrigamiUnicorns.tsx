@@ -78,7 +78,7 @@ export default function OrigamiUnicorns() {
             animate={{ opacity: isFound ? 0.3 : pos.baseOpacity }}
             whileHover={{
               opacity: 1,
-              filter: 'drop-shadow(0 0 6px #e7b766) drop-shadow(0 0 12px #e7b766)',
+              filter: 'drop-shadow(0 0 6px #e040fb) drop-shadow(0 0 12px #e040fb)',
               scale: 1.3,
             }}
             transition={{ duration: 0.3 }}
@@ -93,8 +93,8 @@ export default function OrigamiUnicorns() {
             >
               <path
                 d="M4 20L8 12L12 16L16 8L14 4L18 2L20 6L22 4L20 10L16 12L18 18L14 20L12 16L8 18L4 20Z"
-                fill="#e7b766"
-                stroke="#e7b766"
+                fill="#e040fb"
+                stroke="#e040fb"
                 strokeWidth="0.5"
                 strokeLinejoin="bevel"
               />
@@ -119,7 +119,7 @@ export default function OrigamiUnicorns() {
 
       {/* Counter */}
       <motion.div
-        className="pointer-events-auto fixed bottom-3 left-3 select-none font-mono text-[10px] text-[#e7b766]"
+        className="pointer-events-auto fixed bottom-3 left-3 select-none font-mono text-[10px] text-[#e040fb]"
         initial={{ opacity: 0.2 }}
         whileHover={{ opacity: 0.8 }}
         transition={{ duration: 0.3 }}
@@ -131,7 +131,7 @@ export default function OrigamiUnicorns() {
       <AnimatePresence>
         {showMessage && (
           <motion.div
-            className="pointer-events-none fixed bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap italic text-[11px] text-[#e7b766]"
+            className="pointer-events-none fixed bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap italic text-[11px] text-[#e040fb]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

@@ -11,13 +11,13 @@
   --fg: #efe6d4;
   --muted: #7a6e62;
   --line: #1f1c17;
-  --accent: #e7b766;
-  --accent-hot: #ffb347;
-  --cyan: #5ec8d8;
-  --cyan-hot: #7dd6e8;
-  --pink: #ff7a5c;
-  --ember: #c24c2b;
-  --persona-accent: #e7b766;
+  --accent: #e040fb;
+  --accent-hot: #ff2d78;
+  --cyan: #00d4ff;
+  --cyan-hot: #4fc3f7;
+  --pink: #ff006e;
+  --ember: #7c3aed;
+  --persona-accent: #e040fb;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
@@ -60,7 +60,7 @@ body {
   position: relative;
 }
 
-/* Blade Runner 2049 sodium / teal atmospheric fog — always on, slowly drifting. */
+/* Arcane — neon pink / electric blue atmospheric fog — always on, slowly drifting. */
 body::before {
   content: '';
   position: fixed;
@@ -68,10 +68,10 @@ body::before {
   pointer-events: none;
   z-index: 0;
   background:
-    radial-gradient(ellipse 55% 45% at 18% 12%, rgba(255, 148, 58, 0.11), transparent 60%),
-    radial-gradient(ellipse 40% 60% at 88% 78%, rgba(94, 200, 216, 0.08), transparent 65%),
-    radial-gradient(ellipse 70% 50% at 50% 110%, rgba(255, 108, 72, 0.07), transparent 60%),
-    radial-gradient(ellipse 30% 20% at 70% 4%, rgba(255, 179, 71, 0.06), transparent 70%);
+    radial-gradient(ellipse 55% 45% at 18% 12%, rgba(224, 64, 251, 0.13), transparent 60%),
+    radial-gradient(ellipse 40% 60% at 88% 78%, rgba(0, 212, 255, 0.09), transparent 65%),
+    radial-gradient(ellipse 70% 50% at 50% 110%, rgba(255, 0, 110, 0.09), transparent 60%),
+    radial-gradient(ellipse 30% 20% at 70% 4%, rgba(124, 58, 237, 0.07), transparent 70%);
   animation: drift-haze 38s ease-in-out infinite alternate;
   mix-blend-mode: screen;
 }
@@ -124,39 +124,33 @@ body { overscroll-behavior-y: contain; }
 }
 
 @keyframes crt-flicker {
-  0%, 100% { opacity: 0.42; }
-  6%       { opacity: 0.36; }
-  11%      { opacity: 0.44; }
-  22%      { opacity: 0.40; }
-  34%      { opacity: 0.46; }
-  58%      { opacity: 0.38; }
-  77%      { opacity: 0.44; }
+  0%, 100% { opacity: 0.21; }
+  50%      { opacity: 0.22; }
 }
 
 @keyframes chroma-drift {
-  0%, 100% { text-shadow: 0.6px 0 0 rgba(94,200,216,0.45), -0.6px 0 0 rgba(255,122,92,0.4); }
-  50%      { text-shadow: 1.4px 0 0 rgba(94,200,216,0.55), -1.4px 0 0 rgba(255,122,92,0.5); }
+  0%, 100% { text-shadow: 0.3px 0 0 rgba(0,212,255,0.2), -0.3px 0 0 rgba(255,0,110,0.18); }
+  50%      { text-shadow: 0.6px 0 0 rgba(0,212,255,0.25), -0.6px 0 0 rgba(255,0,110,0.22); }
 }
 
 .chroma {
-  animation: chroma-drift 4s ease-in-out infinite;
+  animation: chroma-drift 16s ease-in-out infinite;
 }
 
 .crt-scanlines {
   background-image:
-    repeating-linear-gradient(0deg, rgba(10,6,4,0.55) 0 1px, transparent 1px 3px),
-    repeating-linear-gradient(90deg, rgba(255,169,74,0.02) 0 1px, transparent 1px 3px);
+    repeating-linear-gradient(0deg, rgba(4,4,14,0.28) 0 1px, transparent 1px 3px);
   mix-blend-mode: multiply;
 }
 
 .crt-vignette {
   background:
-    radial-gradient(ellipse at center, transparent 48%, rgba(10,4,0,0.7) 100%);
+    radial-gradient(ellipse at center, transparent 55%, rgba(10,4,0,0.45) 100%);
 }
 
-.neon-amber { color: var(--accent); text-shadow: 0 0 8px rgba(231,183,102,0.55), 0 0 22px rgba(255,148,58,0.25); }
-.neon-cyan  { color: var(--cyan);   text-shadow: 0 0 8px rgba(94,200,216,0.55), 0 0 22px rgba(94,200,216,0.2); }
-.neon-pink  { color: var(--pink);   text-shadow: 0 0 8px rgba(255,122,92,0.6), 0 0 22px rgba(255,108,72,0.25); }
+.neon-amber { color: var(--accent); text-shadow: 0 0 8px rgba(224,64,251,0.6), 0 0 22px rgba(224,64,251,0.3); }
+.neon-cyan  { color: var(--cyan);   text-shadow: 0 0 8px rgba(0,212,255,0.6), 0 0 22px rgba(0,212,255,0.25); }
+.neon-pink  { color: var(--pink);   text-shadow: 0 0 8px rgba(255,0,110,0.65), 0 0 22px rgba(255,0,110,0.3); }
 
 .dashed-border {
   background-image: linear-gradient(90deg, #2a2620 50%, transparent 50%);
@@ -167,12 +161,10 @@ body { overscroll-behavior-y: contain; }
 /* Holographic flicker used by 3D billboards */
 @keyframes holo-flick {
   0%, 100% { opacity: 1; filter: none; }
-  3%       { opacity: 0.55; filter: blur(0.6px); }
-  5%       { opacity: 1; }
-  47%      { opacity: 0.9; }
-  50%      { opacity: 0.4; transform: translateX(0.6px); }
+  5%       { opacity: 0.88; filter: blur(0.3px); }
+  7%       { opacity: 1; }
+  50%      { opacity: 0.82; transform: translateX(0.3px); }
   52%      { opacity: 1; transform: translateX(0); }
-  83%      { opacity: 0.7; }
 }
 
 /* Full-site rain overlay — faint diagonal streaks, always drifting */
@@ -181,30 +173,30 @@ body { overscroll-behavior-y: contain; }
   inset: 0;
   pointer-events: none;
   z-index: 2;
-  opacity: 0.35;
+  opacity: 0.18;
   mix-blend-mode: screen;
   background-image:
     repeating-linear-gradient(
       103deg,
       rgba(143, 184, 200, 0.0) 0,
-      rgba(143, 184, 200, 0.0) 6px,
-      rgba(143, 184, 200, 0.18) 6px,
-      rgba(143, 184, 200, 0.18) 7px
+      rgba(143, 184, 200, 0.0) 8px,
+      rgba(143, 184, 200, 0.14) 8px,
+      rgba(143, 184, 200, 0.14) 9px
     );
   background-size: 100% 200%;
-  animation: rain-fall 0.9s linear infinite;
+  animation: rain-fall 4s linear infinite;
 }
 
 .site-rain.slow {
-  opacity: 0.18;
-  animation-duration: 2.2s;
+  opacity: 0.06;
+  animation-duration: 7s;
   background-image:
     repeating-linear-gradient(
       98deg,
-      rgba(255, 169, 74, 0.0) 0,
-      rgba(255, 169, 74, 0.0) 14px,
-      rgba(255, 169, 74, 0.08) 14px,
-      rgba(255, 169, 74, 0.08) 15px
+      rgba(180, 140, 220, 0.0) 0,
+      rgba(180, 140, 220, 0.0) 18px,
+      rgba(180, 140, 220, 0.06) 18px,
+      rgba(180, 140, 220, 0.06) 19px
     );
 }
 
@@ -219,18 +211,16 @@ body { overscroll-behavior-y: contain; }
   inset: 0;
   pointer-events: none;
   z-index: 3;
-  opacity: 0.08;
+  opacity: 0.04;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.55'/></svg>");
-  animation: grain-shift 8s steps(6) infinite;
+  animation: grain-shift 20s ease-in-out infinite;
 }
 
 @keyframes grain-shift {
   0%   { transform: translate(0, 0); }
-  20%  { transform: translate(-2%, 1%); }
-  40%  { transform: translate(1%, -2%); }
-  60%  { transform: translate(-1%, 2%); }
-  80%  { transform: translate(2%, 1%); }
+  33%  { transform: translate(-0.5%, 0.5%); }
+  66%  { transform: translate(0.5%, -0.5%); }
   100% { transform: translate(0, 0); }
 }
 
@@ -313,13 +303,13 @@ body.override-mode #root {
   to   { transform: translateX(-50%); }
 }
 
-/* Neon sign orange-to-coral gradient used by hero hints */
+/* Arcane neon sign — pink-to-magenta gradient */
 .br-sign {
-  background: linear-gradient(90deg, #ff9a3c, #ff7a5c, #ffb347);
+  background: linear-gradient(90deg, #ff006e, #e040fb, #00d4ff);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 0 6px rgba(255,148,58,0.35));
+  filter: drop-shadow(0 0 6px rgba(224,64,251,0.4));
 }
 
 /*
@@ -359,21 +349,21 @@ body.override-mode #root {
   transition: background 0.5s ease;
 }
 
-/* Late-night mode — after 11pm the site bleeds red */
+/* Late-night mode — after 11pm the site deepens into violet */
 html.late-night body::before {
   background:
-    radial-gradient(ellipse 55% 45% at 18% 12%, rgba(180, 40, 20, 0.14), transparent 60%),
-    radial-gradient(ellipse 40% 60% at 88% 78%, rgba(120, 20, 10, 0.10), transparent 65%),
-    radial-gradient(ellipse 70% 50% at 50% 110%, rgba(200, 50, 20, 0.09), transparent 60%),
-    radial-gradient(ellipse 30% 20% at 70% 4%, rgba(160, 30, 10, 0.08), transparent 70%);
+    radial-gradient(ellipse 55% 45% at 18% 12%, rgba(124, 58, 237, 0.18), transparent 60%),
+    radial-gradient(ellipse 40% 60% at 88% 78%, rgba(224, 64, 251, 0.12), transparent 65%),
+    radial-gradient(ellipse 70% 50% at 50% 110%, rgba(255, 0, 110, 0.10), transparent 60%),
+    radial-gradient(ellipse 30% 20% at 70% 4%, rgba(0, 212, 255, 0.07), transparent 70%);
   animation: drift-haze 38s ease-in-out infinite alternate;
   mix-blend-mode: screen;
 }
 
 html.late-night {
-  --accent: #ff6b4a;
-  --cyan: #cc4433;
-  --accent-hot: #ff4422;
+  --accent: #c026d3;
+  --cyan: #0ea5e9;
+  --accent-hot: #a21caf;
 }
 
 html.late-night body {

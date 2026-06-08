@@ -60,14 +60,14 @@ export default function GitArchaeology() {
 
       <div className="relative">
         {/* Timeline line */}
-        <div className="timeline-line absolute left-4 top-0 bottom-0 w-px bg-[#5ec8d8]/40" />
+        <div className="timeline-line absolute left-4 top-0 bottom-0 w-px bg-[#00d4ff]/40" />
 
         <div className="flex flex-col gap-5">
           {visible.map((d, i) => {
             const offset = i % 2 === 0 ? 'ml-10' : 'ml-14';
             const displayMsg = d.redacted ? redactMessage(d.msg) : d.msg;
             const stamp = d.redacted ? 'REDACTED' : i % 3 === 0 ? 'INTERCEPTED' : 'DECLASSIFIED';
-            const stampColor = d.redacted ? 'text-[#ff7a5c]' : 'text-[#6b6660]';
+            const stampColor = d.redacted ? 'text-[#ff006e]' : 'text-[#6b6660]';
 
             return (
               <motion.div
@@ -81,7 +81,7 @@ export default function GitArchaeology() {
                 {/* Dot on timeline */}
                 <div className="absolute -left-[calc(100%-1.5rem)] hidden" />
                 <div
-                  className="absolute top-5 w-2 h-2 rounded-full bg-[#5ec8d8]/60"
+                  className="absolute top-5 w-2 h-2 rounded-full bg-[#00d4ff]/60"
                   style={{ left: i % 2 === 0 ? '-1.75rem' : '-2.75rem' }}
                 />
 
@@ -89,7 +89,7 @@ export default function GitArchaeology() {
                 <div className="flex items-center justify-between mb-2 text-xs font-mono">
                   <div className="flex items-center gap-3">
                     <span className="text-[#6b6660]">{d.date.replace(/-/g, '.')}</span>
-                    <span className="text-[#5ec8d8]">{d.repo}</span>
+                    <span className="text-[#00d4ff]">{d.repo}</span>
                   </div>
                   <span className={`${stampColor} uppercase text-[9px] tracking-widest border border-current px-1.5 py-0.5 rounded-sm`}>
                     {stamp}
@@ -101,7 +101,7 @@ export default function GitArchaeology() {
                   {d.redacted ? (
                     displayMsg.split('').map((ch, ci) => (
                       ch === '\u2588' ? (
-                        <span key={ci} className="redacted-char text-[#ff7a5c]" style={{ '--d': `${ci * 0.1}s` } as React.CSSProperties}>
+                        <span key={ci} className="redacted-char text-[#ff006e]" style={{ '--d': `${ci * 0.1}s` } as React.CSSProperties}>
                           {ch}
                         </span>
                       ) : <span key={ci}>{ch}</span>
@@ -117,7 +117,7 @@ export default function GitArchaeology() {
       {shown < DISPATCHES.length && (
         <motion.button
           onClick={() => setShown(DISPATCHES.length)}
-          className="mt-10 ml-10 text-xs font-mono uppercase tracking-widest text-[#5ec8d8] border border-[#5ec8d8]/30 px-4 py-2 rounded hover:bg-[#5ec8d8]/10 transition-colors"
+          className="mt-10 ml-10 text-xs font-mono uppercase tracking-widest text-[#00d4ff] border border-[#00d4ff]/30 px-4 py-2 rounded hover:bg-[#00d4ff]/10 transition-colors"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >

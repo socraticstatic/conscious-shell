@@ -68,11 +68,11 @@ export default function BaselineGate({ children }: { children: React.ReactNode }
     <section id="haiku" className="relative py-20 md:py-28 border-b border-[#1f1c17]">
       <div className="max-w-3xl mx-auto px-6 md:px-10">
         <div className="text-center mb-12">
-          <div className="text-[10px] tracking-[0.5em] uppercase text-[#ff7a5c]/80 mb-3">
+          <div className="text-[10px] tracking-[0.5em] uppercase text-[#ff006e]/80 mb-3">
             — baseline test · clearance required
           </div>
           <h2 className="text-3xl md:text-4xl font-mono font-light tracking-tight">
-            constant k. <span className="text-[#ff7a5c]">prove it.</span>
+            constant k. <span className="text-[#ff006e]">prove it.</span>
           </h2>
           <p className="mt-4 text-[#6b6660] text-sm max-w-lg mx-auto leading-relaxed">
             this section is locked. to proceed, you must know who built this.
@@ -91,7 +91,7 @@ export default function BaselineGate({ children }: { children: React.ReactNode }
             >
               <button
                 onClick={begin}
-                className="inline-flex items-center gap-3 border border-[#ff7a5c]/50 text-[#ff7a5c] px-6 py-3 text-sm hover:bg-[#ff7a5c]/10 hover:border-[#ff7a5c] transition-colors"
+                className="inline-flex items-center gap-3 border border-[#ff006e]/50 text-[#ff006e] px-6 py-3 text-sm hover:bg-[#ff006e]/10 hover:border-[#ff006e] transition-colors"
               >
                 <ShieldAlert className="w-4 h-4" />
                 initiate baseline test
@@ -111,7 +111,7 @@ export default function BaselineGate({ children }: { children: React.ReactNode }
               className="border border-[#1f1c17] bg-[#0b0a08]/80 p-8"
             >
               <div className="flex items-center justify-between mb-6">
-                <div className="text-[10px] tracking-[0.3em] uppercase text-[#5ec8d8]">
+                <div className="text-[10px] tracking-[0.3em] uppercase text-[#00d4ff]">
                   prompt {step + 1}/{PROMPTS.length}
                 </div>
                 <div className="flex gap-1">
@@ -119,8 +119,8 @@ export default function BaselineGate({ children }: { children: React.ReactNode }
                     <div
                       key={i}
                       className={`w-2 h-2 border ${
-                        i < step ? 'bg-[#5ec8d8] border-[#5ec8d8]' :
-                        i === step ? 'border-[#ff7a5c] animate-pulse' :
+                        i < step ? 'bg-[#00d4ff] border-[#00d4ff]' :
+                        i === step ? 'border-[#ff006e] animate-pulse' :
                         'border-[#2a2620]'
                       }`}
                     />
@@ -152,7 +152,7 @@ export default function BaselineGate({ children }: { children: React.ReactNode }
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="respond..."
-                    className="w-full bg-transparent border-b border-[#2a2620] focus:border-[#ff7a5c] outline-none text-lg text-[#e8e4dc] py-2 placeholder:text-[#2a2620] transition-colors"
+                    className="w-full bg-transparent border-b border-[#2a2620] focus:border-[#ff006e] outline-none text-lg text-[#e8e4dc] py-2 placeholder:text-[#2a2620] transition-colors"
                     autoComplete="off"
                     spellCheck={false}
                   />
@@ -163,7 +163,7 @@ export default function BaselineGate({ children }: { children: React.ReactNode }
                   </span>
                   <button
                     type="submit"
-                    className="text-[11px] tracking-[0.2em] uppercase border border-[#5ec8d8]/50 text-[#5ec8d8] px-4 py-2 hover:bg-[#5ec8d8]/10 transition-colors"
+                    className="text-[11px] tracking-[0.2em] uppercase border border-[#00d4ff]/50 text-[#00d4ff] px-4 py-2 hover:bg-[#00d4ff]/10 transition-colors"
                   >
                     submit response
                   </button>
@@ -177,9 +177,9 @@ export default function BaselineGate({ children }: { children: React.ReactNode }
               key="fail"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="text-center py-12 border border-[#ff7a5c]/50 bg-[#1a0808]/60"
+              className="text-center py-12 border border-[#ff006e]/50 bg-[#1a0808]/60"
             >
-              <div className="text-4xl font-mono text-[#ff7a5c] mb-3" style={{ textShadow: '0 0 20px rgba(255,122,92,0.6)' }}>
+              <div className="text-4xl font-mono text-[#ff006e] mb-3" style={{ textShadow: '0 0 20px rgba(255,122,92,0.6)' }}>
                 BASELINE FAIL
               </div>
               <div className="text-[#6b6660] text-sm">
@@ -213,7 +213,7 @@ export function BaselineUnlocked() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
-      className="flex items-center justify-center gap-2 py-4 text-[10px] tracking-[0.3em] uppercase text-[#5ec8d8] border-b border-[#1f1c17]"
+      className="flex items-center justify-center gap-2 py-4 text-[10px] tracking-[0.3em] uppercase text-[#00d4ff] border-b border-[#1f1c17]"
     >
       <Unlock className="w-3.5 h-3.5" />
       baseline cleared — content declassified

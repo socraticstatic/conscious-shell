@@ -24,14 +24,14 @@ export default function EsperPanel({ project }: { project: Project | null }) {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.98 }}
           transition={{ duration: 0.25 }}
-          className="relative aspect-[4/3] border border-[#e7b766]/40 bg-[#07070a] overflow-hidden"
+          className="relative aspect-[4/3] border border-[#e040fb]/40 bg-[#07070a] overflow-hidden"
         >
-          <div className="absolute top-0 inset-x-0 z-10 flex items-center justify-between px-3 py-1.5 text-[10px] bg-[#0b0a08]/80 border-b border-[#e7b766]/30">
-            <div className="flex items-center gap-2 text-[#e7b766]">
-              <span className="w-1.5 h-1.5 bg-[#e7b766] animate-pulse" />
+          <div className="absolute top-0 inset-x-0 z-10 flex items-center justify-between px-3 py-1.5 text-[10px] bg-[#0b0a08]/80 border-b border-[#e040fb]/30">
+            <div className="flex items-center gap-2 text-[#e040fb]">
+              <span className="w-1.5 h-1.5 bg-[#e040fb] animate-pulse" />
               <span>ESPER — PHOTO ANALYSIS UNIT</span>
             </div>
-            <div className="text-[#5ec8d8]">TRACK {String(Math.round(zoom * 37)).padStart(3, '0')}</div>
+            <div className="text-[#00d4ff]">TRACK {String(Math.round(zoom * 37)).padStart(3, '0')}</div>
           </div>
 
           <div className="absolute inset-0 pt-6 overflow-hidden">
@@ -57,22 +57,22 @@ export default function EsperPanel({ project }: { project: Project | null }) {
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
               className="absolute w-16 h-16 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
             >
-              <div className="absolute inset-0 border border-[#e7b766]" />
-              <div className="absolute top-1/2 -left-4 w-3 h-px bg-[#e7b766]" />
-              <div className="absolute top-1/2 -right-4 w-3 h-px bg-[#e7b766]" />
-              <div className="absolute left-1/2 -top-4 h-3 w-px bg-[#e7b766]" />
-              <div className="absolute left-1/2 -bottom-4 h-3 w-px bg-[#e7b766]" />
-              <div className="absolute top-1/2 left-1/2 w-1 h-1 -translate-x-1/2 -translate-y-1/2 bg-[#ff7a5c]" />
+              <div className="absolute inset-0 border border-[#e040fb]" />
+              <div className="absolute top-1/2 -left-4 w-3 h-px bg-[#e040fb]" />
+              <div className="absolute top-1/2 -right-4 w-3 h-px bg-[#e040fb]" />
+              <div className="absolute left-1/2 -top-4 h-3 w-px bg-[#e040fb]" />
+              <div className="absolute left-1/2 -bottom-4 h-3 w-px bg-[#e040fb]" />
+              <div className="absolute top-1/2 left-1/2 w-1 h-1 -translate-x-1/2 -translate-y-1/2 bg-[#ff006e]" />
             </motion.div>
           </div>
 
-          <div className="absolute bottom-0 inset-x-0 z-10 px-3 py-1.5 text-[10px] bg-[#0b0a08]/90 border-t border-[#e7b766]/30 flex items-center justify-between">
-            <div className="text-[#e7b766]/90 truncate">
+          <div className="absolute bottom-0 inset-x-0 z-10 px-3 py-1.5 text-[10px] bg-[#0b0a08]/90 border-t border-[#e040fb]/30 flex items-center justify-between">
+            <div className="text-[#e040fb]/90 truncate">
               FRAME: {project.title.toUpperCase()} · {project.year}
             </div>
             <div className="flex items-center gap-3 text-[#6b6660]">
-              <span>ZOOM <span className="text-[#5ec8d8]">{zoom.toFixed(1)}×</span></span>
-              <span>PX <span className="text-[#5ec8d8]">{String(Math.round(pos.x * 10)).padStart(3, '0')},{String(Math.round(pos.y * 10)).padStart(3, '0')}</span></span>
+              <span>ZOOM <span className="text-[#00d4ff]">{zoom.toFixed(1)}×</span></span>
+              <span>PX <span className="text-[#00d4ff]">{String(Math.round(pos.x * 10)).padStart(3, '0')},{String(Math.round(pos.y * 10)).padStart(3, '0')}</span></span>
             </div>
           </div>
         </motion.div>

@@ -32,7 +32,7 @@ export default function About({ testimonial }: { testimonial?: Testimonial }) {
           >
             <div className="px-4 py-2 border-b border-[#1f1c17] text-[11px] text-[#6b6660] flex items-center justify-between">
               <span>identity.conf</span>
-              <span className="text-[#e7b766]">●●●</span>
+              <span className="text-[#e040fb]">●●●</span>
             </div>
             <dl className="p-5 text-sm space-y-3">
               {bio.map(([k, v]) => (
@@ -59,7 +59,7 @@ export default function About({ testimonial }: { testimonial?: Testimonial }) {
             ))}
             <div className="pt-4 border-t border-dashed border-[#1f1c17]">
               <div className="text-xs text-[#6b6660] mb-3"># cat /about/philosophy.txt</div>
-              <div className="text-[#e7b766] text-xl md:text-2xl leading-snug">
+              <div className="text-[#e040fb] text-xl md:text-2xl leading-snug">
                 &gt; "you don't get to know people by asking them who they are.
                 <br /> you get to know them by watching how they behave."
               </div>
@@ -73,7 +73,7 @@ export default function About({ testimonial }: { testimonial?: Testimonial }) {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="mt-16 max-w-4xl border-l-2 border-[#e7b766] pl-6"
+            className="mt-16 max-w-4xl border-l-2 border-[#e040fb] pl-6"
           >
             <div className="text-xs text-[#6b6660] mb-2">&gt; curl /testimonials/random</div>
             <p className="text-[#e8e4dc] text-lg md:text-2xl leading-snug italic">

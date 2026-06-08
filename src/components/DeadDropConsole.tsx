@@ -44,7 +44,7 @@ export default function DeadDropConsole() {
   const [history, setHistory] = useState<string[]>([]);
   const [hIdx, setHIdx] = useState(-1);
   const [entries, setEntries] = useState<Entry[]>(() =>
-    BANNER.map((t, i) => ({ id: i, kind: 'sys' as const, text: t, color: '#e7b766' })),
+    BANNER.map((t, i) => ({ id: i, kind: 'sys' as const, text: t, color: '#e040fb' })),
   );
   const nextId = useRef(BANNER.length);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -95,14 +95,14 @@ export default function DeadDropConsole() {
         break;
       case 'whoami': {
         const id = rword(4).toUpperCase();
-        push('out', `operator · N7-${id}`, '#e7b766');
+        push('out', `operator · N7-${id}`, '#e040fb');
         push('out', 'clearance · observer / level 3', '#a8a29e');
         push('out', `session · ${rhex(12)}`, '#a8a29e');
-        push('out', 'status · still more human than human', '#5ec8d8');
+        push('out', 'status · still more human than human', '#00d4ff');
         break;
       }
       case 'scan': {
-        push('out', '[ scan ] passive sweep initiated', '#5ec8d8');
+        push('out', '[ scan ] passive sweep initiated', '#00d4ff');
         for (let i = 0; i < 6; i++) {
           setTimeout(() => {
             const ip = rip();
@@ -111,21 +111,21 @@ export default function DeadDropConsole() {
             push('out', `  ${ip.padEnd(16)} :${port.padEnd(5)} ${ms}ms   [${rword(5)}-edge]`, '#c9b8a6');
           }, 120 * (i + 1));
         }
-        setTimeout(() => push('out', '[ scan ] complete · nothing asked for me', '#5ec8d8'), 900);
+        setTimeout(() => push('out', '[ scan ] complete · nothing asked for me', '#00d4ff'), 900);
         break;
       }
       case 'trace': {
         const host = arg || 'off-world.comm';
-        push('out', `tracing ${host} ...`, '#5ec8d8');
+        push('out', `tracing ${host} ...`, '#00d4ff');
         const hops = ['local-gw', 'tyrell-edge', 'wallace-core', 'obscura-exchange', host];
         hops.forEach((h, i) =>
           setTimeout(() => push('out', `  ${(i + 1).toString().padStart(2)}  ${rip().padEnd(16)} ${h}`, '#c9b8a6'), 180 * i),
         );
-        setTimeout(() => push('out', 'trace ends in rain. as they all do.', '#e7b766'), 180 * hops.length + 200);
+        setTimeout(() => push('out', 'trace ends in rain. as they all do.', '#e040fb'), 180 * hops.length + 200);
         break;
       }
       case 'decrypt': {
-        push('out', '[ decrypt ] selecting fragment ...', '#5ec8d8');
+        push('out', '[ decrypt ] selecting fragment ...', '#00d4ff');
         const before = rhex(48);
         const frags = [
           'the owl was artificial',
@@ -137,7 +137,7 @@ export default function DeadDropConsole() {
         ];
         const out = frags[Math.floor(Math.random() * frags.length)];
         setTimeout(() => push('out', `  ciphertext: ${before}`, '#a8a29e'), 200);
-        setTimeout(() => push('out', `  plaintext : ${out}`, '#ff7a5c'), 900);
+        setTimeout(() => push('out', `  plaintext : ${out}`, '#ff006e'), 900);
         break;
       }
       case 'narrate':
@@ -146,20 +146,20 @@ export default function DeadDropConsole() {
         break;
       case 'breach':
         window.dispatchEvent(new Event('breach:fire'));
-        push('out', '[ !! ] intrusion drama triggered', '#ff7a5c');
+        push('out', '[ !! ] intrusion drama triggered', '#ff006e');
         break;
       case 'memorial':
         window.dispatchEvent(new Event('memorial:open'));
         push('out', '[ ok ] memorial queued', '#7fd6b1');
         break;
       case 'konami':
-        push('out', 'arrow sequence: ↑ ↑ ↓ ↓ ← → ← → b a', '#e7b766');
+        push('out', 'arrow sequence: ↑ ↑ ↓ ↓ ← → ← → b a', '#e040fb');
         push('out', 'flips the site into override · enjoy the reds', '#a8a29e');
         break;
       case 'roll': {
         const n = Math.floor(Math.random() * 100);
         const verdict = n > 82 ? 'REPLICANT' : n > 40 ? 'INCONCLUSIVE' : 'HUMAN';
-        const col = n > 82 ? '#ff3b3b' : n > 40 ? '#e7b766' : '#7fd6b1';
+        const col = n > 82 ? '#ff3b3b' : n > 40 ? '#e040fb' : '#7fd6b1';
         push('out', `vk suspicion score  :  ${n.toString().padStart(3)}`, '#c9b8a6');
         push('out', `verdict             :  ${verdict}`, col);
         break;
@@ -218,14 +218,14 @@ export default function DeadDropConsole() {
         const s = stations[Math.floor(Math.random() * stations.length)];
         const sol = Math.floor(1000 + Math.random() * 9000);
         const cycle = Math.floor(Math.random() * 24).toString().padStart(2, '0');
-        push('out', `off-world report · sol ${sol} · ${cycle}:00 utc`, '#5ec8d8');
+        push('out', `off-world report · sol ${sol} · ${cycle}:00 utc`, '#00d4ff');
         push('out', `  station    ${s.name}`, '#c9b8a6');
         push('out', `  temp       ${s.temp >= 0 ? '+' : ''}${s.temp}°c`, '#c9b8a6');
         push('out', `  solar wind ${s.wind} km/s`, '#c9b8a6');
         push('out', `  kp-index   ${s.kp} / 9   ${'▓'.repeat(s.kp)}${'░'.repeat(9 - s.kp)}`,
-          s.kp >= 7 ? '#ff7a5c' : s.kp >= 5 ? '#e7b766' : '#7fd6b1');
+          s.kp >= 7 ? '#ff006e' : s.kp >= 5 ? '#e040fb' : '#7fd6b1');
         push('out', `  condition  ${s.cond}`, '#c9b8a6');
-        push('out', `  visibility ${s.vis}`, '#e7b766');
+        push('out', `  visibility ${s.vis}`, '#e040fb');
         push('out', '  advisory   all those moments, lost in time.', '#6b6660');
         break;
       }
@@ -236,7 +236,7 @@ export default function DeadDropConsole() {
         setOpen(false);
         break;
       default:
-        push('out', `unknown command: ${c}`, '#ff7a5c');
+        push('out', `unknown command: ${c}`, '#ff006e');
         push('out', 'try "help"', '#6b6660');
     }
   };
@@ -262,7 +262,7 @@ export default function DeadDropConsole() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="fixed right-3 sm:right-4 md:right-6 z-40 inline-flex items-center gap-1.5 sm:gap-2 border border-[#1f1c17] bg-[#0b0a08]/85 hover:border-[#5ec8d8]/60 active:border-[#5ec8d8]/60 text-[#a8a29e] hover:text-[#5ec8d8] active:text-[#5ec8d8] px-2 sm:px-3 py-1.5 sm:py-2 text-[9px] sm:text-[10px] tracking-[0.3em] uppercase transition-colors"
+        className="fixed right-3 sm:right-4 md:right-6 z-40 inline-flex items-center gap-1.5 sm:gap-2 border border-[#1f1c17] bg-[#0b0a08]/85 hover:border-[#00d4ff]/60 active:border-[#00d4ff]/60 text-[#a8a29e] hover:text-[#00d4ff] active:text-[#00d4ff] px-2 sm:px-3 py-1.5 sm:py-2 text-[9px] sm:text-[10px] tracking-[0.3em] uppercase transition-colors"
         style={{ bottom: 'calc(7rem + env(safe-area-inset-bottom, 0px))' }}
         aria-label="open dead drop"
       >
@@ -279,20 +279,20 @@ export default function DeadDropConsole() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.98 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-3 sm:inset-auto sm:right-3 md:right-6 sm:bottom-3 md:bottom-6 z-[55] sm:w-[min(94vw,520px)] sm:h-[min(70vh,460px)] border border-[#5ec8d8]/40 bg-[#050608]/96 backdrop-blur-md flex flex-col"
+            className="fixed inset-3 sm:inset-auto sm:right-3 md:right-6 sm:bottom-3 md:bottom-6 z-[55] sm:w-[min(94vw,520px)] sm:h-[min(70vh,460px)] border border-[#00d4ff]/40 bg-[#050608]/96 backdrop-blur-md flex flex-col"
             style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)', boxShadow: '0 10px 40px rgba(0,0,0,0.6), 0 0 24px rgba(94,200,216,0.12), inset 0 0 30px rgba(0,0,0,0.5)' }}
             onMouseDown={() => inputRef.current?.focus()}
           >
-            <div className="flex items-center justify-between border-b border-[#5ec8d8]/20 px-3 py-2">
-              <div className="flex items-center gap-2 text-[10px] tracking-[0.35em] uppercase text-[#5ec8d8]">
-                <span className="w-1.5 h-1.5 bg-[#5ec8d8] animate-pulse" />
+            <div className="flex items-center justify-between border-b border-[#00d4ff]/20 px-3 py-2">
+              <div className="flex items-center gap-2 text-[10px] tracking-[0.35em] uppercase text-[#00d4ff]">
+                <span className="w-1.5 h-1.5 bg-[#00d4ff] animate-pulse" />
                 dead-drop · tty0
               </div>
               <div className="flex items-center gap-1">
                 <button
                   type="button"
                   onClick={() => setEntries([])}
-                  className="text-[#6b6660] hover:text-[#e7b766] p-1"
+                  className="text-[#6b6660] hover:text-[#e040fb] p-1"
                   aria-label="clear"
                   title="clear"
                 >
@@ -301,7 +301,7 @@ export default function DeadDropConsole() {
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
-                  className="text-[#6b6660] hover:text-[#ff7a5c] p-1"
+                  className="text-[#6b6660] hover:text-[#ff006e] p-1"
                   aria-label="close console"
                 >
                   <X className="w-3.5 h-3.5" />
@@ -318,7 +318,7 @@ export default function DeadDropConsole() {
                 <div key={e.id} className="whitespace-pre-wrap">
                   {e.kind === 'in' ? (
                     <span>
-                      <span className="text-[#5ec8d8]">operator&gt;</span>{' '}
+                      <span className="text-[#00d4ff]">operator&gt;</span>{' '}
                       <span className="text-[#e8e4dc]">{e.text}</span>
                     </span>
                   ) : e.kind === 'sys' ? (
@@ -330,8 +330,8 @@ export default function DeadDropConsole() {
               ))}
             </div>
 
-            <div className="border-t border-[#5ec8d8]/20 px-3 py-2 flex items-center gap-2">
-              <span className="text-[#5ec8d8] text-[11.5px] font-mono">operator&gt;</span>
+            <div className="border-t border-[#00d4ff]/20 px-3 py-2 flex items-center gap-2">
+              <span className="text-[#00d4ff] text-[11.5px] font-mono">operator&gt;</span>
               <input
                 ref={inputRef}
                 value={input}

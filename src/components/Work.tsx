@@ -54,7 +54,7 @@ function Stat({ k, v, accent }: { k: string; v: string; accent?: boolean }) {
   return (
     <div className="bg-[#0b0a08] px-3 py-2">
       <div className="text-[9px] text-[#6b6660] uppercase tracking-wider">{k}</div>
-      <div className={`mt-0.5 truncate ${accent ? 'text-[#5ec8d8]' : 'text-[#e8e4dc]'}`}>{v}</div>
+      <div className={`mt-0.5 truncate ${accent ? 'text-[#00d4ff]' : 'text-[#e8e4dc]'}`}>{v}</div>
     </div>
   );
 }
@@ -85,17 +85,17 @@ function ProjectRow({
     >
       <div
         className={`absolute left-0 top-0 bottom-0 w-px transition-colors ${
-          active ? 'bg-[#e7b766]' : 'bg-transparent'
+          active ? 'bg-[#e040fb]' : 'bg-transparent'
         }`}
       />
 
       {/* Mobile: stacked card. Desktop: 12-col grid. */}
       <div className="md:hidden">
         <div className="flex items-baseline justify-between text-[11px] font-mono mb-2">
-          <span className={active ? 'text-[#e7b766]' : 'text-[#4a453e]'}>
+          <span className={active ? 'text-[#e040fb]' : 'text-[#4a453e]'}>
             {String(index + 1).padStart(2, '0')}
           </span>
-          <span className={`tabular-nums ${active ? 'text-[#5ec8d8]' : 'text-[#a8a29e]'}`}>
+          <span className={`tabular-nums ${active ? 'text-[#00d4ff]' : 'text-[#a8a29e]'}`}>
             {project.year}
           </span>
         </div>
@@ -104,7 +104,7 @@ function ProjectRow({
           <span className="text-[#4a453e]"> · </span>
           {project.client}
         </div>
-        <div className={`text-[22px] leading-tight font-light mb-3 break-words ${active ? 'text-[#e7b766]' : 'text-[#e8e4dc]'}`}>
+        <div className={`text-[22px] leading-tight font-light mb-3 break-words ${active ? 'text-[#e040fb]' : 'text-[#e8e4dc]'}`}>
           {project.title}
         </div>
         {project.image_url && (
@@ -122,7 +122,7 @@ function ProjectRow({
       </div>
 
       <div className="hidden md:grid md:grid-cols-12 md:gap-6 md:items-center">
-        <div className={`md:col-span-1 text-xs tabular-nums transition-colors pl-2 ${active ? 'text-[#e7b766]' : 'text-[#4a453e]'}`}>
+        <div className={`md:col-span-1 text-xs tabular-nums transition-colors pl-2 ${active ? 'text-[#e040fb]' : 'text-[#4a453e]'}`}>
           {String(index + 1).padStart(2, '0')}
         </div>
         <div className="md:col-span-7 min-w-0">
@@ -131,7 +131,7 @@ function ProjectRow({
             <span className="text-[#4a453e]">·</span>
             <span>{project.client}</span>
           </div>
-          <div className={`text-xl md:text-3xl lg:text-4xl leading-tight transition-colors ${active ? 'text-[#e7b766]' : 'text-[#e8e4dc]'}`}>
+          <div className={`text-xl md:text-3xl lg:text-4xl leading-tight transition-colors ${active ? 'text-[#e040fb]' : 'text-[#e8e4dc]'}`}>
             {project.title}
           </div>
         </div>
@@ -143,7 +143,7 @@ function ProjectRow({
           ))}
         </div>
         <div className="md:col-span-1 md:justify-end flex items-center">
-          <span className={`text-xs tabular-nums ${active ? 'text-[#5ec8d8]' : 'text-[#a8a29e]'}`}>
+          <span className={`text-xs tabular-nums ${active ? 'text-[#00d4ff]' : 'text-[#a8a29e]'}`}>
             {project.year}
           </span>
         </div>
@@ -172,9 +172,9 @@ export function SectionHeader({
       className="flex items-center justify-between gap-4 text-xs flex-wrap"
     >
       <div className="flex items-center gap-3 flex-wrap">
-        <span className="text-[#e7b766]">$</span>
+        <span className="text-[#e040fb]">$</span>
         <span className="text-[#e8e4dc]">ls -la {path}</span>
-        {jp && <span className="font-jp text-[#5ec8d8]/80 text-[11px]">— {jp}</span>}
+        {jp && <span className="font-jp text-[#00d4ff]/80 text-[11px]">— {jp}</span>}
         {typeof count === 'number' && (
           <span className="text-[#6b6660]">
             ({String(count).padStart(2, '0')} {count === 1 ? 'entry' : 'entries'})

@@ -19,12 +19,12 @@ export default function Services({ services }: { services: Service[] }) {
               className="grid grid-cols-12 gap-3 md:gap-6 p-6 md:p-8 border-b border-[#1f1c17] last:border-b-0 hover:bg-[#121008] transition-colors group"
               data-cursor="hover"
             >
-              <div className="col-span-2 md:col-span-1 text-xs text-[#4a453e] group-hover:text-[#e7b766]">
+              <div className="col-span-2 md:col-span-1 text-xs text-[#4a453e] group-hover:text-[#e040fb]">
                 .{String(i + 1).padStart(2, '0')}
               </div>
               <div className="col-span-10 md:col-span-4">
                 <div className="text-[11px] text-[#6b6660] mb-1">NAME</div>
-                <div className="text-2xl md:text-3xl text-[#e7b766] lowercase">
+                <div className="text-2xl md:text-3xl text-[#e040fb] lowercase">
                   {s.title.toLowerCase().replace(/\s+/g, '_')}
                 </div>
               </div>

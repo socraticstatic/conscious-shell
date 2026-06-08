@@ -107,11 +107,11 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
       <div className="max-w-7xl mx-auto">
         <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
           <div>
-            <div className="text-[10px] tracking-[0.5em] uppercase text-[#5ec8d8]/80 mb-3">
+            <div className="text-[10px] tracking-[0.5em] uppercase text-[#00d4ff]/80 mb-3">
               — esper machine · photo enhancement unit
             </div>
             <h2 className="text-4xl md:text-5xl font-mono font-light tracking-tight">
-              enhance. enhance. <span className="text-[#ff7a5c]">enhance.</span>
+              enhance. enhance. <span className="text-[#ff006e]">enhance.</span>
             </h2>
             <p className="mt-3 text-[#8a837a] text-sm max-w-xl leading-relaxed">
               an interactive recreation of the esper session. pick a target on the frame. the machine will track, enhance, and reveal what the photograph has been hiding.
@@ -121,7 +121,7 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
           <button
             type="button"
             onClick={reset}
-            className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#a8a29e] hover:text-[#5ec8d8] border border-[#1f1c17] hover:border-[#5ec8d8]/50 px-3 py-2 transition-colors"
+            className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#a8a29e] hover:text-[#00d4ff] border border-[#1f1c17] hover:border-[#00d4ff]/50 px-3 py-2 transition-colors"
             aria-label="reset esper"
           >
             <RotateCcw className="w-3.5 h-3.5" />
@@ -168,8 +168,8 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
                     onClick={() => run(h)}
                     className={`absolute border transition-all duration-300 ${
                       isActive
-                        ? 'border-[#ff7a5c]'
-                        : 'border-[#5ec8d8]/60 hover:border-[#5ec8d8]'
+                        ? 'border-[#ff006e]'
+                        : 'border-[#00d4ff]/60 hover:border-[#00d4ff]'
                     }`}
                     style={{
                       left: `${h.x * 100}%`,
@@ -182,17 +182,17 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
                   >
                     <span
                       className={`absolute -top-6 left-0 text-[9px] tracking-[0.3em] uppercase whitespace-nowrap ${
-                        isActive ? 'text-[#ff7a5c]' : 'text-[#5ec8d8]'
+                        isActive ? 'text-[#ff006e]' : 'text-[#00d4ff]'
                       }`}
                     >
                       node·{String(h.order_index).padStart(2, '0')}
                     </span>
                     {isActive && (
                       <>
-                        <span className="absolute -left-[3px] -top-[3px] w-2 h-2 bg-[#ff7a5c]" />
-                        <span className="absolute -right-[3px] -top-[3px] w-2 h-2 bg-[#ff7a5c]" />
-                        <span className="absolute -left-[3px] -bottom-[3px] w-2 h-2 bg-[#ff7a5c]" />
-                        <span className="absolute -right-[3px] -bottom-[3px] w-2 h-2 bg-[#ff7a5c]" />
+                        <span className="absolute -left-[3px] -top-[3px] w-2 h-2 bg-[#ff006e]" />
+                        <span className="absolute -right-[3px] -top-[3px] w-2 h-2 bg-[#ff006e]" />
+                        <span className="absolute -left-[3px] -bottom-[3px] w-2 h-2 bg-[#ff006e]" />
+                        <span className="absolute -right-[3px] -bottom-[3px] w-2 h-2 bg-[#ff006e]" />
                       </>
                     )}
                   </button>
@@ -201,10 +201,10 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
             </motion.div>
 
             <div className="absolute left-3 top-3 right-3 flex items-center justify-between pointer-events-none">
-              <div className="text-[9px] tracking-[0.4em] uppercase text-[#5ec8d8]/80 bg-black/50 px-2 py-1 backdrop-blur-sm">
+              <div className="text-[9px] tracking-[0.4em] uppercase text-[#00d4ff]/80 bg-black/50 px-2 py-1 backdrop-blur-sm">
                 {caption}
               </div>
-              <div className="text-[9px] tracking-[0.4em] uppercase text-[#5ec8d8]/80 bg-black/50 px-2 py-1 tabular-nums backdrop-blur-sm">
+              <div className="text-[9px] tracking-[0.4em] uppercase text-[#00d4ff]/80 bg-black/50 px-2 py-1 tabular-nums backdrop-blur-sm">
                 esper · v9 · {phase}
               </div>
             </div>
@@ -215,7 +215,7 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
                   href="https://unsplash.com/@micahboswell"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="pointer-events-auto text-[9px] tracking-[0.4em] uppercase text-[#5ec8d8]/70 hover:text-[#5ec8d8] bg-black/50 px-2 py-1 backdrop-blur-sm transition-colors"
+                  className="pointer-events-auto text-[9px] tracking-[0.4em] uppercase text-[#00d4ff]/70 hover:text-[#00d4ff] bg-black/50 px-2 py-1 backdrop-blur-sm transition-colors"
                 >
                   {credit}
                 </a>
@@ -239,7 +239,7 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
           </div>
 
           <div className="border border-[#1f1c17] bg-[#0a0a0d] p-5 flex flex-col min-h-[360px]">
-            <div className="flex items-center gap-2 text-[10px] tracking-[0.4em] uppercase text-[#5ec8d8] mb-4">
+            <div className="flex items-center gap-2 text-[10px] tracking-[0.4em] uppercase text-[#00d4ff] mb-4">
               <ScanSearch className="w-3.5 h-3.5" />
               operator terminal
             </div>
@@ -251,7 +251,7 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
                   initial={{ opacity: 0, x: -4 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.2 }}
-                  style={{ color: i === typed.length - 1 && phase !== 'resolve' ? '#5ec8d8' : '#c9b8a6' }}
+                  style={{ color: i === typed.length - 1 && phase !== 'resolve' ? '#00d4ff' : '#c9b8a6' }}
                 >
                   {l}
                 </motion.div>
@@ -260,7 +260,7 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
                 <div className="text-[#4a453e]">awaiting selection. click a node on the frame.</div>
               )}
               {phase !== 'idle' && phase !== 'resolve' && (
-                <span className="inline-block w-2 h-3 align-middle bg-[#5ec8d8] animate-pulse" />
+                <span className="inline-block w-2 h-3 align-middle bg-[#00d4ff] animate-pulse" />
               )}
             </div>
 
@@ -274,7 +274,7 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
                   transition={{ duration: 0.6, delay: 0.2 }}
                   className="mt-5 border-t border-[#1f1c17] pt-4"
                 >
-                  <div className="text-[9px] tracking-[0.4em] uppercase text-[#ff7a5c] mb-2">
+                  <div className="text-[9px] tracking-[0.4em] uppercase text-[#ff006e] mb-2">
                     // reveal · node-{String(active.order_index).padStart(2, '0')}
                   </div>
                   <p className="font-serif text-base md:text-lg text-[#e8e4dc] leading-snug">
@@ -292,8 +292,8 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
                   onClick={() => run(h)}
                   className={`text-[10px] tracking-[0.3em] uppercase border px-2.5 py-1.5 transition-colors ${
                     active?.id === h.id
-                      ? 'border-[#ff7a5c] text-[#ff7a5c]'
-                      : 'border-[#1f1c17] text-[#a8a29e] hover:border-[#5ec8d8]/50 hover:text-[#5ec8d8]'
+                      ? 'border-[#ff006e] text-[#ff006e]'
+                      : 'border-[#1f1c17] text-[#a8a29e] hover:border-[#00d4ff]/50 hover:text-[#00d4ff]'
                   }`}
                 >
                   node·{String(h.order_index).padStart(2, '0')}

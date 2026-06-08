@@ -88,8 +88,8 @@ export default function SystemBreach() {
 
     const t0 = window.setTimeout(() => {
       setPhase('scan');
-      push('[+] UNAUTHORISED HANDSHAKE · FOREIGN MAC ' + rmac(), '#ff7a5c');
-      push('[+] CERT CHAIN BROKEN · CA = TYRELL-ROOT-REVOKED-2019', '#ff7a5c');
+      push('[+] UNAUTHORISED HANDSHAKE · FOREIGN MAC ' + rmac(), '#ff006e');
+      push('[+] CERT CHAIN BROKEN · CA = TYRELL-ROOT-REVOKED-2019', '#ff006e');
       streamScan();
     }, 900);
     timers.current.push(t0);
@@ -101,7 +101,7 @@ export default function SystemBreach() {
       setPhase('recover');
       push('[ ok ] counter-measure deployed', '#7fd6b1');
       push('[ ok ] signal dampened · bridge dropped', '#7fd6b1');
-      push('[ ok ] breach contained · you may resume', '#e7b766');
+      push('[ ok ] breach contained · you may resume', '#e040fb');
     }, 12500);
     timers.current.push(t2);
 
@@ -174,7 +174,7 @@ export default function SystemBreach() {
               <button
                 type="button"
                 onClick={close}
-                className="text-[10px] tracking-[0.3em] uppercase text-[#ff7a5c] hover:text-[#ffb3a1] border border-[#ff3b3b]/40 px-3 py-1"
+                className="text-[10px] tracking-[0.3em] uppercase text-[#ff006e] hover:text-[#ffb3a1] border border-[#ff3b3b]/40 px-3 py-1"
               >
                 override · esc
               </button>
@@ -182,7 +182,7 @@ export default function SystemBreach() {
 
             <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="md:col-span-2 border border-[#ff3b3b]/30 bg-black/40 p-4 h-[340px] md:h-[420px] overflow-hidden">
-                <div className="text-[10px] tracking-[0.4em] uppercase text-[#ff7a5c] mb-3">
+                <div className="text-[10px] tracking-[0.4em] uppercase text-[#ff006e] mb-3">
                   // live trace · bridge 0xA3
                 </div>
                 <div className="space-y-0.5 text-[11px] leading-relaxed">
@@ -198,7 +198,7 @@ export default function SystemBreach() {
               </div>
 
               <div className="border border-[#ff3b3b]/30 bg-black/40 p-4 h-[340px] md:h-[420px] overflow-hidden">
-                <div className="text-[10px] tracking-[0.4em] uppercase text-[#ff7a5c] mb-3">
+                <div className="text-[10px] tracking-[0.4em] uppercase text-[#ff006e] mb-3">
                   // spoof origin
                 </div>
                 <div className="text-[11px] text-[#ffb3a1] space-y-1">
@@ -209,7 +209,7 @@ export default function SystemBreach() {
                   <div>peer.agent  <span className="text-[#ffb3a1]">N6-Kompressor/7</span></div>
                 </div>
 
-                <div className="mt-5 text-[10px] tracking-[0.4em] uppercase text-[#ff7a5c] mb-2">
+                <div className="mt-5 text-[10px] tracking-[0.4em] uppercase text-[#ff006e] mb-2">
                   // phase
                 </div>
                 <div className="text-2xl md:text-3xl text-[#ff3b3b] tabular-nums">
@@ -221,7 +221,7 @@ export default function SystemBreach() {
 
                 {phase === 'lock' && (
                   <div className="mt-4">
-                    <div className="text-[10px] tracking-[0.4em] uppercase text-[#ff7a5c]">
+                    <div className="text-[10px] tracking-[0.4em] uppercase text-[#ff006e]">
                       quarantine in
                     </div>
                     <div className="text-5xl md:text-6xl text-[#ff3b3b] tabular-nums leading-none mt-1">
@@ -241,7 +241,7 @@ export default function SystemBreach() {
               </div>
             </div>
 
-            <div className="mt-auto pt-6 text-[10px] tracking-[0.45em] uppercase text-[#ff7a5c]/70">
+            <div className="mt-auto pt-6 text-[10px] tracking-[0.45em] uppercase text-[#ff006e]/70">
               · this event is narrative theatre · no network traffic has left your machine ·
             </div>
           </div>

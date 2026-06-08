@@ -39,7 +39,7 @@ export default function TransmissionPanel({
     <>
       <div className="flex items-baseline justify-between border-b border-[#1f1c17] px-5 py-3 gap-3">
         <div className="flex items-baseline gap-2 sm:gap-3 text-[10px] uppercase tracking-[0.18em] sm:tracking-[0.2em] text-[#4a453e] overflow-x-auto whitespace-nowrap scrollbar-none">
-          <span className="text-[#7dd6e8]">▸ transmission</span>
+          <span className="text-[#4fc3f7]">▸ transmission</span>
           <span>{article.published_date}</span>
           <span>· {article.reading_minutes}m</span>
           {article.tags.slice(0, 3).map((t) => (
@@ -49,17 +49,17 @@ export default function TransmissionPanel({
         <button
           onClick={onClose}
           aria-label="close transmission"
-          className="shrink-0 inline-flex items-center justify-center w-9 h-9 -mr-2 text-[#a8a29e] hover:text-[#e7b766] transition-colors"
+          className="shrink-0 inline-flex items-center justify-center w-9 h-9 -mr-2 text-[#a8a29e] hover:text-[#e040fb] transition-colors"
         >
           <X size={18} />
         </button>
       </div>
 
       <div className="px-5 py-6 md:px-8 md:py-8 overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
-        <h3 className="text-[22px] sm:text-2xl md:text-3xl text-[#e7b766] mb-1 leading-tight">
+        <h3 className="text-[22px] sm:text-2xl md:text-3xl text-[#e040fb] mb-1 leading-tight">
           {article.title}
         </h3>
-        <div className="text-[10px] uppercase tracking-[0.2em] text-[#5ec8d8] mb-6">
+        <div className="text-[10px] uppercase tracking-[0.2em] text-[#00d4ff] mb-6">
           // {article.intercept_line}
         </div>
 

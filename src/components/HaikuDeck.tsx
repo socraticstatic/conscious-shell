@@ -93,7 +93,7 @@ export default function HaikuDeck({ haiku }: { haiku: Haiku[] }) {
           className="absolute inset-0"
           style={{
             backgroundImage:
-              'radial-gradient(circle at 30% 30%, #e7b766 0%, transparent 40%), radial-gradient(circle at 70% 70%, #8b7ea3 0%, transparent 45%)',
+              'radial-gradient(circle at 30% 30%, #e040fb 0%, transparent 40%), radial-gradient(circle at 70% 70%, #8b7ea3 0%, transparent 45%)',
           }}
         />
       </div>
@@ -116,13 +116,13 @@ export default function HaikuDeck({ haiku }: { haiku: Haiku[] }) {
                 transition={{ duration: 0.55, ease: [0.22, 0.9, 0.3, 1] }}
                 className="relative"
               >
-                <div className="absolute -left-6 md:-left-10 top-2 text-[#e7b766]/30 text-5xl md:text-7xl leading-none select-none">
+                <div className="absolute -left-6 md:-left-10 top-2 text-[#e040fb]/30 text-5xl md:text-7xl leading-none select-none">
                   “
                 </div>
                 <p className="text-xl sm:text-2xl md:text-5xl leading-tight md:leading-[1.15] text-[#e8e4dc] tracking-tight">
                   <ScrambleText text={current.line1} trigger={current.id} durationMs={650} hoverRescramble={false} />
                 </p>
-                <p className="mt-2 md:mt-3 text-xl sm:text-2xl md:text-5xl leading-tight md:leading-[1.15] text-[#e7b766] tracking-tight">
+                <p className="mt-2 md:mt-3 text-xl sm:text-2xl md:text-5xl leading-tight md:leading-[1.15] text-[#e040fb] tracking-tight">
                   <ScrambleText text={current.line2} trigger={current.id} durationMs={800} hoverRescramble={false} />
                 </p>
                 <p className="mt-2 md:mt-3 text-xl sm:text-2xl md:text-5xl leading-tight md:leading-[1.15] text-[#a8a29e] tracking-tight">
@@ -137,8 +137,8 @@ export default function HaikuDeck({ haiku }: { haiku: Haiku[] }) {
                     onClick={speak}
                     className={`inline-flex items-center gap-2 px-2.5 py-1 border text-[10px] tracking-[0.2em] transition-colors ${
                       speaking
-                        ? 'border-[#e7b766] text-[#e7b766]'
-                        : 'border-[#1f1c17] text-[#6b6660] hover:border-[#e7b766]/50 hover:text-[#e7b766]'
+                        ? 'border-[#e040fb] text-[#e040fb]'
+                        : 'border-[#1f1c17] text-[#6b6660] hover:border-[#e040fb]/50 hover:text-[#e040fb]'
                     }`}
                     aria-label={speaking ? 'stop reading' : 'read haiku aloud'}
                   >
@@ -162,7 +162,7 @@ export default function HaikuDeck({ haiku }: { haiku: Haiku[] }) {
                     onClick={() => setIdx(i)}
                     className={`w-full text-left py-3 px-1 border-b border-dashed border-[#1f1c17] flex items-baseline gap-3 text-sm transition-colors ${
                       i === idx
-                        ? 'text-[#e7b766]'
+                        ? 'text-[#e040fb]'
                         : 'text-[#6b6660] hover:text-[#e8e4dc]'
                     }`}
                   >
@@ -171,7 +171,7 @@ export default function HaikuDeck({ haiku }: { haiku: Haiku[] }) {
                     </span>
                     <span className="truncate">{h.mood || h.line1}</span>
                     {i === idx && (
-                      <span className="ml-auto inline-block w-1.5 h-1.5 rounded-full bg-[#e7b766] animate-pulse" />
+                      <span className="ml-auto inline-block w-1.5 h-1.5 rounded-full bg-[#e040fb] animate-pulse" />
                     )}
                   </button>
                 </li>
@@ -182,7 +182,7 @@ export default function HaikuDeck({ haiku }: { haiku: Haiku[] }) {
 
         <div className="mt-10 h-[2px] bg-[#1f1c17] relative overflow-hidden">
           <motion.div
-            className="absolute inset-y-0 left-0 bg-[#e7b766]"
+            className="absolute inset-y-0 left-0 bg-[#e040fb]"
             style={{ width: `${Math.round(progress * 100)}%` }}
             transition={{ ease: 'linear' }}
           />
@@ -192,7 +192,7 @@ export default function HaikuDeck({ haiku }: { haiku: Haiku[] }) {
           <button
             type="button"
             onClick={() => window.dispatchEvent(new Event('memorial:open'))}
-            className="text-[#6b6660] hover:text-[#ff7a5c] transition-colors tracking-[0.3em] uppercase"
+            className="text-[#6b6660] hover:text-[#ff006e] transition-colors tracking-[0.3em] uppercase"
             aria-label="play memorial sequence"
           >
             play memorial

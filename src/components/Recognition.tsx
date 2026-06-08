@@ -27,7 +27,7 @@ export default function Recognition({
                   transition={{ duration: 0.3, delay: i * 0.06 }}
                   className="py-4 border-b border-dashed border-[#1f1c17] grid grid-cols-12 gap-3 items-baseline"
                 >
-                  <div className="col-span-2 text-[11px] tabular-nums text-[#e7b766]">{a.year}</div>
+                  <div className="col-span-2 text-[11px] tabular-nums text-[#e040fb]">{a.year}</div>
                   <div className="col-span-10">
                     <div className="text-[#e8e4dc] text-lg">{a.title}</div>
                     {a.organization && (

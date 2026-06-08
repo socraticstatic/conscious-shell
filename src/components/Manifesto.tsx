@@ -52,7 +52,7 @@ export default function Manifesto({ articles = [] }: { articles?: LinkedInArticl
               className="group grid grid-cols-12 gap-3 py-5 border-b border-dashed border-[#1f1c17] items-baseline"
             >
               <div className="col-span-1 text-xs text-[#4a453e]">0{i + 1}</div>
-              <div className="col-span-11 md:col-span-4 text-2xl sm:text-3xl md:text-5xl text-[#e7b766]">{big}</div>
+              <div className="col-span-11 md:col-span-4 text-2xl sm:text-3xl md:text-5xl text-[#e040fb]">{big}</div>
               <div className="col-span-12 md:col-span-7 text-[#a8a29e] text-sm md:text-base md:pl-6">
                 <span className="text-[#4a453e]">// </span>
                 {small}
@@ -100,13 +100,13 @@ export default function Manifesto({ articles = [] }: { articles?: LinkedInArticl
                       <div className="col-span-1 text-xs text-[#4a453e] font-mono">
                         {String(i + 1).padStart(2, '0')}
                       </div>
-                      <div className="col-span-12 sm:col-span-3 md:col-span-2 text-[11px] font-mono text-[#7dd6e8] tracking-widest">
+                      <div className="col-span-12 sm:col-span-3 md:col-span-2 text-[11px] font-mono text-[#4fc3f7] tracking-widest">
                         {a.published_date}
                       </div>
                       <div className="col-span-3 sm:col-span-2 md:col-span-1 text-[11px] font-mono text-[#6b6660]">
                         {a.reading_minutes}m
                       </div>
-                      <div className="col-span-12 sm:col-span-6 md:col-span-7 text-[#e7b766] text-[15px] md:text-base leading-snug">
+                      <div className="col-span-12 sm:col-span-6 md:col-span-7 text-[#e040fb] text-[15px] md:text-base leading-snug">
                         <span className="text-[#4a453e]">// </span>
                         {a.title}
                       </div>

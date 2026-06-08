@@ -130,7 +130,7 @@ export default function BaselineDrift() {
 
   const state = drift < 40 ? 'nominal' : drift < 70 ? 'watching' : 'flag';
   const stateColor =
-    state === 'nominal' ? '#5ec8d8' : state === 'watching' ? '#e7b766' : '#ff7a5c';
+    state === 'nominal' ? '#00d4ff' : state === 'watching' ? '#e040fb' : '#ff006e';
   const Icon = state === 'nominal' ? Activity : state === 'watching' ? Eye : ShieldAlert;
 
   return (
@@ -201,13 +201,13 @@ export default function BaselineDrift() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 8 }}
             transition={{ duration: 0.25 }}
-            className="fixed right-3 md:right-5 bottom-20 z-50 max-w-[360px] border border-[#ff7a5c]/50 bg-[#0b0a08]/95 backdrop-blur-sm p-4 pointer-events-auto"
+            className="fixed right-3 md:right-5 bottom-20 z-50 max-w-[360px] border border-[#ff006e]/50 bg-[#0b0a08]/95 backdrop-blur-sm p-4 pointer-events-auto"
             role="status"
           >
             <div className="flex items-start gap-3">
-              <ShieldAlert className="w-4 h-4 text-[#ff7a5c] shrink-0 mt-0.5" />
+              <ShieldAlert className="w-4 h-4 text-[#ff006e] shrink-0 mt-0.5" />
               <div className="flex-1">
-                <div className="text-[10px] uppercase tracking-[0.25em] text-[#ff7a5c] mb-1">
+                <div className="text-[10px] uppercase tracking-[0.25em] text-[#ff006e] mb-1">
                   baseline flag
                 </div>
                 <div className="text-[#e8e4dc] text-sm leading-snug">

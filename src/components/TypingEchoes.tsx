@@ -46,7 +46,7 @@ export default function TypingEchoes() {
           text: fragment,
           x: Math.random() * 90 + 5,
           y: Math.random() * 85 + 5,
-          color: Math.random() > 0.5 ? '#e7b766' : '#5ec8d8',
+          color: Math.random() > 0.5 ? '#e040fb' : '#00d4ff',
           size: 12 + Math.floor(Math.random() * 5),
           rotation: Math.random() * 30 - 15,
         }

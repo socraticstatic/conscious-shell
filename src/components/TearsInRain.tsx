@@ -114,7 +114,7 @@ export default function TearsInRain() {
           </div>
 
           <div className="relative z-10 max-w-[900px] px-6 text-center">
-            <div className="text-[10px] uppercase tracking-[0.5em] text-[#5ec8d8]/70 mb-6">
+            <div className="text-[10px] uppercase tracking-[0.5em] text-[#00d4ff]/70 mb-6">
               — memorial sequence —
             </div>
 
@@ -129,9 +129,9 @@ export default function TearsInRain() {
                     transition={{ duration: 1.4, ease: 'easeOut' }}
                     className={`${
                       isLast
-                        ? 'text-2xl md:text-4xl text-[#ff7a5c]'
+                        ? 'text-2xl md:text-4xl text-[#ff006e]'
                         : i === STANZAS.length - 2
-                        ? 'text-xl md:text-3xl text-[#e7b766]'
+                        ? 'text-xl md:text-3xl text-[#e040fb]'
                         : 'text-lg md:text-2xl text-[#e8e4dc]'
                     } leading-snug tracking-tight`}
                     style={{

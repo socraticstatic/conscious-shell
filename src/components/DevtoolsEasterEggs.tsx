@@ -168,7 +168,7 @@ function leaveStackTraceBait() {
                   // Read each frame in order. That's it.
                   console.debug(
                     '%cstack trace: read each frame as a line',
-                    'color:#5ec8d8;font:11px monospace;background:#0a0a0a;padding:1px 4px',
+                    'color:#00d4ff;font:11px monospace;background:#0a0a0a;padding:1px 4px',
                   );
                   console.trace('tyrell.shell · cells interlinked');
                 }),

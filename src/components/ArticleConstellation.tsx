@@ -90,7 +90,7 @@ export default function ArticleConstellation({
   return (
     <div className="mt-10 pt-8 border-t border-dashed border-[#1f1c17]">
       <div className="flex items-baseline justify-between mb-4">
-        <div className="text-[10px] font-mono text-[#7dd6e8] tracking-[0.35em] uppercase">
+        <div className="text-[10px] font-mono text-[#4fc3f7] tracking-[0.35em] uppercase">
           ▸ cells interlinked · transmission map
         </div>
         <div className="text-[10px] font-mono text-[#5c544a] tracking-widest">
@@ -161,7 +161,7 @@ export default function ArticleConstellation({
             textAnchor="middle"
             className="font-mono"
             fontSize="9"
-            fill="#e7b766"
+            fill="#e040fb"
           >
             ▸ you are here
           </text>
@@ -207,7 +207,7 @@ export default function ArticleConstellation({
                       y={n.y - 8}
                       className="font-mono"
                       fontSize="9"
-                      fill="#e7b766"
+                      fill="#e040fb"
                     >
                       {n.title.length > 46 ? n.title.slice(0, 44) + '…' : n.title}
                     </text>
@@ -216,7 +216,7 @@ export default function ArticleConstellation({
                       y={n.y + 4}
                       className="font-mono"
                       fontSize="8"
-                      fill="#7dd6e8"
+                      fill="#4fc3f7"
                     >
                       {n.date} · {n.shared > 0 ? `${n.shared} shared tag${n.shared > 1 ? 's' : ''}` : 'no shared tags'}
                     </text>

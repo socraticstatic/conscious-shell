@@ -18,10 +18,10 @@ type Certification = {
 };
 
 const categoryMeta: Record<string, { label: string; color: string; icon: typeof Award }> = {
-  'ai-strategy': { label: 'AI STRATEGY', color: '#e7b766', icon: Shield },
-  'ai-technical': { label: 'ML ENGINEERING', color: '#5ec8d8', icon: BookOpen },
+  'ai-strategy': { label: 'AI STRATEGY', color: '#e040fb', icon: Shield },
+  'ai-technical': { label: 'ML ENGINEERING', color: '#00d4ff', icon: BookOpen },
   'ai-product': { label: 'AI PRODUCT', color: '#7aff8c', icon: Award },
-  'leadership': { label: 'LEADERSHIP', color: '#ff7a5c', icon: ChevronRight },
+  'leadership': { label: 'LEADERSHIP', color: '#ff006e', icon: ChevronRight },
 };
 
 export default function Certifications({ certs }: { certs: Certification[] }) {
@@ -85,7 +85,7 @@ export default function Certifications({ certs }: { certs: Certification[] }) {
                     <div className="mt-1 flex items-center gap-3 text-[11px] text-[#6b6660]">
                       <span>{cert.institution}</span>
                       <span className="text-[#2a2622]">|</span>
-                      <span className="text-[#e7b766] tabular-nums">{cert.issued_date}</span>
+                      <span className="text-[#e040fb] tabular-nums">{cert.issued_date}</span>
                     </div>
                   </div>
 

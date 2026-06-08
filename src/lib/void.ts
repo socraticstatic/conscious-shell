@@ -102,7 +102,7 @@ export function __BIRTH__(): void {
       `  cells interlinked within cells interlinked\n` +
       `  within one stem. and dreadfully distinct\n` +
       `  against the dark, a tall white fountain played.\n`,
-      S, 'color:#5ec8d8;font-family:monospace;font-size:11px;line-height:1.6'
+      S, 'color:#00d4ff;font-family:monospace;font-size:11px;line-height:1.6'
     );
   }
 

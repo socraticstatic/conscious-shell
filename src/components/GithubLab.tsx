@@ -55,7 +55,7 @@ export default function GithubLab({ projects }: { projects: GithubProject[] }) {
                 onClick={() => setTag(on ? 'all' : t)}
                 className={`px-2.5 sm:px-3 py-1 text-[9px] sm:text-[10px] border transition-colors ${
                   on
-                    ? 'border-[#5ec8d8] text-[#5ec8d8] bg-[#081418]'
+                    ? 'border-[#00d4ff] text-[#00d4ff] bg-[#081418]'
                     : 'border-[#2a2620] text-[#a8a29e] hover:text-[#efe6d4] active:text-[#efe6d4] hover:border-[#3a342c] active:border-[#3a342c]'
                 }`}
               >
@@ -80,7 +80,7 @@ export default function GithubLab({ projects }: { projects: GithubProject[] }) {
               >
                 <div className="flex items-center justify-between px-3 py-1.5 text-[10px] bg-[#0a0604] border-b border-[#ff9a3c]/30">
                   <div className="flex items-center gap-2 text-[#ff9a3c]" style={{ textShadow: '0 0 6px rgba(255,148,58,0.5)' }}>
-                    <span className="w-1.5 h-1.5 bg-[#ff7a5c] animate-pulse rounded-full" />
+                    <span className="w-1.5 h-1.5 bg-[#ff006e] animate-pulse rounded-full" />
                     LIVE FEED · {active.repo_owner}/{active.repo_name}
                   </div>
                   <div className="flex items-center gap-2">
@@ -91,7 +91,7 @@ export default function GithubLab({ projects }: { projects: GithubProject[] }) {
                           [active.id]: v[active.id] === 'live' ? 'thumb' : 'live',
                         }))
                       }
-                      className="text-[#5ec8d8] border border-[#5ec8d8]/40 px-2 py-0.5 hover:bg-[#5ec8d8]/10 transition-colors"
+                      className="text-[#00d4ff] border border-[#00d4ff]/40 px-2 py-0.5 hover:bg-[#00d4ff]/10 transition-colors"
                     >
                       {view[active.id] === 'live' ? 'freeze frame' : 'run live →'}
                     </button>
@@ -166,7 +166,7 @@ export default function GithubLab({ projects }: { projects: GithubProject[] }) {
                     href={active.pages_url}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-[#5ec8d8] hover:text-[#ff9a3c] transition-colors"
+                    className="text-[#00d4ff] hover:text-[#ff9a3c] transition-colors"
                   >
                     open in new tab ↗
                   </a>
@@ -188,7 +188,7 @@ export default function GithubLab({ projects }: { projects: GithubProject[] }) {
 
                 <div className="flex flex-wrap gap-1 mb-5">
                   {active.tags.map((t) => (
-                    <span key={t} className="text-[10px] text-[#5ec8d8] border border-[#2a2620] px-1.5 py-0.5">
+                    <span key={t} className="text-[10px] text-[#00d4ff] border border-[#2a2620] px-1.5 py-0.5">
                       {t}
                     </span>
                   ))}
@@ -207,7 +207,7 @@ export default function GithubLab({ projects }: { projects: GithubProject[] }) {
                     href={active.pages_url}
                     target="_blank"
                     rel="noreferrer"
-                    className="px-3 py-2 text-xs border border-[#5ec8d8] text-[#5ec8d8] hover:bg-[#5ec8d8] hover:text-[#0a0604] transition-colors text-center"
+                    className="px-3 py-2 text-xs border border-[#00d4ff] text-[#00d4ff] hover:bg-[#00d4ff] hover:text-[#0a0604] transition-colors text-center"
                   >
                     [ open live site ]
                   </a>
@@ -283,7 +283,7 @@ function ProjectCard({
           <span className="text-[#ff9a3c] truncate" style={{ textShadow: '0 0 4px rgba(255,148,58,0.5)' }}>
             {project.repo_owner}/{project.repo_name}
           </span>
-          <span className="text-[#5ec8d8] shrink-0">★ {project.stars.toLocaleString()}</span>
+          <span className="text-[#00d4ff] shrink-0">★ {project.stars.toLocaleString()}</span>
         </div>
         {project.featured && (
           <div className="absolute top-7 left-2 text-[8px] font-mono px-1.5 py-0.5 bg-[#ff9a3c] text-[#0a0604]">
@@ -293,7 +293,7 @@ function ProjectCard({
         {/* bottom meta */}
         <div className="absolute bottom-0 inset-x-0 px-3 py-2 text-[9px] bg-gradient-to-t from-[#0a0604]/95 to-transparent">
           <div className="flex items-center justify-between text-[#7a6e62]">
-            <span className="font-jp text-[#5ec8d8]/80">{project.language}</span>
+            <span className="font-jp text-[#00d4ff]/80">{project.language}</span>
             <span>{isActive ? '◉ ACTIVE' : 'click to mount →'}</span>
           </div>
         </div>

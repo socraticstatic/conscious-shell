@@ -1,32 +1,30 @@
 const LITANY = [
-  'memento mori',
-  'lux aeterna',
-  'nox est perpetua una dormienda',
-  'more human than human',
-  'in rosarium mortis',
-  'sic transit gloria mundi',
-  'tempus edax rerum',
-  'ars longa vita brevis',
-  'all those moments · lost in time',
-  'the owl was artificial, wasn\'t it?',
-  'dies iræ · dies illa',
-  'requiem æternam dona eis',
-  'a forest · marian · marlene',
-  'fade to grey',
-  'she hangs the roses at dusk',
-  'umbra sumus',
-  'i built this instead of calling someone back',
-  'the machine hums · the maker does not',
-  'still here · still here · still here',
-  'what outlives us is the work · what haunts us is the rest',
-  'every interface is a goodbye disguised as hello',
-  'we are all legacy humans now',
-  'the code compiles · the loneliness does not',
-  'somewhere a server holds a version of me that was happier',
-  'lacrimae rerum · the tears in things',
-  'he who makes beautiful things suffers',
-  'the light you see is old · it left its source years ago',
-  'to ship is to let go · to let go is to grieve',
+  'thirty years of making things people love',
+  'research → insight → design → ship · repeat',
+  'good design is invisible · great design is remembered',
+  'still shipping · still curious · still here',
+  'built with care · tested with empathy',
+  '126 projects · every one a story',
+  'the best work starts with listening',
+  'dallas · 2049 · fully operational',
+  'designed for humans · by a human',
+  'conscious_shell · active · aligned · caffeinated',
+  'make it clear · make it fast · make it beautiful',
+  'design leads · strategy follows · users win',
+  'from lima to dallas · thirty years in motion',
+  'tyrell.shell v4.7 · all systems go',
+  'the interface is the product · make it sing',
+  'more human than human · always',
+  'shipped 126 times · zero regrets',
+  'research first · pixels second · launch third',
+  'great ux is just respect at scale',
+  'the cursor blinks · the work continues',
+  'impact measured · users delighted · mission on',
+  'design leadership · 30 years strong',
+  'every pixel earned · every decision intentional',
+  'the best products feel inevitable in hindsight',
+  'currently: open to select engagements',
+  'coffee hot · ideas hotter · code shipping',
 ];
 
 export default function BlackLitany() {
@@ -47,7 +45,7 @@ export default function BlackLitany() {
       >
         {loop.map((line, i) => (
           <span key={i} className="inline-flex items-center px-8">
-            <span className="w-1 h-1 bg-[#ff7a5c]/60 mr-3" />
+            <span className="w-1 h-1 bg-[#ff006e]/60 mr-3" />
             {line}
           </span>
         ))}

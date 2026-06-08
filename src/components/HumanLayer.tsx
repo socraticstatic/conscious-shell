@@ -92,7 +92,7 @@ export default function HumanLayer({ trivia }: { trivia: Trivia[] }) {
                       onClick={() => setActive(cat)}
                       className={`w-full text-left px-4 py-3 flex items-baseline justify-between gap-3 transition-colors ${
                         isActive
-                          ? 'bg-[#14110d] text-[#e7b766]'
+                          ? 'bg-[#14110d] text-[#e040fb]'
                           : 'text-[#a8a29e] hover:bg-[#0f0d0a] hover:text-[#e8e4dc]'
                       }`}
                     >
@@ -122,7 +122,7 @@ export default function HumanLayer({ trivia }: { trivia: Trivia[] }) {
             <div className="border border-[#1f1c17] bg-[#0b0a08]">
               <div className="flex items-center justify-between px-4 py-2 border-b border-[#1f1c17] text-[11px] text-[#6b6660]">
                 <span className="flex items-center gap-2">
-                  <span className="inline-block w-2 h-2 rounded-full bg-[#e7b766] animate-pulse" />
+                  <span className="inline-block w-2 h-2 rounded-full bg-[#e040fb] animate-pulse" />
                   ~/dossier/{active}.view
                 </span>
                 <span className="tabular-nums">
@@ -150,7 +150,7 @@ export default function HumanLayer({ trivia }: { trivia: Trivia[] }) {
                         className="px-4 md:px-6 py-5 grid grid-cols-12 gap-4 items-start group"
                       >
                         <div className="col-span-12 md:col-span-3 flex items-center gap-3">
-                          <span className="shrink-0 inline-flex items-center justify-center w-8 h-8 border border-[#1f1c17] bg-[#0f0d0a] text-[#e7b766] group-hover:border-[#e7b766]/40 transition-colors">
+                          <span className="shrink-0 inline-flex items-center justify-center w-8 h-8 border border-[#1f1c17] bg-[#0f0d0a] text-[#e040fb] group-hover:border-[#e040fb]/40 transition-colors">
                             <Icon className="w-4 h-4" />
                           </span>
                           <span className="text-[11px] uppercase tracking-widest text-[#6b6660]">
