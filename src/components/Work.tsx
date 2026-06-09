@@ -126,9 +126,9 @@ function ProjectRow({
             {project.year}
           </span>
         </div>
-        <div className="text-[11px] text-[#6b6660] mb-1.5 break-words">
+        <div className="text-[11px] text-[#a8a29e] mb-1.5 break-words">
           ./{project.role.toLowerCase().replace(/\s+/g, '_')}
-          <span className="text-[#4a453e]"> · </span>
+          <span className="text-[#6b6660]"> · </span>
           {project.client}
         </div>
         <div className={`text-[22px] leading-tight font-light mb-3 break-words ${active ? 'text-[#e040fb]' : 'text-[#e8e4dc]'}`}>
