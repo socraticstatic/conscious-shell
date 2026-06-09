@@ -55,7 +55,6 @@ const SystemBreach = lazy(() => import('./components/SystemBreach'));
 const NoirSubtitles = lazy(() => import('./components/NoirSubtitles'));
 const DeadDropConsole = lazy(() => import('./components/DeadDropConsole'));
 const EsperScene = lazy(() => import('./components/EsperScene'));
-const AgentBattle = lazy(() => import('./components/AgentBattle'));
 const WebDossier = lazy(() => import('./components/WebDossier'));
 const OverrideMode = lazy(() => import('./components/OverrideMode'));
 const CommandPalette = lazy(() => import('./components/CommandPalette'));

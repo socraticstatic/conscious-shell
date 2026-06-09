@@ -50,7 +50,7 @@ export default function Contact() {
                 <span className="text-[#6b6660] group-hover:text-[#e040fb] transition-colors">→</span>
               </a>
               <a
-                href="https://www.linkedin.com/"
+                href="https://www.linkedin.com/in/micahboswell"
                 target="_blank"
                 rel="noreferrer"
                 data-cursor="hover"
