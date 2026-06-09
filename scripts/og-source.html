@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1200px; height: 630px; overflow: hidden;
+    background: #07070a;
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 64px 72px;
+  }
+  .top-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .dot { width: 10px; height: 10px; background: #e040fb; flex-shrink: 0; }
+  .wordmark { color: #e8e4dc; font-size: 14px; letter-spacing: 0.35em; text-transform: uppercase; }
+  .version { color: #4a453e; font-size: 14px; letter-spacing: 0.1em; }
+  .name {
+    font-size: 88px;
+    font-weight: 300;
+    color: #e8e4dc;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .title {
+    color: #e040fb;
+    font-size: 88px;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-top: 4px;
+  }
+  .stats {
+    display: flex;
+    gap: 48px;
+    margin-top: 36px;
+  }
+  .stat-val {
+    color: #00d4ff;
+    font-size: 20px;
+    letter-spacing: 0.15em;
+  }
+  .stat-label {
+    color: #4a453e;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+  .bottom {
+    border-top: 1px solid #1f1c17;
+    padding-top: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .tagline {
+    color: #6b6660;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .url {
+    color: #4a453e;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+  }
+  .accent-line {
+    width: 3px;
+    height: 88px;
+    background: linear-gradient(to bottom, #e040fb, transparent);
+    position: absolute;
+    left: 0;
+    top: 64px;
+  }
+</style>
+</head>
+<body>
+  <div>
+    <div class="top-bar">
+      <div class="dot"></div>
+      <span class="wordmark">conscious_shell</span>
+      <span class="version">v4.7</span>
+    </div>
+    <div class="name">Micah Boswell</div>
+    <div class="title">Design Leader</div>
+    <div class="stats">
+      <div>
+        <div class="stat-val">30 YRS</div>
+        <div class="stat-label">Practicing</div>
+      </div>
+      <div>
+        <div class="stat-val">126</div>
+        <div class="stat-label">Projects</div>
+      </div>
+      <div>
+        <div class="stat-val">20+</div>
+        <div class="stat-label">Clients</div>
+      </div>
+      <div>
+        <div class="stat-val">3</div>
+        <div class="stat-label">Books</div>
+      </div>
+    </div>
+  </div>
+  <div class="bottom">
+    <span class="tagline">research → product → traction → organizations that ship</span>
+    <span class="url">conscious-shell.com</span>
+  </div>
+</body>
+</html>

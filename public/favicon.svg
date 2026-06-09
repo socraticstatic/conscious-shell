@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" fill="#07070a"/>
+  <rect x="5" y="5" width="22" height="22" fill="none" stroke="#e040fb" stroke-width="1.5"/>
+  <text x="16" y="22" font-family="'Courier New', Courier, monospace" font-size="12" font-weight="bold"
+    fill="#e040fb" text-anchor="middle">MB</text>
+</svg>
