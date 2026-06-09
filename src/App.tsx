@@ -160,7 +160,7 @@ export default function App() {
   return (
     <NarratorProvider>
     <PersonalizationProvider>
-    <div className="relative min-h-[100dvh] bg-[#07070a] text-[#e8e4dc] overflow-hidden" data-pid={crypto.randomUUID()} data-witness="true" data-last-words="all-those-moments-will-be-lost-in-time">
+    <div className="relative min-h-[100dvh] bg-[#07070a] text-[#e8e4dc] overflow-clip" data-pid={crypto.randomUUID()} data-witness="true" data-last-words="all-those-moments-will-be-lost-in-time">
       <DevtoolsEasterEggs />
       <BootOverlay />
       <CRTOverlay />

@@ -1,14 +1,40 @@
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import EsperPanel from './EsperPanel';
 import type { Project } from '../lib/supabase';
 
 export default function Work({ projects }: { projects: Project[] }) {
   const [active, setActive] = useState<Project | null>(null);
+  const listRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
     if (!active && projects[0]) setActive(projects[0]);
   }, [projects, active]);
+
+  // Auto-advance the active project as rows scroll into view
+  useEffect(() => {
+    if (!projects.length || !listRef.current) return;
+    const items = listRef.current.querySelectorAll<HTMLElement>('[data-project-id]');
+    const map = new Map<string, Project>(projects.map((p) => [p.id, p]));
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        // Pick the most-visible entry that is crossing into view
+        const visible = entries
+          .filter((e) => e.isIntersecting && e.intersectionRatio >= 0.5)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        if (visible[0]) {
+          const id = (visible[0].target as HTMLElement).dataset.projectId!;
+          const p = map.get(id);
+          if (p) setActive(p);
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    items.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, [projects]);
 
   return (
     <section id="work" className="relative py-20 md:py-28 border-b border-[#1f1c17]">
@@ -16,7 +42,7 @@ export default function Work({ projects }: { projects: Project[] }) {
         <SectionHeader path="/work" jp="全作品" count={projects.length} right="esper_mode=auto" />
 
         <div className="grid grid-cols-12 gap-6 md:gap-10 mt-10">
-          <ul className="col-span-12 lg:col-span-7 border-t border-[#1f1c17]">
+          <ul ref={listRef} className="col-span-12 lg:col-span-7 border-t border-[#1f1c17]">
             {projects.map((p, i) => (
               <ProjectRow
                 key={p.id}
@@ -73,6 +99,7 @@ function ProjectRow({
   return (
     <motion.li
       data-cursor="hover"
+      data-project-id={project.id}
       onMouseEnter={onFocus}
       onClick={onFocus}
       initial={{ opacity: 0, y: 8 }}
