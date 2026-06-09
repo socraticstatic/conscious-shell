@@ -13,100 +13,130 @@ type Site = {
   patent?: string;
 };
 
-// ── Fountain pen on ruled paper ──────────────────────────────────────────────
+// ── Pen schematic — blueprint style, on-palette ──────────────────────────────
 function PenThumb() {
+  // Pen runs x=88→648, centered at y=200. All outlines only — no fills.
+  const C = '#00d4ff';   // cyan — primary
+  const M = '#e040fb';   // magenta — accent
+  const V = '#a78bfa';   // violet — secondary accent
+  const P = '#ff006e';   // pink — highlight dots
+
+  const callout = (
+    x: number, y: number,
+    dx: number, dy: number,
+    label: string,
+    col: string,
+    anchor: 'start' | 'end' = 'start',
+  ) => (
+    <g>
+      <line x1={x} y1={y} x2={x} y2={y + dy} stroke={col} strokeWidth="0.6" strokeDasharray="2,3" opacity="0.55" />
+      <line x1={x} y1={y + dy} x2={x + dx} y2={y + dy} stroke={col} strokeWidth="0.6" opacity="0.55" />
+      <text x={x + dx + (anchor === 'start' ? 4 : -4)} y={y + dy + 3}
+        fontSize="7.5" fill={col} fontFamily="monospace" letterSpacing="1"
+        textAnchor={anchor} opacity="0.85">{label}</text>
+    </g>
+  );
+
   return (
     <svg viewBox="0 0 760 400" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
       <defs>
-        <linearGradient id="pg-barrel" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"   stopColor="#1e2612" />
-          <stop offset="14%"  stopColor="#32401e" />
-          <stop offset="32%"  stopColor="#16200c" />
-          <stop offset="68%"  stopColor="#0e1608" />
-          <stop offset="100%" stopColor="#080a04" />
-        </linearGradient>
-        <linearGradient id="pg-sheen" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"   stopColor="#ffffff" stopOpacity="0.16" />
-          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
-        </linearGradient>
-        <linearGradient id="pg-grip" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"   stopColor="#1c1c1c" />
-          <stop offset="22%"  stopColor="#2c2c2c" />
-          <stop offset="72%"  stopColor="#0e0e0e" />
-          <stop offset="100%" stopColor="#060606" />
-        </linearGradient>
-        <linearGradient id="pg-gold" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"   stopColor="#f6e870" />
-          <stop offset="28%"  stopColor="#d4a82a" />
-          <stop offset="62%"  stopColor="#b88c18" />
-          <stop offset="100%" stopColor="#7a5c0a" />
-        </linearGradient>
-        <linearGradient id="pg-clip" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"   stopColor="#f0e060" />
-          <stop offset="50%"  stopColor="#c09820" />
-          <stop offset="100%" stopColor="#8a6c0e" />
-        </linearGradient>
-        <linearGradient id="pg-nib" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"   stopColor="#ecd462" />
-          <stop offset="35%"  stopColor="#c8a020" />
-          <stop offset="75%"  stopColor="#a87c10" />
-          <stop offset="100%" stopColor="#6a4c06" />
+        <linearGradient id="pt-body-glow" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={C} stopOpacity="0.08" />
+          <stop offset="100%" stopColor={C} stopOpacity="0" />
         </linearGradient>
       </defs>
-      <rect width="760" height="400" fill="#0f0c08" />
-      <rect x="32" y="32" width="696" height="336" fill="#f5e8c8" opacity="0.038" />
-      {[68, 96, 124, 152, 180, 208, 236, 264, 292, 320, 348].map((y) => (
-        <line key={y} x1="40" y1={y} x2="720" y2={y} stroke="#281e14" strokeWidth="0.8" />
+
+      {/* Background */}
+      <rect width="760" height="400" fill="#07070a" />
+
+      {/* Blueprint grid */}
+      {Array.from({ length: 20 }).map((_, i) => (
+        <line key={`v${i}`} x1={i * 40} y1="0" x2={i * 40} y2="400"
+          stroke="#0e0e1a" strokeWidth="0.5" />
       ))}
-      <line x1="112" y1="42" x2="112" y2="372" stroke="#3a2820" strokeWidth="0.8" opacity="0.5" />
-      <path d="M 132 152 Q 172 148 218 154 Q 262 160 306 152 Q 346 146 384 150"
-        stroke="#1e4878" strokeWidth="1.3" fill="none" opacity="0.42" strokeLinecap="round" />
-      <path d="M 132 180 Q 168 176 208 182 Q 252 188 292 180 Q 330 174 366 180 Q 398 184 428 177"
-        stroke="#1e4878" strokeWidth="1.3" fill="none" opacity="0.32" strokeLinecap="round" />
-      <path d="M 132 208 Q 162 204 198 210 Q 238 216 278 208 Q 310 202 338 208"
-        stroke="#1e4878" strokeWidth="1.3" fill="none" opacity="0.24" strokeLinecap="round" />
-      <g transform="rotate(-38, 380, 200) translate(2,5)">
-        <rect x="120" y="188" width="532" height="24" rx="12" fill="#000000" opacity="0.28" />
-      </g>
-      <g transform="rotate(-38, 380, 200)">
-        <path d="M 166,191 C 154,191 140,195 124,200 C 140,205 154,209 166,209 Z" fill="url(#pg-nib)" />
-        <path d="M 166,191 C 156,191 143,194 128,198 L 124,200 C 136,195 150,191 166,191 Z" fill="#f0e06a" opacity="0.22" />
-        <line x1="127" y1="200" x2="165" y2="200" stroke="#2e1800" strokeWidth="0.9" />
-        <ellipse cx="149" cy="200" rx="5.5" ry="3.5" fill="#1e1000" />
-        <line x1="139" y1="196" x2="139" y2="193" stroke="#a07818" strokeWidth="0.6" opacity="0.5" />
-        <line x1="155" y1="195" x2="155" y2="192" stroke="#a07818" strokeWidth="0.6" opacity="0.5" />
-        <circle cx="123" cy="200" r="2.4" fill="#d8d8c0" />
-        <circle cx="123" cy="200" r="1.2" fill="#f0f0e0" opacity="0.8" />
-        <ellipse cx="120" cy="200" rx="2.2" ry="1.6" fill="#1a3c72" opacity="0.88" />
-        <rect x="164" y="188" width="7" height="24" fill="url(#pg-gold)" rx="1" />
-        <rect x="171" y="190" width="56" height="20" fill="url(#pg-grip)" />
-        <line x1="171" y1="190" x2="227" y2="190" stroke="#242424" strokeWidth="0.5" />
-        <line x1="171" y1="210" x2="227" y2="210" stroke="#040404" strokeWidth="0.5" />
-        {[180, 189, 198, 207, 216].map((x) => (
-          <line key={x} x1={x} y1="190" x2={x} y2="210" stroke="#060606" strokeWidth="1.4" opacity="0.65" />
-        ))}
-        <rect x="227" y="187" width="10" height="26" fill="url(#pg-gold)" />
-        <line x1="231" y1="187" x2="231" y2="213" stroke="#6a4c0a" strokeWidth="0.7" opacity="0.5" />
-        <line x1="234" y1="187" x2="234" y2="213" stroke="#f6e870" strokeWidth="0.5" opacity="0.35" />
-        <rect x="237" y="185" width="354" height="30" fill="url(#pg-barrel)" />
-        <line x1="237" y1="185" x2="591" y2="185" stroke="#2e3c1a" strokeWidth="0.6" />
-        <line x1="237" y1="215" x2="591" y2="215" stroke="#040604" strokeWidth="0.6" />
-        <rect x="237" y="185" width="354" height="6" fill="url(#pg-sheen)" />
-        <text x="385" y="203" fontSize="6" fill="#1c2810" fontFamily="serif" letterSpacing="4" textAnchor="middle" opacity="0.75">PEN · PAPER · INK</text>
-        <rect x="430" y="185" width="7" height="30" fill="url(#pg-gold)" opacity="0.75" />
-        <rect x="270" y="180" width="318" height="3" fill="url(#pg-clip)" />
-        <rect x="270" y="180" width="318" height="1" fill="#f8f0a0" opacity="0.25" />
-        <path d="M 270,180 L 270,186 L 276,186 L 278,182 L 270,180 Z" fill="#c09020" />
-        <circle cx="589" cy="181" r="5.5" fill="url(#pg-gold)" />
-        <circle cx="589" cy="181" r="2.2" fill="#f6e870" opacity="0.55" />
-        <rect x="591" y="185" width="9" height="30" fill="url(#pg-gold)" />
-        <line x1="595" y1="185" x2="595" y2="215" stroke="#6a4c0a" strokeWidth="0.7" opacity="0.5" />
-        <line x1="598" y1="185" x2="598" y2="215" stroke="#f6e870" strokeWidth="0.5" opacity="0.35" />
-        <path d="M 600,185 L 644,185 Q 655,185 655,200 Q 655,215 644,215 L 600,215 Z" fill="url(#pg-barrel)" />
-        <line x1="600" y1="185" x2="646" y2="185" stroke="#2e3c1a" strokeWidth="0.6" />
-        <line x1="600" y1="215" x2="646" y2="215" stroke="#040604" strokeWidth="0.6" />
-        <path d="M 600,185 L 648,185 Q 655,186 655,192 L 600,192 Z" fill="url(#pg-sheen)" opacity="0.45" />
-      </g>
+      {Array.from({ length: 11 }).map((_, i) => (
+        <line key={`h${i}`} x1="0" y1={i * 40} x2="760" y2={i * 40}
+          stroke="#0e0e1a" strokeWidth="0.5" />
+      ))}
+
+      {/* Pen body glow */}
+      <rect x="88" y="184" width="560" height="32" fill="url(#pt-body-glow)" />
+
+      {/* ── Nib: tapered leaf ── */}
+      <path d="M 88,200 L 155,190 L 155,210 Z"
+        fill="none" stroke={C} strokeWidth="1.4" opacity="0.85" />
+      {/* Nib slit */}
+      <line x1="96" y1="200" x2="153" y2="200"
+        stroke={C} strokeWidth="0.7" strokeDasharray="3,2" opacity="0.4" />
+      {/* Breather hole */}
+      <ellipse cx="136" cy="200" rx="4.5" ry="3" fill="none" stroke={C} strokeWidth="0.8" opacity="0.5" />
+      {/* Iridium tip dot */}
+      <circle cx="90" cy="200" r="3.5" fill={P} opacity="0.9" />
+
+      {/* ── Grip collar ring ── */}
+      <rect x="155" y="187" width="9" height="26"
+        fill="none" stroke={M} strokeWidth="1.3" opacity="0.8" />
+
+      {/* ── Grip section ── */}
+      <rect x="164" y="190" width="64" height="20"
+        fill="none" stroke={V} strokeWidth="1.2" opacity="0.75" />
+      {/* Knurling marks */}
+      {[172, 179, 186, 193, 200, 207, 214, 221].map((x) => (
+        <line key={x} x1={x} y1="190" x2={x} y2="210"
+          stroke={V} strokeWidth="0.6" opacity="0.35" />
+      ))}
+
+      {/* ── Trim ring ── */}
+      <rect x="228" y="186" width="11" height="28"
+        fill="none" stroke={M} strokeWidth="1.3" opacity="0.8" />
+
+      {/* ── Barrel ── */}
+      <path d="M 239,186 L 592,186 Q 610,186 612,200 Q 610,214 592,214 L 239,214 Z"
+        fill="none" stroke={C} strokeWidth="1.4" opacity="0.85" />
+      {/* Barrel text watermark */}
+      <text x="388" y="204" fontSize="5.5" fill={C} textAnchor="middle"
+        fontFamily="monospace" letterSpacing="5" opacity="0.18">PEN · PAPER · INK</text>
+      {/* Mid barrel accent ring */}
+      <rect x="440" y="186" width="8" height="28"
+        fill="none" stroke={M} strokeWidth="0.9" opacity="0.55" />
+
+      {/* ── Clip ── */}
+      <path d="M 290,183 L 604,183" stroke={C} strokeWidth="1.8" opacity="0.35" />
+      <circle cx="606" cy="183" r="4" fill="none" stroke={C} strokeWidth="1" opacity="0.5" />
+
+      {/* ── Callout annotations ── */}
+      {callout(115, 190, -62, -38, 'NIB · 18K', C, 'end')}
+      {callout(159, 190, -62, -38, 'RING', M, 'end')}
+      {callout(196, 210, 0, 42, 'GRIP · KNURLED', V)}
+      {callout(323, 186, 0, -38, 'BARREL', C)}
+      {callout(444, 186, 0, -38, 'TRIM', M)}
+
+      {/* ── Pairing engine panel ── */}
+      <rect x="528" y="272" width="192" height="96"
+        fill="#08090e" stroke="#1a1a2e" strokeWidth="0.8" />
+      <text x="544" y="290" fontSize="6.5" fill="#4a453e"
+        fontFamily="monospace" letterSpacing="2">PAIRING ENGINE</text>
+      <line x1="528" y1="294" x2="720" y2="294" stroke="#1a1a2e" strokeWidth="0.6" />
+      {([
+        ['NIB FLEX',    0.82, C],
+        ['FLOW RATE',   0.67, M],
+        ['BLEED RES',   0.91, P],
+        ['PAPER TOOTH', 0.74, V],
+      ] as [string, number, string][]).map(([label, val, col], i) => (
+        <g key={label} transform={`translate(544, ${302 + i * 16})`}>
+          <text y="9" fontSize="6" fill="#3a3630" fontFamily="monospace">{label}</text>
+          <rect x="68" y="3" width="44" height="5" fill="#13131e" />
+          <rect x="68" y="3" width={44 * val} height="5" fill={col} opacity="0.8" />
+          <text x="116" y="9" fontSize="6" fill={col} fontFamily="monospace"
+            opacity="0.7">{Math.round(val * 100)}</text>
+        </g>
+      ))}
+
+      {/* ── Header ── */}
+      <text x="48" y="342" fontSize="8" fill="#4a453e"
+        fontFamily="monospace" letterSpacing="2">PEN · PAPER · INK</text>
+      <text x="48" y="356" fontSize="6.5" fill="#2a2620"
+        fontFamily="monospace" letterSpacing="1">TECHNICAL SCHEMATIC · REV 3</text>
     </svg>
   );
 }
