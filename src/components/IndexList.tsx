@@ -41,10 +41,9 @@ export default function IndexList({ projects }: { projects: Project[] }) {
 
         <div className="mt-2 text-[11px] text-[#4a453e] grid grid-cols-12 gap-3 md:gap-6 px-1 py-2 border-b border-[#1f1c17] uppercase tracking-wider">
           <div className="col-span-2 md:col-span-1">no</div>
-          <div className="col-span-6 md:col-span-5">title</div>
+          <div className="col-span-10 md:col-span-6">title</div>
           <div className="hidden md:block md:col-span-3">role</div>
           <div className="hidden md:block md:col-span-2">client</div>
-          <div className="col-span-4 md:col-span-1 text-right">year</div>
         </div>
 
         <ul>
@@ -76,13 +75,12 @@ function Row({ project, index }: { project: Project; index: number }) {
       <div className="col-span-2 md:col-span-1 text-[11px] tabular-nums text-[#4a453e] group-hover:text-[#e040fb]">
         {String(index + 1).padStart(3, '0')}
       </div>
-      <div className="col-span-6 md:col-span-5 min-w-0 text-sm md:text-base text-[#e8e4dc] group-hover:text-[#e040fb] transition-colors truncate">
+      <div className="col-span-10 md:col-span-6 min-w-0 text-sm md:text-base text-[#e8e4dc] group-hover:text-[#e040fb] transition-colors truncate">
         {project.featured && <span className="mr-1 text-[10px] text-[#e040fb]">◉</span>}
         {project.title}
       </div>
       <div className="hidden md:block md:col-span-3 text-xs text-[#a8a29e] truncate">{project.role}</div>
       <div className="hidden md:block md:col-span-2 text-xs text-[#6b6660] truncate">{project.client}</div>
-      <div className="col-span-4 md:col-span-1 text-right text-xs tabular-nums text-[#a8a29e]">{project.year}</div>
     </motion.li>
   );
 }
