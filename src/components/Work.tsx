@@ -58,10 +58,9 @@ export default function Work({ projects }: { projects: Project[] }) {
               each row already shows its own inline thumb. */}
           <div className="hidden lg:block lg:col-span-5 lg:sticky lg:top-20 self-start">
             <EsperPanel project={active} />
-            <div className="mt-3 grid grid-cols-3 gap-px bg-[#1f1c17] border border-[#1f1c17] text-[10px]">
+            <div className="mt-3 grid grid-cols-2 gap-px bg-[#1f1c17] border border-[#1f1c17] text-[10px]">
               <Stat k="subject" v={active ? active.client : '—'} />
-              <Stat k="role" v={active ? active.role : '—'} />
-              <Stat k="year" v={active ? active.year : '—'} accent />
+              <Stat k="role" v={active ? active.role : '—'} accent />
             </div>
             {active?.summary && (
               <div className="mt-3 text-xs text-[#a8a29e] leading-relaxed">
@@ -118,12 +117,9 @@ function ProjectRow({
 
       {/* Mobile: stacked card. Desktop: 12-col grid. */}
       <div className="md:hidden">
-        <div className="flex items-baseline justify-between text-[11px] font-mono mb-2">
+        <div className="flex items-baseline text-[11px] font-mono mb-2">
           <span className={active ? 'text-[#e040fb]' : 'text-[#4a453e]'}>
             {String(index + 1).padStart(2, '0')}
-          </span>
-          <span className={`tabular-nums ${active ? 'text-[#00d4ff]' : 'text-[#a8a29e]'}`}>
-            {project.year}
           </span>
         </div>
         <div className="text-[11px] text-[#a8a29e] mb-1.5 break-words">
@@ -152,7 +148,7 @@ function ProjectRow({
         <div className={`md:col-span-1 text-xs tabular-nums transition-colors pl-2 ${active ? 'text-[#e040fb]' : 'text-[#4a453e]'}`}>
           {String(index + 1).padStart(2, '0')}
         </div>
-        <div className="md:col-span-7 min-w-0">
+        <div className="md:col-span-8 min-w-0">
           <div className="text-[11px] text-[#6b6660] mb-1 flex gap-2 flex-wrap">
             <span>./{project.role.toLowerCase().replace(/\s+/g, '_')}</span>
             <span className="text-[#4a453e]">·</span>
@@ -168,11 +164,6 @@ function ProjectRow({
               {t}
             </span>
           ))}
-        </div>
-        <div className="md:col-span-1 md:justify-end flex items-center">
-          <span className={`text-xs tabular-nums ${active ? 'text-[#00d4ff]' : 'text-[#a8a29e]'}`}>
-            {project.year}
-          </span>
         </div>
       </div>
     </motion.li>

@@ -39,7 +39,7 @@ export default function CommandPalette({
     ...projects.map<Cmd>((p) => ({
       id: `p:${p.id}`,
       label: `open ${p.title.toLowerCase()}`,
-      hint: `${p.year} · ${p.client}`,
+      hint: p.client,
       run: () => go(p.featured ? 'work' : 'index'),
     })),
   ];

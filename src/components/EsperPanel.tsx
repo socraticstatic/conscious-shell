@@ -68,7 +68,7 @@ export default function EsperPanel({ project }: { project: Project | null }) {
 
           <div className="absolute bottom-0 inset-x-0 z-10 px-3 py-1.5 text-[10px] bg-[#0b0a08]/90 border-t border-[#e040fb]/30 flex items-center justify-between">
             <div className="text-[#e040fb]/90 truncate">
-              FRAME: {project.title.toUpperCase()} · {project.year}
+              FRAME: {project.title.toUpperCase()}
             </div>
             <div className="flex items-center gap-3 text-[#6b6660]">
               <span>ZOOM <span className="text-[#00d4ff]">{zoom.toFixed(1)}×</span></span>

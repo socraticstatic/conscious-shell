@@ -24,7 +24,6 @@ export type Project = {
   summary: string;
   tags: string[];
   image_url: string;
-  year: string;
   order_index: number;
   featured: boolean;
   focal_x?: number;
