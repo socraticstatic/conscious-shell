@@ -55,7 +55,7 @@ export default function Contact() {
   return (
     <section id="contact" className="relative py-20 md:py-32 border-b border-[#1f1c17]">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10">
-        <SectionHeader path="ssh hello@conscious-shell.com" jp="送信 — transmit" />
+        <SectionHeader path="ssh Deckard@conscious-shell.com" jp="送信 — transmit" />
 
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -163,10 +163,10 @@ export default function Contact() {
                     {status === 'sending' ? '// transmitting...' : '$ transmit'}
                   </button>
                   <a
-                    href="mailto:hello@conscious-shell.com"
+                    href="mailto:Deckard@conscious-shell.com"
                     className="text-[11px] text-[#4a453e] hover:text-[#a8a29e] font-mono transition-colors"
                   >
-                    or mail hello@conscious-shell.com
+                    or mail Deckard@conscious-shell.com
                   </a>
                 </div>
               </form>

@@ -35,7 +35,7 @@ export default function CommandPalette({
     { id: 'services', label: 'man services', hint: 'engagement modes', run: () => go('services') },
     { id: 'recognition', label: 'git log --awards', hint: 'awards + publications', run: () => go('recognition') },
     { id: 'contact', label: 'ssh contact', hint: 'reach out', run: () => go('contact') },
-    { id: 'mail', label: 'mail hello@conscious-shell.com', hint: 'send email', run: () => (window.location.href = 'mailto:hello@conscious-shell.com') },
+    { id: 'mail', label: 'mail Deckard@conscious-shell.com', hint: 'send email', run: () => (window.location.href = 'mailto:Deckard@conscious-shell.com') },
     ...projects.map<Cmd>((p) => ({
       id: `p:${p.id}`,
       label: `open ${p.title.toLowerCase()}`,
