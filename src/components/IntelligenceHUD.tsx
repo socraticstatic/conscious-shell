@@ -140,7 +140,7 @@ export default function IntelligenceHUD() {
   const maxScore = Math.max(1.5, ...scoreEntries.map(([, v]) => v));
 
   return (
-    <div className="fixed right-3 sm:right-4 z-[70] font-mono select-none pointer-events-none" style={{ bottom: 'calc(1rem + env(safe-area-inset-bottom, 0px))' }}>
+    <div className="fixed right-3 sm:right-4 z-[70] font-mono select-none pointer-events-none bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] max-sm:bottom-auto max-sm:top-[6.5rem]">
       <motion.div layout className="pointer-events-auto">
         <button
           onClick={() => setOpen((v) => !v)}

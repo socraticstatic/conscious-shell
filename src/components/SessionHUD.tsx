@@ -62,7 +62,7 @@ export default function SessionHUD() {
       </div>
 
       {/* Mobile: compact pill — timestamp + scroll meter, one line. */}
-      <div className="pointer-events-none sm:hidden fixed left-3 z-40 text-[10px] tracking-widest select-none flex items-center gap-2 border border-[#1f1c17] bg-[#0a0908]/85 backdrop-blur-sm px-2 py-1" style={{ bottom: 'calc(0.75rem + env(safe-area-inset-bottom, 0px))' }}>
+      <div className="pointer-events-none sm:hidden fixed left-3 z-40 text-[10px] tracking-widest select-none flex items-center gap-2 border border-[#1f1c17] bg-[#0a0908]/85 backdrop-blur-sm px-2 py-1" style={{ top: 'calc(4.5rem + env(safe-area-inset-top, 0px))' }}>
         <span className="text-[#e040fb]">◉</span>
         <span className="text-[#00d4ff]">{time}</span>
         <span className="inline-block w-10 h-[2px] bg-[#1a1712] relative overflow-hidden">
