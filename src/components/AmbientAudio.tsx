@@ -89,7 +89,7 @@ export default function AmbientAudio() {
       type="button"
       onClick={toggle}
       aria-label={on ? 'silence ambient' : 'enable ambient'}
-      className={`pointer-events-auto fixed left-4 md:left-6 bottom-28 md:bottom-32 z-40 inline-flex items-center gap-2 border px-3 py-2 text-[10px] tracking-[0.3em] uppercase transition-colors ${
+      className={`pointer-events-auto fixed left-4 md:left-6 bottom-28 md:bottom-32 max-sm:left-3 max-sm:bottom-8 max-sm:min-h-[44px] z-40 inline-flex items-center gap-2 border px-3 py-2 max-sm:py-2.5 text-[10px] tracking-[0.3em] uppercase transition-colors ${
         on
           ? 'border-[#00d4ff]/60 text-[#00d4ff] bg-[#0b0a08]/80'
           : 'border-[#1f1c17] text-[#6b6660] bg-[#0b0a08]/60 hover:border-[#00d4ff]/40 hover:text-[#00d4ff]'

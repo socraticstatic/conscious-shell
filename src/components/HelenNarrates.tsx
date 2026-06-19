@@ -100,12 +100,12 @@ export default function HelenNarrates() {
       {/* Toggle Button */}
       <button
         onClick={() => setActive(!active)}
-        className={`fixed z-40 flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full border transition-all duration-300 ${
+        className={`fixed z-40 flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full border transition-all duration-300 right-4 max-sm:left-3 max-sm:right-auto max-sm:min-h-[44px] max-sm:px-3 ${
           active
             ? 'border-[#e040fb] bg-[#0b0a08] shadow-[0_0_12px_rgba(231,183,102,0.3)]'
             : 'border-[#1f1c17] bg-[#0b0a08] hover:border-[#e040fb]/50 opacity-30 hover:opacity-70'
         }`}
-        style={{ bottom: 'calc(6rem + env(safe-area-inset-bottom, 0px))', right: '1rem' }}
+        style={{ bottom: 'calc(6rem + env(safe-area-inset-bottom, 0px))' }}
       >
         <Mic className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${active ? 'text-[#e040fb]' : 'text-[#efe6d4]'}`} />
         <span className={`text-[9px] sm:text-[10px] tracking-wider ${active ? 'text-[#e040fb]' : 'text-[#efe6d4]'}`}>

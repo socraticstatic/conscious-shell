@@ -83,7 +83,7 @@ export default function LogViewer() {
     <>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="fixed bottom-4 right-4 z-40 flex items-center gap-2 px-3.5 py-2.5 bg-gray-900 hover:bg-gray-800 border border-gray-700 rounded-full shadow-lg shadow-black/40 text-gray-200 text-sm font-medium transition-colors"
+        className="fixed bottom-4 right-4 max-sm:bottom-8 max-sm:right-3 z-40 flex items-center gap-2 px-3.5 py-2.5 bg-gray-900 hover:bg-gray-800 border border-gray-700 rounded-full shadow-lg shadow-black/40 text-gray-200 text-sm font-medium transition-colors"
         aria-label="Toggle log viewer"
       >
         <Terminal size={15} />

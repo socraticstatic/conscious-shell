@@ -49,6 +49,15 @@ export default function VKInterview({ recommendations = [] }: { recommendations?
   const [matchedProfile, setMatchedProfile] = useState<Profile | null>(null);
   const [bootLine, setBootLine] = useState(0);
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // The interview takes over the viewport (min-h-screen) but the page keeps its
+  // prior scroll position, which strands the centered question/answers off-screen
+  // on mobile. Pull the active panel to the top of the viewport on every step.
+  useEffect(() => {
+    if (state === 'idle') return;
+    sectionRef.current?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+  }, [state, qIndex]);
 
   useEffect(() => {
     const load = async () => {
@@ -176,7 +185,7 @@ export default function VKInterview({ recommendations = [] }: { recommendations?
 
   if (state === 'intro') {
     return (
-      <section className="relative min-h-screen flex items-center justify-center bg-[#0b0a08]">
+      <section ref={sectionRef} className="relative min-h-screen flex items-center justify-center bg-[#0b0a08]">
         <div className="font-mono text-sm space-y-3 px-6">
           {BOOT_LINES.map((line, i) => (
             <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={i <= bootLine ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.3 }} className={i <= bootLine ? 'text-[#00d4ff]' : 'text-transparent'}>
@@ -192,7 +201,7 @@ export default function VKInterview({ recommendations = [] }: { recommendations?
     const traits = accumulatedTraits();
     const maxTrait = Math.max(...TRAIT_KEYS.map((k) => traits[k]), 1);
     return (
-      <section className="relative min-h-screen bg-[#0b0a08] flex flex-col" style={{ boxShadow: `inset 0 0 120px ${moodColor}11` }}>
+      <section ref={sectionRef} className="relative min-h-screen bg-[#0b0a08] flex flex-col" style={{ boxShadow: `inset 0 0 120px ${moodColor}11` }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#1f1c17]">
           <div className="flex items-center gap-2 text-xs font-mono">
             <span className="w-2 h-2 rounded-full" style={{ backgroundColor: moodColor }} />
@@ -210,7 +219,7 @@ export default function VKInterview({ recommendations = [] }: { recommendations?
           </div>
         </div>
 
-        <div className="flex-1 flex items-center justify-center px-4 sm:px-6">
+        <div className="flex-1 flex items-center justify-center px-4 sm:px-6 pt-4 pb-28 sm:pb-12 overflow-y-auto">
           <div className="max-w-2xl w-full">
             <div className="text-[9px] sm:text-[10px] uppercase tracking-widest text-[#6b6660] mb-2 font-mono">
               Q{String(qIndex + 1).padStart(2, '0')} / {currentQ.category}
@@ -242,7 +251,7 @@ export default function VKInterview({ recommendations = [] }: { recommendations?
   if (state === 'calculating') {
     const traits = accumulatedTraits();
     return (
-      <section className="relative min-h-screen bg-[#0b0a08] flex items-center justify-center">
+      <section ref={sectionRef} className="relative min-h-screen bg-[#0b0a08] flex items-center justify-center">
         <div className="text-center space-y-6 px-6">
           <motion.div animate={{ opacity: [0.4, 1, 0.4] }} transition={{ duration: 1.5, repeat: Infinity }} className="font-mono text-sm text-[#00d4ff] tracking-widest">
             ANALYZING RESPONSE PATTERNS...
@@ -269,7 +278,7 @@ export default function VKInterview({ recommendations = [] }: { recommendations?
     const dominantTrait = TRAIT_KEYS.reduce((a, b) => (traits[a] >= traits[b] ? a : b), 'empathy');
     const corroboration = pickCorroboration(recommendations, dominantTrait);
     return (
-      <section className="relative min-h-screen bg-[#0b0a08] flex items-center justify-center py-20">
+      <section ref={sectionRef} className="relative min-h-screen bg-[#0b0a08] flex items-center justify-center py-20">
         <div className="max-w-xl w-full px-6 space-y-8">
           <div className="font-mono text-[10px] text-[#00d4ff] tracking-widest">DOSSIER COMPILED</div>
           <h2 className="text-3xl md:text-4xl text-[#e8e4dc] font-light">{matchedProfile.name}</h2>
