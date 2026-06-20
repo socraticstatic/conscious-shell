@@ -47,7 +47,15 @@ export default function HelenNarrates() {
 
   useEffect(() => {
     sessionStorage.setItem('helen-active', String(active))
+    window.dispatchEvent(new CustomEvent('dock:state', { detail: { control: 'helen', active } }))
   }, [active])
+
+  // Mobile dock integration: the dock's helen button toggles narration.
+  useEffect(() => {
+    const onDock = () => setActive((v) => !v)
+    window.addEventListener('dock:helen', onDock)
+    return () => window.removeEventListener('dock:helen', onDock)
+  }, [])
 
   useEffect(() => {
     if (!active) return
@@ -100,7 +108,7 @@ export default function HelenNarrates() {
       {/* Toggle Button */}
       <button
         onClick={() => setActive(!active)}
-        className={`fixed z-40 flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full border transition-all duration-300 right-4 max-sm:left-3 max-sm:right-auto max-sm:min-h-[44px] max-sm:px-3 ${
+        className={`fixed z-40 max-sm:hidden flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full border transition-all duration-300 right-4 ${
           active
             ? 'border-[#e040fb] bg-[#0b0a08] shadow-[0_0_12px_rgba(231,183,102,0.3)]'
             : 'border-[#1f1c17] bg-[#0b0a08] hover:border-[#e040fb]/50 opacity-30 hover:opacity-70'
@@ -121,8 +129,7 @@ export default function HelenNarrates() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.4 }}
-            className="fixed left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] sm:w-full max-w-[600px]"
-            style={{ bottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px))' }}
+            className="fixed left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] sm:w-full max-w-[600px] bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] max-sm:bottom-[calc(86px+env(safe-area-inset-bottom,0px))]"
           >
             <div className="bg-[#0b0a08]/95 backdrop-blur border-t border-[#e040fb]/30 rounded-lg px-3 sm:px-5 py-3 sm:py-4">
               <div className="flex items-center mb-1.5 sm:mb-2">

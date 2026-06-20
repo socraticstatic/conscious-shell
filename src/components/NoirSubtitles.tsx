@@ -73,8 +73,7 @@ export default function NoirSubtitles({ lines }: { lines: Noir[] }) {
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed left-0 right-0 z-[6] flex justify-center px-3 sm:px-0"
-      style={{ bottom: 'calc(34px + env(safe-area-inset-bottom, 0px))' }}
+      className="pointer-events-none fixed left-0 right-0 z-[6] flex justify-center px-3 sm:px-0 bottom-[calc(34px+env(safe-area-inset-bottom,0px))] max-sm:bottom-[calc(86px+env(safe-area-inset-bottom,0px))]"
     >
       <AnimatePresence>
         {visible && current && (

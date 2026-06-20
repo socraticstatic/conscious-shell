@@ -7,6 +7,7 @@ import BootOverlay from './components/BootOverlay';
 import SessionHUD from './components/SessionHUD';
 
 import AmbientAudio from './components/AmbientAudio';
+import MobileControlDock from './components/MobileControlDock';
 import CRTOverlay from './components/CRTOverlay';
 import SoulLayer from './components/SoulLayer';
 import { NarratorProvider } from './lib/narrator';
@@ -220,6 +221,7 @@ export default function App() {
           <BlackLitany />
           <NarratorOverlay />
           <VisitorDossier />
+          <MobileControlDock />
         </Suspense>
       )}
     </div>

@@ -73,7 +73,7 @@ export default function Hero() {
     <section id="top" className="relative overflow-hidden border-b border-[#1f1c17]">
       <div className="absolute inset-0 bg-gradient-to-b from-[#07070a]/30 via-transparent to-[#07070a] pointer-events-none" />
 
-      <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10 pt-16 sm:pt-24 md:pt-28 pb-20 sm:pb-24">
+      <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10 pt-[150px] sm:pt-24 md:pt-28 pb-20 sm:pb-24">
         {/* Classification strip */}
         <motion.div
           initial={{ opacity: 0 }}

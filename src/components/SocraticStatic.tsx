@@ -43,6 +43,15 @@ export default function SocraticStatic() {
     id: number
   } | null>(null)
   const [isVisible, setIsVisible] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 639px)')
+    const update = () => setIsMobile(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
 
   const ruptureCount = useRef(0)
   const lastScrollPercent = useRef(0)
@@ -140,10 +149,18 @@ export default function SocraticStatic() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 4 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
-            className="absolute left-0 w-full pointer-events-auto"
-            style={{ top: `${activeRupture.top}%` }}
+            className={`absolute pointer-events-auto ${
+              isMobile
+                ? 'left-1/2 -translate-x-1/2 w-[calc(100%-1.5rem)] max-w-sm'
+                : 'left-0 w-full'
+            }`}
+            style={
+              isMobile
+                ? { bottom: 'calc(94px + env(safe-area-inset-bottom, 0px))' }
+                : { top: `${activeRupture.top}%` }
+            }
           >
-            <div className="relative overflow-hidden">
+            <div className={`relative overflow-hidden ${isMobile ? 'rounded-lg border border-[#ff006e]/25 shadow-lg shadow-black/40' : ''}`}>
               {/* Noise/static background */}
               <div className="absolute inset-0 bg-[#0a0604]/90 noise-bg" />
 

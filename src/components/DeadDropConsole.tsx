@@ -58,7 +58,12 @@ export default function DeadDropConsole() {
       }
     };
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    const onDock = () => setOpen((v) => !v);
+    window.addEventListener('dock:deaddrop', onDock);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('dock:deaddrop', onDock);
+    };
   }, []);
 
   useEffect(() => {
@@ -262,7 +267,7 @@ export default function DeadDropConsole() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="fixed right-3 sm:right-4 md:right-6 max-sm:bottom-24 max-sm:min-h-[44px] z-40 inline-flex items-center gap-1.5 sm:gap-2 border border-[#1f1c17] bg-[#0b0a08]/85 hover:border-[#00d4ff]/60 active:border-[#00d4ff]/60 text-[#a8a29e] hover:text-[#00d4ff] active:text-[#00d4ff] px-2 sm:px-3 py-1.5 sm:py-2 max-sm:py-2.5 text-[9px] sm:text-[10px] tracking-[0.3em] uppercase transition-colors"
+        className="fixed right-3 sm:right-4 md:right-6 max-sm:hidden z-40 inline-flex items-center gap-1.5 sm:gap-2 border border-[#1f1c17] bg-[#0b0a08]/85 hover:border-[#00d4ff]/60 active:border-[#00d4ff]/60 text-[#a8a29e] hover:text-[#00d4ff] active:text-[#00d4ff] px-2 sm:px-3 py-1.5 sm:py-2 text-[9px] sm:text-[10px] tracking-[0.3em] uppercase transition-colors"
         style={{ bottom: 'calc(7rem + env(safe-area-inset-bottom, 0px))' }}
         aria-label="open dead drop"
       >
