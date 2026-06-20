@@ -89,13 +89,13 @@ export default function LogViewer() {
     <>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="fixed bottom-4 right-4 max-sm:hidden z-40 flex items-center gap-2 px-3.5 py-2.5 bg-gray-900 hover:bg-gray-800 border border-gray-700 rounded-full shadow-lg shadow-black/40 text-gray-200 text-sm font-medium transition-colors"
+        className="fixed bottom-[64px] right-6 max-sm:hidden z-40 inline-flex items-center gap-2 px-3 py-2 border border-[#1f1c17] bg-[#0b0a08]/85 backdrop-blur-sm text-[10px] tracking-[0.3em] uppercase text-[#6b6660] hover:text-[#00d4ff] hover:border-[#00d4ff]/40 transition-colors"
         aria-label="Toggle log viewer"
       >
-        <Terminal size={15} />
-        <span>Logs</span>
+        <Terminal className="w-3.5 h-3.5" />
+        logs
         {errorCount > 0 && (
-          <span className="ml-0.5 min-w-[20px] h-5 px-1.5 rounded-full bg-red-500 text-white text-[11px] font-semibold flex items-center justify-center">
+          <span className="ml-0.5 min-w-[16px] px-1 border border-[#ff006e]/60 text-[#ff006e] text-[9px] leading-[14px] text-center">
             {errorCount > 99 ? '99+' : errorCount}
           </span>
         )}

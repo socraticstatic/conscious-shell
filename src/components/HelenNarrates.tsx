@@ -108,17 +108,16 @@ export default function HelenNarrates() {
       {/* Toggle Button */}
       <button
         onClick={() => setActive(!active)}
-        className={`fixed z-40 max-sm:hidden flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-full border transition-all duration-300 right-4 ${
+        aria-label={active ? 'silence helen' : 'let helen narrate'}
+        className={`fixed z-40 max-sm:hidden inline-flex items-center gap-2 px-3 py-2 border backdrop-blur-sm text-[10px] tracking-[0.3em] uppercase transition-colors right-6 ${
           active
-            ? 'border-[#e040fb] bg-[#0b0a08] shadow-[0_0_12px_rgba(231,183,102,0.3)]'
-            : 'border-[#1f1c17] bg-[#0b0a08] hover:border-[#e040fb]/50 opacity-30 hover:opacity-70'
+            ? 'border-[#e040fb]/60 text-[#e040fb] bg-[#0b0a08]/80'
+            : 'border-[#1f1c17] text-[#6b6660] bg-[#0b0a08]/60 hover:border-[#e040fb]/40 hover:text-[#e040fb]'
         }`}
-        style={{ bottom: 'calc(6rem + env(safe-area-inset-bottom, 0px))' }}
+        style={{ bottom: 'calc(108px + env(safe-area-inset-bottom, 0px))' }}
       >
-        <Mic className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${active ? 'text-[#e040fb]' : 'text-[#efe6d4]'}`} />
-        <span className={`text-[9px] sm:text-[10px] tracking-wider ${active ? 'text-[#e040fb]' : 'text-[#efe6d4]'}`}>
-          {active ? 'helen' : 'helen'}
-        </span>
+        <Mic className="w-3.5 h-3.5" />
+        helen
       </button>
 
       {/* Narration Bar */}
