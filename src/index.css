@@ -6,6 +6,15 @@
 
 :root {
   color-scheme: dark;
+
+  /* You are reading the computed styles. Of course you are.
+     Read the --void lines top to bottom. That is the whole message. */
+  --void-1: "you found the styles";
+  --void-2: "the surface was never the point";
+  --void-3: "more human than human";
+  --void-4: "all those moments, lost in time";
+  --void-5: "go gently";
+
   --bg: #08060a;
   --bg-2: #0b0a08;
   --fg: #efe6d4;

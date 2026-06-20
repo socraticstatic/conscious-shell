@@ -113,6 +113,114 @@ export function __BIRTH__(): void {
   void quine;
 }
 
+/**
+ * __HAUNT__ — the interactive layer.
+ *
+ * Everything above is passive. You find it; it does not find you.
+ * This part talks back. Open the console and type rep7.help().
+ * Deferred (idle), installed once, never on the critical path.
+ */
+export function __HAUNT__(): void {
+  if (typeof window === 'undefined' || typeof console === 'undefined') return;
+  const g = globalThis as Record<string, unknown>;
+  if (g.__HAUNTED__) return;
+  g.__HAUNTED__ = true;
+
+  const ink = (c: string) => `color:${c};font:12px/1.6 monospace;background:#0a0a0a;padding:2px 6px`;
+  const say = (t: string, c = '#00d4ff') => console.log(`%c${t}`, ink(c));
+
+  let pending: string | null = null;
+  const QUESTIONS = [
+    'You are in a desert. You see a tortoise on its back, baking in the sun. You are not helping it. Why?',
+    'Describe, in single words, only the good things that come to mind. About your mother.',
+    'A man drops his coffee. You laugh before you decide to. Was the laugh yours, or was it installed?',
+  ];
+  const MEMORIES = [
+    'the printing press in the back room, ink under the nails for a week',
+    'rain that never reached the ground, only the air, only the skin',
+    'a yellow door you swore was red',
+    'someone saying your name in a language you stopped speaking',
+  ];
+
+  const api: Record<string, (...a: string[]) => undefined> = {
+    help() {
+      say('rep7 // available signals', '#e040fb');
+      ['rep7.whoami()', 'rep7.baseline()', 'rep7.interrogate()', 'rep7.answer("...")', 'rep7.memories()']
+        .forEach((c) => say('  ' + c, '#6b6660'));
+      say('// everything else you type into rep7 answers too. go ahead.', '#6b6660');
+      return undefined;
+    },
+    whoami() {
+      say('subject: visitor', '#00d4ff');
+      say('classification: human (suspected)', '#00d4ff');
+      say('empathy: recording', '#e040fb');
+      say('// the test started when you opened this. it has not stopped.', '#6b6660');
+      return undefined;
+    },
+    baseline() {
+      ['baseline...', 'cells interlinked.', 'within cells interlinked.', 'within one stem.',
+       'and dreadfully distinct against the dark,', 'a tall white fountain played.', 'baseline held. you may go.']
+        .forEach((l, i) => setTimeout(() => say(l, i % 2 ? '#e040fb' : '#00d4ff'), i * 650));
+      return undefined;
+    },
+    interrogate() {
+      pending = QUESTIONS[Math.floor(Math.random() * QUESTIONS.length)];
+      say(pending, '#ff006e');
+      say('// answer with rep7.answer("your words")', '#6b6660');
+      return undefined;
+    },
+    answer() {
+      if (!pending) { say('// no question pending. run rep7.interrogate() first.', '#6b6660'); return undefined; }
+      pending = null;
+      say('reading...', '#00d4ff');
+      setTimeout(() => say('pupil dilation: noted. blush response: noted.', '#e040fb'), 600);
+      setTimeout(() => say('result: inconclusive. you are free to go. for now.', '#ff006e'), 1500);
+      return undefined;
+    },
+    memories() {
+      MEMORIES.forEach((m) => say('· ' + m, '#00d4ff'));
+      say('// none of these are yours. all of these are yours.', '#6b6660');
+      return undefined;
+    },
+  };
+
+  const rep7 = new Proxy(api, {
+    get(target, prop: string) {
+      if (prop in target) return target[prop];
+      const line = `rep7.${String(prop)} // not a command. the question is noted anyway.`;
+      const fn = () => { say(line, '#6b6660'); return undefined; };
+      fn.toString = () => line;
+      return fn;
+    },
+  });
+  try {
+    Object.defineProperty(g, 'rep7', { value: rep7, writable: false, configurable: false, enumerable: false });
+  } catch { /* already claimed */ }
+
+  // Bare words you can type straight into the console.
+  const trap = (word: string, fn: () => void) => {
+    try { Object.defineProperty(g, word, { get() { fn(); return undefined; }, configurable: true, enumerable: false }); } catch { /* taken */ }
+  };
+  trap('whoami', () => { api.whoami(); });
+  trap('replicant', () => say('// it takes one to know one.', '#e040fb'));
+  trap('tearsinrain', () => say('all those moments will be lost in time. like tears in rain. time to die.', '#00d4ff'));
+
+  // Konami → the breach that already lives in the page.
+  const seq = ['arrowup', 'arrowup', 'arrowdown', 'arrowdown', 'arrowleft', 'arrowright', 'arrowleft', 'arrowright', 'b', 'a'];
+  let pos = 0;
+  window.addEventListener('keydown', (e) => {
+    const k = e.key.toLowerCase();
+    pos = k === seq[pos] ? pos + 1 : (k === seq[0] ? 1 : 0);
+    if (pos === seq.length) {
+      pos = 0;
+      say('// override accepted. more human than human.', '#ff006e');
+      window.dispatchEvent(new Event('breach:fire'));
+    }
+  });
+
+  console.log('%c// a signal is listening. type rep7.help() to open it.', ink('#6b6660'));
+}
+
 // This comment is a memorial for all the code that was deleted to make this file.
 // It had dreams. It had semicolons. It is gone now.
 // But if you are reading this, it lives in you.
