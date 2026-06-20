@@ -42,8 +42,8 @@ export default function MobileControlDock() {
   return (
     <nav
       aria-label="system controls"
-      className="sm:hidden fixed inset-x-0 z-[45] flex items-stretch justify-around border-t border-[#1f1c17] bg-[#0a0908]/95 backdrop-blur-md"
-      style={{ bottom: 'calc(22px + env(safe-area-inset-bottom, 0px))' }}
+      className="sm:hidden fixed inset-x-0 z-[45] flex items-stretch gap-1 px-2"
+      style={{ bottom: 'calc(30px + env(safe-area-inset-bottom, 0px))' }}
     >
       {items.map(({ key, label, Icon, on, accent, ev }) => (
         <button
@@ -52,15 +52,13 @@ export default function MobileControlDock() {
           onClick={fire(ev)}
           aria-pressed={on}
           aria-label={label}
-          className="group flex flex-1 flex-col items-center justify-center gap-1 min-h-[52px] active:bg-white/[0.06] transition-colors"
-          style={{ color: on ? accent : '#6b6660' }}
+          className={`flex-1 min-w-0 inline-flex items-center justify-center gap-1.5 border bg-[#0b0a08]/85 backdrop-blur-sm px-1.5 py-2.5 text-[10px] tracking-[0.15em] uppercase transition-colors active:bg-[#0b0a08] ${
+            on ? '' : 'border-[#1f1c17] text-[#6b6660]'
+          }`}
+          style={on ? { borderColor: accent, color: accent } : undefined}
         >
-          <Icon className="w-[19px] h-[19px]" strokeWidth={1.5} />
-          <span className="text-[8.5px] tracking-[0.28em] uppercase leading-none">{label}</span>
-          <span
-            className="block h-[2px] w-4 rounded-full transition-all"
-            style={{ background: on ? accent : 'transparent' }}
-          />
+          <Icon className="w-3.5 h-3.5 shrink-0" strokeWidth={1.5} />
+          {label}
         </button>
       ))}
     </nav>
