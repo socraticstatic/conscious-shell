@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Headphones, VolumeX } from 'lucide-react';
+import { Volume2, VolumeX } from 'lucide-react';
 
 /**
  * Two-layer ambient bed (rain + distant city), gently crossfaded in/out.
@@ -115,7 +115,7 @@ export default function AmbientAudio() {
     window.dispatchEvent(new CustomEvent('dock:state', { detail: { control: 'audio', active: on } }));
   }, [on]);
 
-  const Icon = on ? Headphones : VolumeX;
+  const Icon = on ? Volume2 : VolumeX;
 
   return (
     <button
