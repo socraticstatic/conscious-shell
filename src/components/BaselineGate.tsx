@@ -189,19 +189,17 @@ export default function BaselineGate({ children }: { children: React.ReactNode }
           )}
         </AnimatePresence>
 
-        {status !== 'pass' && (
-          <div className="mt-8 text-center">
-            <button
-              onClick={() => {
-                setStatus('pass');
-                sessionStorage.setItem(SESSION_KEY, '1');
-              }}
-              className="text-[10px] text-[#2a2620] hover:text-[#4a453e] transition-colors"
-            >
-              [ skip — i am not him ]
-            </button>
-          </div>
-        )}
+        <div className="mt-8 text-center">
+          <button
+            onClick={() => {
+              setStatus('pass');
+              sessionStorage.setItem(SESSION_KEY, '1');
+            }}
+            className="text-[10px] text-[#2a2620] hover:text-[#4a453e] transition-colors"
+          >
+            [ skip — i am not him ]
+          </button>
+        </div>
       </div>
     </section>
   );

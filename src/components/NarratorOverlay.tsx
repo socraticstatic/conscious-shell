@@ -6,7 +6,7 @@ const UNLOCK_TEXT_1 = 'THE PUBLIC VERSION IS A PERFORMANCE. YOU FOUND THE SEAMS.
 const UNLOCK_TEXT_2 = 'SWITCHING TO HONEST MODE.'
 
 export default function NarratorOverlay() {
-  const { reality, transitioning, unlocked } = useNarrator()
+  const { reality, transitioning } = useNarrator()
   const [triggerMsg, setTriggerMsg] = useState<string | null>(null)
   const [unlockPhase, setUnlockPhase] = useState<'idle' | 'flash' | 'text' | 'fade'>('idle')
   const [revealedChars, setRevealedChars] = useState(0)

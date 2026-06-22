@@ -138,10 +138,10 @@ export default function VKInterview({ recommendations = [] }: { recommendations?
 
     let best: Profile | null = null;
     let bestDist = Infinity;
-    profiles.forEach((p) => {
+    for (const p of profiles) {
       const dist = Math.sqrt(TRAIT_KEYS.reduce((sum, k) => sum + (t[k] - (p.trait_weights[k] || 0)) ** 2, 0));
       if (dist < bestDist) { bestDist = dist; best = p; }
-    });
+    }
 
     setMatchedProfile(best);
     setState('result');

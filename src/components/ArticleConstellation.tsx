@@ -50,7 +50,7 @@ export default function ArticleConstellation({
     const maxRadius = Math.min(W, H) * 0.42;
 
     const current = articles.find((a) => a.id === currentId);
-    if (!current) return { W, H, nodes: [], edges: [] };
+    if (!current) return { W, H, cx, cy, nodes: [], edges: [], currentHue: 0 };
 
     const others = articles.filter((a) => a.id !== currentId);
     const ranked = others

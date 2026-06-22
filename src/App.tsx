@@ -230,21 +230,6 @@ export default function App() {
   );
 }
 
-function toRound(r: DesignRound) {
-  return {
-    id: r.id,
-    round_number: r.round_number,
-    agent: (r.agent === 'goth' ? 'goth' : 'scifi') as 'goth' | 'scifi',
-    title: r.title,
-    palette: Array.isArray(r.palette) ? r.palette : [],
-    motif: r.motif,
-    material: r.material,
-    typography: r.typography,
-    critique: r.critique,
-    score: r.score,
-  };
-}
-
 function isTyping(e: KeyboardEvent) {
   const t = e.target as HTMLElement | null;
   if (!t) return false;
