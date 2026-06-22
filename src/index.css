@@ -57,6 +57,7 @@ html[data-persona="off_world"] body::after {
 
 html, body {
   background-color: var(--bg);
+  overflow-x: clip;
 }
 
 body {
