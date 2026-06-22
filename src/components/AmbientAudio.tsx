@@ -1,90 +1,112 @@
 import { useEffect, useRef, useState } from 'react';
 import { Headphones, VolumeX } from 'lucide-react';
 
+/**
+ * Two-layer ambient bed (rain + distant city), gently crossfaded in/out.
+ *
+ * Deliberately NOT routed through Web Audio. iOS Safari ignores `loop` on an
+ * element connected to a MediaElementAudioSourceNode and is unreliable about
+ * AudioContext.close(), which broke both looping and the off-toggle on iOS.
+ * Plain <audio loop> elements loop reliably and pause() always silences them,
+ * so we mix with element .volume and animate the fade by hand.
+ */
 type State = {
-  ctx: AudioContext;
-  master: GainNode;
   rain: HTMLAudioElement;
   city: HTMLAudioElement;
-  rainNode: MediaElementAudioSourceNode;
-  cityNode: MediaElementAudioSourceNode;
-  rainGain: GainNode;
-  cityGain: GainNode;
+  m: number; // master 0..1, animated
+  raf: number;
 };
+
+// Per-layer volume at full master. Preserves the old rain-forward mix
+// (master 0.6 × rain 0.75 / city 0.2).
+const RAIN_VOL = 0.45;
+const CITY_VOL = 0.12;
+const FADE_IN_MS = 2500;
+const FADE_OUT_MS = 1200;
 
 export default function AmbientAudio() {
   const [on, setOn] = useState(false);
   const state = useRef<State | null>(null);
 
-  const start = async () => {
-    const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-    if (!Ctx) return;
-    const ctx = new Ctx();
-    if (ctx.state === 'suspended') await ctx.resume();
+  const fade = (to: number, durMs: number) => {
+    const s = state.current;
+    if (!s) return;
+    cancelAnimationFrame(s.raf);
+    const from = s.m;
+    const startTime = performance.now();
+    const tick = (now: number) => {
+      const cur = state.current;
+      if (!cur) return;
+      const t = durMs <= 0 ? 1 : Math.min(1, (now - startTime) / durMs);
+      cur.m = from + (to - from) * t;
+      cur.rain.volume = Math.max(0, Math.min(1, RAIN_VOL * cur.m));
+      cur.city.volume = Math.max(0, Math.min(1, CITY_VOL * cur.m));
+      if (t < 1) {
+        cur.raf = requestAnimationFrame(tick);
+      } else if (to === 0) {
+        try { cur.rain.pause(); cur.city.pause(); } catch { /* ignore */ }
+        state.current = null;
+      }
+    };
+    s.raf = requestAnimationFrame(tick);
+  };
 
-    const master = ctx.createGain();
-    master.gain.value = 0;
-    master.connect(ctx.destination);
+  const start = () => {
+    if (state.current) return;
 
     const rain = new Audio('/audio/rain.mp3');
     rain.loop = true;
-    rain.crossOrigin = 'anonymous';
+    rain.preload = 'auto';
+    rain.volume = 0;
 
     const city = new Audio('/audio/city.mp3');
     city.loop = true;
-    city.crossOrigin = 'anonymous';
+    city.preload = 'auto';
+    city.volume = 0;
 
-    const rainNode = ctx.createMediaElementSource(rain);
-    const cityNode = ctx.createMediaElementSource(city);
+    // Belt-and-suspenders for any engine that drops `loop`: restart on end.
+    const reloop = (el: HTMLAudioElement) => () => {
+      try { el.currentTime = 0; void el.play(); } catch { /* ignore */ }
+    };
+    rain.addEventListener('ended', reloop(rain));
+    city.addEventListener('ended', reloop(city));
 
-    const rainGain = ctx.createGain();
-    rainGain.gain.value = 0.75;
-    rainNode.connect(rainGain);
-    rainGain.connect(master);
+    // Kick playback synchronously inside the user gesture — iOS revokes the
+    // activation across any await, so do not await anything before this.
+    void rain.play();
+    void city.play();
 
-    const cityGain = ctx.createGain();
-    cityGain.gain.value = 0.2;
-    cityNode.connect(cityGain);
-    cityGain.connect(master);
-
-    await Promise.all([rain.play(), city.play()]);
-
-    master.gain.linearRampToValueAtTime(0.6, ctx.currentTime + 2.5);
-
-    state.current = { ctx, master, rain, city, rainNode, cityNode, rainGain, cityGain };
+    state.current = { rain, city, m: 0, raf: 0 };
+    fade(1, FADE_IN_MS);
   };
 
   const stop = () => {
-    const s = state.current;
-    if (!s) return;
-    const { ctx, master, rain, city } = s;
-    master.gain.cancelScheduledValues(ctx.currentTime);
-    master.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.2);
-    setTimeout(() => {
-      try {
-        rain.pause();
-        city.pause();
-        ctx.close();
-      } catch {}
-      state.current = null;
-    }, 1400);
+    if (!state.current) return;
+    fade(0, FADE_OUT_MS);
   };
 
-  useEffect(() => () => { stop(); }, []);
+  // Immediate teardown on unmount (no fade).
+  useEffect(() => () => {
+    const s = state.current;
+    if (!s) return;
+    cancelAnimationFrame(s.raf);
+    try { s.rain.pause(); s.city.pause(); } catch { /* ignore */ }
+    state.current = null;
+  }, []);
 
-  const toggle = async () => {
+  const toggle = () => {
     if (on) {
       stop();
       setOn(false);
     } else {
-      await start();
+      start();
       setOn(true);
     }
   };
 
   // Mobile dock integration: respond to the dock's toggle and report state back.
   useEffect(() => {
-    const onDock = () => { void toggle(); };
+    const onDock = () => { toggle(); };
     window.addEventListener('dock:audio', onDock);
     return () => window.removeEventListener('dock:audio', onDock);
   });
