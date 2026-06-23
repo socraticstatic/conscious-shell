@@ -2,15 +2,20 @@ import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Mic } from 'lucide-react'
 
+// Keys MUST match real <section id> values. The hero is `top`, the wayback is
+// `time` — earlier these were keyed `hero`/`archive`, so Helen was mute on the
+// two sections a visitor sees first, which read as a broken toggle.
+const GREETING =
+  'I am Helen. I will tell you what he will not. Scroll, and I will narrate him.'
+
 const NARRATIONS: Record<string, string> = {
-  'hero': 'He starts here because he wants you to feel small. The city is always bigger than the person. The person is always bigger than they let on.',
+  'top': 'He starts here because he wants you to feel small. The city is always bigger than the person. The person is always bigger than they let on.',
   'work': 'Twelve projects. Each one a door he walked through and closed behind him. Each closing sounds the same.',
-  'archive': 'He keeps the dead versions. Most people bury theirs. He visits them like graves.',
+  'time': 'He keeps the dead versions. Most people bury theirs. He visits them like graves.',
   'empathy': 'The test is for you, not him. He already knows the answer. The answer changes nothing.',
   'lab': 'Six repositories. The source code is the autobiography he actually meant to write. The one without metaphors.',
   'esper': 'Enhance. Always enhance. Never accept the first layer of anything. The truth is always one zoom deeper than you think.',
   'manifesto': 'Words he wrote at 2am when no one was hiring. They still hold. They hold him together.',
-  'human': 'The trivia is a deflection. A warm handshake before the real conversation. He is afraid of the real conversation.',
   'haiku': 'Seventeen syllables to say what the portfolio cannot. What the portfolio cannot say would fill another portfolio.',
   'index': 'A list. He loves lists. Control dressed as organization. Organization dressed as sanity.',
   'impact': 'Numbers. The language hiring managers speak when they have forgotten how to listen. He learned the language. He has not forgotten.',
@@ -40,15 +45,65 @@ function Waveform() {
 export default function HelenNarrates() {
   const [active, setActive] = useState(() => sessionStorage.getItem('helen-active') === 'true')
   const [currentSection, setCurrentSection] = useState<string | null>(null)
+  const [lineText, setLineText] = useState('')
   const [displayedText, setDisplayedText] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const fullTextRef = useRef('')
 
+  // Helen actually speaks now — the Mic icon was a promise the feature never
+  // kept. Browser speechSynthesis, no server. The toggle click is the user
+  // gesture browsers require, so the first utterance is allowed to play.
+  const speak = (text: string) => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return
+    try {
+      window.speechSynthesis.cancel()
+      const u = new SpeechSynthesisUtterance(text)
+      u.rate = 0.92
+      u.pitch = 1.02
+      u.volume = 0.9
+      const voices = window.speechSynthesis.getVoices()
+      const pref =
+        voices.find((v) => /samantha|victoria|fiona|karen|moira|tessa|zira|female/i.test(v.name)) ||
+        voices.find((v) => /^en[-_]/i.test(v.lang))
+      if (pref) u.voice = pref
+      window.speechSynthesis.speak(u)
+    } catch {
+      /* speech unavailable — text narration still carries the feature */
+    }
+  }
+
   useEffect(() => {
     sessionStorage.setItem('helen-active', String(active))
     window.dispatchEvent(new CustomEvent('dock:state', { detail: { control: 'helen', active } }))
   }, [active])
+
+  // Toggle ON → greet immediately, independent of scroll position, so the
+  // control visibly (and audibly) responds even at the un-narrated hero.
+  // Toggle OFF → fall silent at once.
+  useEffect(() => {
+    if (active) {
+      setLineText(GREETING)
+    } else {
+      setLineText('')
+      setCurrentSection(null)
+      fullTextRef.current = ''
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel()
+    }
+  }, [active])
+
+  // Once scrolling settles on a narrated section, switch to its line.
+  useEffect(() => {
+    if (active && currentSection && NARRATIONS[currentSection]) setLineText(NARRATIONS[currentSection])
+  }, [active, currentSection])
+
+  // Cancel any speech if the component unmounts mid-sentence.
+  useEffect(
+    () => () => {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel()
+    },
+    [],
+  )
 
   // Mobile dock integration: the dock's helen button toggles narration.
   useEffect(() => {
@@ -76,17 +131,18 @@ export default function HelenNarrates() {
 
   useEffect(() => {
     if (timerRef.current) clearTimeout(timerRef.current)
-    if (!active || !currentSection || !NARRATIONS[currentSection]) {
+    if (!active || !lineText) {
       setDisplayedText('')
       setIsTyping(false)
       return
     }
 
-    const text = NARRATIONS[currentSection]
+    const text = lineText
     if (text === fullTextRef.current) return
     fullTextRef.current = text
     setDisplayedText('')
     setIsTyping(true)
+    speak(text)
 
     let i = 0
     const type = () => {
@@ -101,7 +157,7 @@ export default function HelenNarrates() {
     timerRef.current = setTimeout(type, 30)
 
     return () => { if (timerRef.current) clearTimeout(timerRef.current) }
-  }, [active, currentSection])
+  }, [lineText, active])
 
   return (
     <>
