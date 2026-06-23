@@ -111,7 +111,7 @@ export default function GhostUnits() {
           <div className="relative -translate-x-1 -translate-y-1">
             <div className="w-3 h-3 rotate-45 border-l border-t border-[#00d4ff]/70 shadow-[0_0_8px_rgba(0,212,255,0.5)]" />
             <span className="absolute left-3 top-2 text-[9px] font-mono text-[#00d4ff]/60 whitespace-nowrap">
-              unit {numberFor(id)}
+              unit {unitNums.current[id] ?? '·'}
             </span>
           </div>
         </motion.div>

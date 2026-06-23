@@ -38,16 +38,25 @@ export default function WitnessProtocol() {
   useTypedWord('witness', launch);
   useWindowEvent('egg:witness', launch);
 
-  // auto-fire once when the visitor accrues enough damning tells. Desktop only:
-  // touch momentum-scroll trips the scroll-burst/fast-read tells far too easily,
-  // and an unprompted full-screen takeover on a phone is hostile. On touch the
-  // egg stays discoverable via the palette (`run witness-protocol`).
+  // auto-fire once the visitor accrues enough *genuine* tells. Guards:
+  //  - desktop pointer only (touch momentum-scroll trips tells too easily, and
+  //    an unprompted takeover on a phone is hostile)
+  //  - count real tells, not display padding (≥3 damning signals)
+  //  - require ~20s of dwell, so it never fires the instant you arrive
+  // On touch it stays discoverable via the palette (`run witness-protocol`).
   useEffect(() => {
-    if (!window.matchMedia?.('(hover: hover)').matches) return;
+    const fine = window.matchMedia?.('(hover: hover)').matches
+      && !window.matchMedia?.('(pointer: coarse)').matches;
+    if (!fine) return;
     if (sessionStorage.getItem(FIRED_KEY) === '1') return;
     return onWitness((s) => {
       if (sessionStorage.getItem(FIRED_KEY) === '1') return;
-      if (incriminations(s).length >= 4 && !document.body.classList.contains('egg-active')) {
+      const dwellMs = Date.now() - s.startedAt;
+      if (
+        incriminations(s, false).length >= 3 &&
+        dwellMs > 20000 &&
+        !document.body.classList.contains('egg-active')
+      ) {
         sessionStorage.setItem(FIRED_KEY, '1');
         launch();
       }

@@ -257,7 +257,12 @@ export function onWitness(cb: (s: WitnessSnapshot) => void): () => void {
 // incriminations() — true, in-character "tells" derived purely from the
 // snapshot, ordered most-damning first. Shared by the Witness Protocol (egg 1)
 // and Exit Intent (egg 6). Never fabricates a tell that didn't happen.
-export function incriminations(s: WitnessSnapshot = state): string[] {
+//
+// includeFallbacks: the panel always wants ≥3 lines, so for display it pads
+// with eerie-but-true filler. The auto-fire trigger must NOT count that
+// padding — otherwise one fast scroll (1 real + 3 filler) trips a full-screen
+// takeover. Pass false to count only genuine, damning tells.
+export function incriminations(s: WitnessSnapshot = state, includeFallbacks = true): string[] {
   const out: { weight: number; line: string }[] = [];
 
   if (s.maxScrollBurstPxPerSec > 4000) {
@@ -304,8 +309,9 @@ export function incriminations(s: WitnessSnapshot = state): string[] {
     });
   }
 
-  // fallbacks — still literally true, for the careful/slow visitor
-  if (out.length < 3) {
+  // fallbacks — still literally true, for the careful/slow visitor. Display
+  // only; never counted toward the auto-fire threshold.
+  if (includeFallbacks && out.length < 3) {
     if (s.focusLossCount === 0)
       out.push({ weight: 3, line: `Subject has not looked away once. Subjects who don't look away unsettle me.` });
     out.push({ weight: 2, line: `Subject has not blinked. I have no way to make you blink.` });

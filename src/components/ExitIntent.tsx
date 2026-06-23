@@ -17,8 +17,11 @@ export default function ExitIntent() {
   const [line, setLine] = useState<string | null>(null);
 
   useEffect(() => {
-    // hover-capable pointer only — no exit gesture exists on touch
-    if (!window.matchMedia?.('(hover: hover)').matches) return;
+    // fine, hover-capable pointer only — no "reach for the tab" gesture exists
+    // on touch, and coarse pointers shouldn't arm it
+    const fine = window.matchMedia?.('(hover: hover)').matches
+      && !window.matchMedia?.('(pointer: coarse)').matches;
+    if (!fine) return;
 
     let cooldown = false;
     const fire = () => {
