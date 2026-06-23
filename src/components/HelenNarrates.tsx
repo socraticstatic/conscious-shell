@@ -165,7 +165,7 @@ export default function HelenNarrates() {
       <button
         onClick={() => setActive(!active)}
         aria-label={active ? 'silence helen' : 'let helen narrate'}
-        className={`fixed z-40 max-sm:hidden inline-flex items-center gap-2 px-3 py-2 border backdrop-blur-sm text-[10px] tracking-[0.3em] uppercase transition-colors right-6 ${
+        className={`fixed z-40 max-lg:hidden inline-flex items-center gap-2 px-3 py-2 border backdrop-blur-sm text-[10px] tracking-[0.3em] uppercase transition-colors right-6 ${
           active
             ? 'border-[#e040fb]/60 text-[#e040fb] bg-[#0b0a08]/80'
             : 'border-[#1f1c17] text-[#6b6660] bg-[#0b0a08]/60 hover:border-[#e040fb]/40 hover:text-[#e040fb]'
@@ -184,7 +184,7 @@ export default function HelenNarrates() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.4 }}
-            className="fixed left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] sm:w-full max-w-[600px] bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] max-sm:bottom-[calc(86px+env(safe-area-inset-bottom,0px))]"
+            className="fixed left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] sm:w-full max-w-[600px] bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] max-lg:bottom-[calc(86px+env(safe-area-inset-bottom,0px))]"
           >
             <div className="bg-[#0b0a08]/95 backdrop-blur border-t border-[#e040fb]/30 rounded-lg px-3 sm:px-5 py-3 sm:py-4">
               <div className="flex items-center mb-1.5 sm:mb-2">

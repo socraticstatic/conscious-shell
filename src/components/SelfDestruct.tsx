@@ -41,7 +41,7 @@ export default function SelfDestruct() {
   const color = remaining < 30 ? '#ff006e' : remaining < 120 ? '#e040fb' : '#00d4ff'
 
   if (minimized) return (
-    <div className="fixed bottom-6 left-6 z-40 hidden md:block">
+    <div className="fixed bottom-6 left-6 z-40 hidden lg:block">
       <button onClick={() => setMinimized(false)} className="font-mono text-sm" style={{ color }}>
         {timeStr} <span className="text-[8px] text-[#4a453e] ml-1">+</span>
       </button>
@@ -50,7 +50,7 @@ export default function SelfDestruct() {
 
   return (
     <motion.div
-      className="fixed bottom-6 left-6 z-40 hidden md:block max-w-[160px] rounded px-3 py-2 border"
+      className="fixed bottom-6 left-6 z-40 hidden lg:block max-w-[160px] rounded px-3 py-2 border"
       style={{ background: '#0b0a08', borderColor: remaining < 30 ? undefined : 'rgba(255,122,92,0.3)' }}
       animate={{
         borderColor: remaining < 30 ? ['rgba(255,122,92,0.3)', 'rgba(255,122,92,0.9)', 'rgba(255,122,92,0.3)'] : 'rgba(255,122,92,0.3)',

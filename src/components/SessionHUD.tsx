@@ -46,7 +46,7 @@ export default function SessionHUD() {
       <Reticle className="bottom-3 right-3 hidden sm:block" rotate={180} />
 
       {/* Desktop: multi-line shell readout. Mobile: single quiet status pill so the bottom-left doesn't stack four lines of chrome on top of project content. */}
-      <div className="pointer-events-none hidden sm:block fixed left-4 md:left-6 z-40 text-[10px] md:text-[11px] tracking-widest space-y-1 select-none" style={{ bottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px))' }}>
+      <div className="pointer-events-none hidden lg:block fixed left-4 md:left-6 z-40 text-[10px] md:text-[11px] tracking-widest space-y-1 select-none" style={{ bottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px))' }}>
         <div className="text-[#e040fb]">◉ TYRELL.SHELL v4.7</div>
         <div className="text-[#00d4ff]">T {time} UTC</div>
         <div className="text-[#a8a29e]">P {coords}</div>
@@ -62,7 +62,7 @@ export default function SessionHUD() {
       </div>
 
       {/* Mobile: compact pill — timestamp + scroll meter, one line. */}
-      <div className="pointer-events-none sm:hidden fixed left-3 z-40 text-[10px] tracking-widest select-none flex items-center gap-2 border border-[#1f1c17] bg-[#0a0908]/85 backdrop-blur-sm px-2 py-1" style={{ top: 'calc(4.5rem + env(safe-area-inset-top, 0px))' }}>
+      <div className="pointer-events-none lg:hidden fixed left-3 z-40 text-[10px] tracking-widest select-none flex items-center gap-2 border border-[#1f1c17] bg-[#0a0908]/85 backdrop-blur-sm px-2 py-1" style={{ top: 'calc(4.5rem + env(safe-area-inset-top, 0px))' }}>
         <span className="text-[#e040fb]">◉</span>
         <span className="text-[#00d4ff]">{time}</span>
         <span className="inline-block w-10 h-[2px] bg-[#1a1712] relative overflow-hidden">

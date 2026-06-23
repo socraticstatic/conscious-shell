@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react';
 import { Volume2, VolumeX, Mic, ChevronRight, ScrollText } from 'lucide-react';
 
 /**
- * Mobile-only control dock.
+ * Control dock for phones AND tablets (everything below the `lg` breakpoint).
  *
- * On phones there is no room for the four floating controls (ambient audio,
+ * Below `lg` there is no room for the four floating controls (ambient audio,
  * Helen narrator, dead-drop console, log viewer) to live in the corners
- * without colliding with each other and with the content. Instead of hiding
- * them, this consolidates them into a single thumb-reachable "system bar" that
+ * without colliding with each other and with the content — on tablet the
+ * centered content is full-width and the corner controls land on top of it.
+ * Instead of hiding them, this consolidates them into a single "system bar" that
  * sits directly above the BlackLitany status marquee — together they read as a
  * Blade-Runner terminal taskbar.
  *
@@ -42,7 +43,7 @@ export default function MobileControlDock() {
   return (
     <nav
       aria-label="system controls"
-      className="sm:hidden fixed inset-x-0 z-[45] flex items-stretch gap-1 px-2"
+      className="lg:hidden fixed inset-x-0 z-[45] flex items-stretch gap-1 px-2"
       style={{ bottom: 'calc(30px + env(safe-area-inset-bottom, 0px))' }}
     >
       {items.map(({ key, label, Icon, on, accent, ev }) => (

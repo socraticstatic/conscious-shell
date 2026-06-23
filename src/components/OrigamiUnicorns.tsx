@@ -119,7 +119,7 @@ export default function OrigamiUnicorns() {
 
       {/* Counter */}
       <motion.div
-        className="pointer-events-auto fixed bottom-3 left-3 max-sm:bottom-[calc(86px+env(safe-area-inset-bottom,0px))] select-none font-mono text-[10px] text-[#e040fb]"
+        className="pointer-events-auto fixed bottom-3 left-3 max-lg:bottom-[calc(86px+env(safe-area-inset-bottom,0px))] select-none font-mono text-[10px] text-[#e040fb]"
         initial={{ opacity: 0.2 }}
         whileHover={{ opacity: 0.8 }}
         transition={{ duration: 0.3 }}

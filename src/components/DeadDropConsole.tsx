@@ -267,7 +267,7 @@ export default function DeadDropConsole() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="fixed right-6 max-sm:hidden z-40 inline-flex items-center gap-2 border border-[#1f1c17] bg-[#0b0a08]/85 backdrop-blur-sm hover:border-[#00d4ff]/40 active:border-[#00d4ff]/40 text-[#6b6660] hover:text-[#00d4ff] active:text-[#00d4ff] px-3 py-2 text-[10px] tracking-[0.3em] uppercase transition-colors"
+        className="fixed right-6 max-lg:hidden z-40 inline-flex items-center gap-2 border border-[#1f1c17] bg-[#0b0a08]/85 backdrop-blur-sm hover:border-[#00d4ff]/40 active:border-[#00d4ff]/40 text-[#6b6660] hover:text-[#00d4ff] active:text-[#00d4ff] px-3 py-2 text-[10px] tracking-[0.3em] uppercase transition-colors"
         style={{ bottom: 'calc(152px + env(safe-area-inset-bottom, 0px))' }}
         aria-label="open dead drop"
       >
