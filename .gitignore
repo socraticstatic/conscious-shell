@@ -27,3 +27,6 @@ package-lock.json
 
 # Supabase CLI local cache
 supabase/.temp/
+
+# pnpm regenerates this from the esbuild build-script gate; it breaks Pages CI
+pnpm-workspace.yaml
