@@ -38,8 +38,12 @@ export default function WitnessProtocol() {
   useTypedWord('witness', launch);
   useWindowEvent('egg:witness', launch);
 
-  // auto-fire once when the visitor accrues enough damning tells
+  // auto-fire once when the visitor accrues enough damning tells. Desktop only:
+  // touch momentum-scroll trips the scroll-burst/fast-read tells far too easily,
+  // and an unprompted full-screen takeover on a phone is hostile. On touch the
+  // egg stays discoverable via the palette (`run witness-protocol`).
   useEffect(() => {
+    if (!window.matchMedia?.('(hover: hover)').matches) return;
     if (sessionStorage.getItem(FIRED_KEY) === '1') return;
     return onWitness((s) => {
       if (sessionStorage.getItem(FIRED_KEY) === '1') return;

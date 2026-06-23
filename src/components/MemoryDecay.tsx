@@ -135,7 +135,7 @@ export default function MemoryDecay() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="fixed bottom-4 right-4 z-[50] font-mono text-[11px] pointer-events-none"
+        className="fixed bottom-24 sm:bottom-4 right-4 z-[50] font-mono text-[11px] pointer-events-none"
       >
         <span className={integrity < 40 ? 'text-[#ff006e]' : 'text-[#6b6660]'}>
           {`// memory integrity: ${integrity}%`}
@@ -148,7 +148,7 @@ export default function MemoryDecay() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="fixed bottom-12 right-4 z-[50] font-mono text-[10px] text-[#ff006e]/80 pointer-events-none"
+            className="fixed bottom-32 sm:bottom-12 right-4 z-[50] font-mono text-[10px] text-[#ff006e]/80 pointer-events-none"
           >
             …lost, like tears in rain.
           </motion.div>
