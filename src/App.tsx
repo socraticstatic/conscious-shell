@@ -13,6 +13,7 @@ import SoulLayer from './components/SoulLayer';
 import { NarratorProvider } from './lib/narrator';
 import { PersonalizationProvider } from './lib/personalization';
 import { fetchPortfolio } from './lib/portfolio';
+import { startWitness } from './lib/witness';
 import type {
   Project,
   Service,
@@ -78,6 +79,14 @@ const VKInterview = lazy(() => import('./components/VKInterview'));
 const Certifications = lazy(() => import('./components/Certifications'));
 const NarratorOverlay = lazy(() => import('./components/NarratorOverlay'));
 const VisitorDossier = lazy(() => import('./components/VisitorDossier'));
+// Behavioral eggs — the shell watches how you move. See
+// docs/superpowers/specs/2026-06-23-replicant-eggs-design.md
+const WitnessProtocol = lazy(() => import('./components/WitnessProtocol'));
+const FalseMemory = lazy(() => import('./components/FalseMemory'));
+const MemoryDecay = lazy(() => import('./components/MemoryDecay'));
+const TimeSkip = lazy(() => import('./components/TimeSkip'));
+const GhostUnits = lazy(() => import('./components/GhostUnits'));
+const ExitIntent = lazy(() => import('./components/ExitIntent'));
 
 // If you are reading this source, you are now part of the performance.
 // Your devtools are the fourth wall. Congratulations.
@@ -108,6 +117,11 @@ export default function App() {
 
   useEffect(() => {
     fetchPortfolio().then(setData).catch((e) => console.error('[portfolio] load failed', e));
+  }, []);
+
+  // The shell starts watching how you move the moment it wakes.
+  useEffect(() => {
+    startWitness();
   }, []);
 
   // Defer all non-critical chunks until the browser is idle. Initial paint
@@ -221,6 +235,12 @@ export default function App() {
           <BlackLitany />
           <NarratorOverlay />
           <VisitorDossier />
+          <WitnessProtocol />
+          <FalseMemory />
+          <MemoryDecay />
+          <TimeSkip />
+          <GhostUnits />
+          <ExitIntent />
           <MobileControlDock />
         </Suspense>
       )}
