@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { claimEggSlot } from '../lib/eggBudget'
 
 const RUPTURE_TEXTS = [
   "You have excellent taste in portfolios.",
@@ -82,6 +83,12 @@ export default function SocraticStatic() {
     }
 
     if (Math.random() > TRIGGER_CHANCE) {
+      return
+    }
+
+    // claim only after the chance roll passes, so a missed roll never spends
+    // session budget. A rejected claim just skips this rupture.
+    if (!claimEggSlot()) {
       return
     }
 

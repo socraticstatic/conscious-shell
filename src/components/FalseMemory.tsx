@@ -5,6 +5,7 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { getWitness } from '../lib/witness';
+import { claimEggSlot } from '../lib/eggBudget';
 
 const FIRED_KEY = 'cs:fm-fired';
 
@@ -64,7 +65,8 @@ export default function FalseMemory() {
     if (w.visitCount < 2) return; // nothing to invent on a first visit
 
     const t = window.setTimeout(() => {
-      if (document.body.classList.contains('egg-active')) return;
+      // claimEggSlot also rejects while a full-screen egg owns the screen.
+      if (!claimEggSlot()) return;
       sessionStorage.setItem(FIRED_KEY, '1');
       setMem(fabricateMemory(w.visitorId));
       window.setTimeout(() => setMem(null), 7500);

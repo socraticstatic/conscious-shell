@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { claimEggSlot } from '../lib/eggBudget';
 
 const ASN = ['TYRELL-AS', 'WALLACE-NET', 'OFF-WORLD-COMM', 'SHIMAGO-DOM', 'OBSCURA-EDGE', 'EL-PUEBLO-NAT'];
 const CITIES = ['LA 2019', 'CHIBA CITY', 'TOKYO 3', 'NIGHT CITY', 'KOWLOON ECHO', 'MEGA-METRO ACA'];
@@ -35,7 +36,9 @@ export default function SystemBreach() {
     const schedule = () => {
       const wait = 180000 + Math.random() * 240000;
       const id = window.setTimeout(() => {
-        if (!document.hidden) trigger();
+        // scheduled (unprompted) breaches answer to the governor; the manual
+        // `breach:fire` event and the Ctrl/Cmd+Alt+B shortcut bypass it.
+        if (!document.hidden && claimEggSlot()) trigger();
         schedule();
       }, wait);
       timers.current.push(id);

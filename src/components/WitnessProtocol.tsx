@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Fingerprint, X } from 'lucide-react';
 import { getWitness, incriminations, onWitness } from '../lib/witness';
 import { useTypedWord, useWindowEvent } from '../lib/eggTriggers';
+import { claimEggSlot } from '../lib/eggBudget';
 
 const FIRED_KEY = 'cs:witness-fired';
 const VERDICT = 'You’re not reading this. You’re parsing it. Welcome home, Nexus-6.';
@@ -52,10 +53,12 @@ export default function WitnessProtocol() {
     return onWitness((s) => {
       if (sessionStorage.getItem(FIRED_KEY) === '1') return;
       const dwellMs = Date.now() - s.startedAt;
+      // claimEggSlot last: it has side effects, so only attempt it once the
+      // dwell/tell conditions pass. It also rejects while another egg is up.
       if (
         incriminations(s, false).length >= 3 &&
         dwellMs > 20000 &&
-        !document.body.classList.contains('egg-active')
+        claimEggSlot()
       ) {
         sessionStorage.setItem(FIRED_KEY, '1');
         launch();

@@ -25,7 +25,9 @@ export default function NoirSubtitles({ lines }: { lines: Noir[] }) {
     let hideTimer: number;
 
     const tick = () => {
-      const nextDelay = 22000 + Math.random() * 28000;
+      // ambient narration, not a popup — kept rare so it reads as atmosphere
+      // rather than another interruption. ~90s–3min between lines.
+      const nextDelay = 90000 + Math.random() * 90000;
       showTimer = window.setTimeout(() => {
         if (document.hidden) { tick(); return; }
         const next = order.current[idx.current % order.current.length];
@@ -41,6 +43,7 @@ export default function NoirSubtitles({ lines }: { lines: Noir[] }) {
 
     const first = window.setTimeout(() => {
       const next = order.current[0];
+      if (document.hidden) { tick(); return; }
       idx.current = 1;
       setCurrent(next);
       setVisible(true);

@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { claimEggSlot } from '../lib/eggBudget';
 
 const LINES = [
   'You’re reaching for the door. They always reach for the door.',
@@ -29,6 +30,7 @@ export default function ExitIntent() {
       if (document.body.classList.contains('egg-active')) return; // a full-screen egg owns the screen
       const count = parseInt(sessionStorage.getItem(COUNT_KEY) || '0', 10) || 0;
       if (count >= MAX_PER_SESSION) return;
+      if (!claimEggSlot()) return; // global governor, on top of the local 2x cap
       cooldown = true;
       sessionStorage.setItem(COUNT_KEY, String(count + 1));
       setLine(LINES[count % LINES.length]);
