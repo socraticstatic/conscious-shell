@@ -1,4 +1,6 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
+import { lazyWithRetry as lazy } from './lib/lazyWithRetry';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import Nav from './components/Nav';
 import Hero from './components/Hero';
 import DevtoolsEasterEggs from './components/DevtoolsEasterEggs';
@@ -114,6 +116,9 @@ export default function App() {
   } | null>(null);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  // Computed once. crypto.randomUUID() is unavailable on iOS Safari < 15.4 and
+  // throws there — calling it raw in render would crash the whole app.
+  const [pid] = useState(safeUUID);
 
   useEffect(() => {
     fetchPortfolio().then(setData).catch((e) => console.error('[portfolio] load failed', e));
@@ -172,9 +177,23 @@ export default function App() {
   }, []);
 
   return (
+    <ErrorBoundary
+      label="root"
+      fallback={(_err, reset) => (
+        <div className="min-h-[100dvh] bg-[#07070a] text-[#e8e4dc] flex flex-col items-center justify-center gap-4 p-6 text-center">
+          <p className="font-mono text-sm opacity-70">the shell hit an error. it is still here.</p>
+          <button
+            onClick={reset}
+            className="font-mono text-xs border border-[#e8e4dc]/30 rounded px-4 py-2 hover:bg-[#e8e4dc]/10"
+          >
+            retry
+          </button>
+        </div>
+      )}
+    >
     <NarratorProvider>
     <PersonalizationProvider>
-    <div className="relative min-h-[100dvh] bg-[#07070a] text-[#e8e4dc] overflow-clip" data-pid={crypto.randomUUID()} data-witness="true" data-last-words="all-those-moments-will-be-lost-in-time">
+    <div className="relative min-h-[100dvh] bg-[#07070a] text-[#e8e4dc] overflow-clip" data-pid={pid} data-witness="true" data-last-words="all-those-moments-will-be-lost-in-time">
       <DevtoolsEasterEggs />
       <BootOverlay />
       <CRTOverlay />
@@ -190,6 +209,7 @@ export default function App() {
       <div className="site-grain" aria-hidden />
 
       {hydrated && (
+        <ErrorBoundary label="lazy-tree">
         <Suspense fallback={null}>
           <TearsInRain />
           <SystemBreach />
@@ -243,11 +263,24 @@ export default function App() {
           <ExitIntent />
           <MobileControlDock />
         </Suspense>
+        </ErrorBoundary>
       )}
     </div>
     </PersonalizationProvider>
     </NarratorProvider>
+    </ErrorBoundary>
   );
+}
+
+// crypto.randomUUID() is only defined in secure contexts on modern engines and
+// throws on iOS Safari < 15.4. Degrade instead of crashing the whole render.
+function safeUUID(): string {
+  try {
+    if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) return crypto.randomUUID();
+  } catch {
+    /* fall through */
+  }
+  return `p-${Date.now().toString(36)}-${Math.floor(Math.random() * 1e9).toString(36)}`;
 }
 
 function isTyping(e: KeyboardEvent) {

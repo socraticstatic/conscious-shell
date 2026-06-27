@@ -22,10 +22,27 @@ const defaultTriggers: Triggers = { origami_found: false, console_command: false
 export const NarratorContext = createContext<NarratorContextType | null>(null)
 
 function getVisitorId(): string {
-  let id = localStorage.getItem('visitor-id')
-  if (!id) {
-    id = crypto.randomUUID()
+  // localStorage throws in some iOS Safari private-mode configs; crypto.randomUUID
+  // is undefined on iOS Safari < 15.4. Neither may crash this provider, which
+  // wraps the entire app — a throw here would blank the page.
+  try {
+    const existing = localStorage.getItem('visitor-id')
+    if (existing) return existing
+  } catch {
+    /* storage blocked */
+  }
+  let id: string
+  try {
+    id = typeof crypto !== 'undefined' && 'randomUUID' in crypto
+      ? crypto.randomUUID()
+      : `v-${Date.now().toString(36)}-${Math.floor(Math.random() * 1e9).toString(36)}`
+  } catch {
+    id = `v-${Date.now().toString(36)}-${Math.floor(Math.random() * 1e9).toString(36)}`
+  }
+  try {
     localStorage.setItem('visitor-id', id)
+  } catch {
+    /* storage blocked */
   }
   return id
 }
