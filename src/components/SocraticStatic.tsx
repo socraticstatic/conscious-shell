@@ -19,9 +19,9 @@ const RUPTURE_TEXTS = [
   "You have now entered a good design zone. Welcome. Stay as long as you like.",
 ]
 
-const TRIGGER_CHANCE = 0.2
+const TRIGGER_CHANCE = 0.08
 const COOLDOWN_MS = 20000
-const MAX_RUPTURES_PER_SESSION = 5
+const MAX_RUPTURES_PER_SESSION = 2
 const MIN_DISPLAY_MS = 4000
 const MAX_DISPLAY_MS = 6000
 

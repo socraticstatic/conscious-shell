@@ -13,8 +13,8 @@
 // do NOT call this. Those are earned: the visitor asked. Only self-firing code
 // claims a slot.
 
-export const COOLDOWN_MS = 120_000; // 2 min minimum between auto-fired popups
-export const MAX_PER_SESSION = 5; // hard cap on auto-fired popups per session
+export const COOLDOWN_MS = 300_000; // 5 min minimum between auto-fired popups
+export const MAX_PER_SESSION = 0; // no auto-fired popups; only discoverable triggers fire
 
 const COUNT_KEY = 'cs:egg-auto-count';
 

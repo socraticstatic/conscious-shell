@@ -34,7 +34,7 @@ export default function SystemBreach() {
     const fire = () => trigger();
     window.addEventListener('breach:fire', fire);
     const schedule = () => {
-      const wait = 180000 + Math.random() * 240000;
+      const wait = 300000 + Math.random() * 360000;
       const id = window.setTimeout(() => {
         // scheduled (unprompted) breaches answer to the governor; the manual
         // `breach:fire` event and the Ctrl/Cmd+Alt+B shortcut bypass it.
