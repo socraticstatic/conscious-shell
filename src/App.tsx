@@ -9,6 +9,7 @@ import Work from './components/Work';
 import BootOverlay from './components/BootOverlay';
 import SessionHUD from './components/SessionHUD';
 import CaseStudy from './components/CaseStudy';
+import { useScrollToHash } from './lib/useScrollToHash';
 
 import AmbientAudio from './components/AmbientAudio';
 import MobileControlDock from './components/MobileControlDock';
@@ -164,6 +165,8 @@ export default function App() {
     if (inner) ro.observe(inner);
     return () => ro.disconnect();
   }, [data, hydrated]);
+
+  useScrollToHash();
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

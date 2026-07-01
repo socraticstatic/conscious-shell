@@ -31,7 +31,12 @@ export default function VisitorDossier() {
   }
 
   return (
-    <div className="fixed z-30 left-4 bottom-44 sm:left-auto sm:bottom-auto sm:top-20 sm:right-6 lg:right-6 max-w-[calc(100vw-1.5rem)]">
+    // Anchored top-right at every breakpoint (was bottom-left + bottom-44 on
+    // mobile, which drifted over whatever page copy happened to scroll under
+    // that fixed y-position — e.g. the biometrics panel, the contact section).
+    // top-right sits just under the nav bar, clear of SessionHUD's mobile
+    // marker (which lives on the left) and the bottom control dock.
+    <div className="fixed z-30 top-20 right-4 max-w-[calc(100vw-1.5rem)]">
       <AnimatePresence mode="wait">
         {!open ? (
           <motion.button
