@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { SectionHeader } from './Work';
+import { slugify } from '../lib/slug';
 import type { Project } from '../lib/supabase';
 
 export default function IndexList({ projects }: { projects: Project[] }) {
@@ -75,10 +77,13 @@ function Row({ project, index }: { project: Project; index: number }) {
       <div className="col-span-2 md:col-span-1 text-[11px] tabular-nums text-[#4a453e] group-hover:text-[#e040fb]">
         {String(index + 1).padStart(3, '0')}
       </div>
-      <div className="col-span-10 md:col-span-6 min-w-0 text-sm md:text-base text-[#e8e4dc] group-hover:text-[#e040fb] transition-colors truncate">
+      <Link
+        to={`/work/${slugify(project.title)}`}
+        className="col-span-10 md:col-span-6 min-w-0 text-sm md:text-base text-[#e8e4dc] group-hover:text-[#e040fb] transition-colors truncate"
+      >
         {project.featured && <span className="mr-1 text-[10px] text-[#e040fb]">◉</span>}
         {project.title}
-      </div>
+      </Link>
       <div className="hidden md:block md:col-span-3 text-xs text-[#a8a29e] truncate">{project.role}</div>
       <div className="hidden md:block md:col-span-2 text-xs text-[#6b6660] truncate">{project.client}</div>
     </motion.li>

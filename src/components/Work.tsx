@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import EsperPanel from './EsperPanel';
+import { slugify } from '../lib/slug';
 import type { Project } from '../lib/supabase';
 
 export default function Work({ projects }: { projects: Project[] }) {
@@ -68,6 +70,14 @@ export default function Work({ projects }: { projects: Project[] }) {
                 {active.summary}
               </div>
             )}
+            {active && (
+              <Link
+                to={`/work/${slugify(active.title)}`}
+                className="mt-3 inline-flex items-center gap-1 text-[11px] font-mono text-[#e040fb] hover:underline"
+              >
+                view full case study →
+              </Link>
+            )}
           </div>
         </div>
       </div>
@@ -127,9 +137,16 @@ function ProjectRow({
           <span className="text-[#6b6660]"> · </span>
           {project.client}
         </div>
-        <div className={`text-[22px] leading-tight font-light mb-3 break-words ${active ? 'text-[#e040fb]' : 'text-[#e8e4dc]'}`}>
+        <div className={`text-[22px] leading-tight font-light mb-1 break-words ${active ? 'text-[#e040fb]' : 'text-[#e8e4dc]'}`}>
           {project.title}
         </div>
+        <Link
+          to={`/work/${slugify(project.title)}`}
+          onClick={(e) => e.stopPropagation()}
+          className="text-[11px] font-mono text-[#e040fb] mb-3 inline-block hover:underline"
+        >
+          view case study →
+        </Link>
         {project.image_url && (
           <div className="aspect-[16/10] bg-[#0a0908] border border-[#1f1c17] overflow-hidden mb-3">
             <img src={project.image_url} alt="" loading="lazy" className="w-full h-full object-cover" />
