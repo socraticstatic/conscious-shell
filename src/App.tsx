@@ -1,4 +1,5 @@
 import { Suspense, useEffect, useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { lazyWithRetry as lazy } from './lib/lazyWithRetry';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import Nav from './components/Nav';
@@ -7,6 +8,7 @@ import DevtoolsEasterEggs from './components/DevtoolsEasterEggs';
 import Work from './components/Work';
 import BootOverlay from './components/BootOverlay';
 import SessionHUD from './components/SessionHUD';
+import CaseStudy from './components/CaseStudy';
 
 import AmbientAudio from './components/AmbientAudio';
 import MobileControlDock from './components/MobileControlDock';
@@ -193,6 +195,11 @@ export default function App() {
     >
     <NarratorProvider>
     <PersonalizationProvider>
+    <Routes>
+      <Route path="/work/:slug" element={<CaseStudy />} />
+      <Route
+        path="/*"
+        element={
     <div className="relative min-h-[100dvh] bg-[#07070a] text-[#e8e4dc] overflow-clip" data-pid={pid} data-witness="true" data-last-words="all-those-moments-will-be-lost-in-time">
       <DevtoolsEasterEggs />
       <BootOverlay />
@@ -266,6 +273,9 @@ export default function App() {
         </ErrorBoundary>
       )}
     </div>
+        }
+      />
+    </Routes>
     </PersonalizationProvider>
     </NarratorProvider>
     </ErrorBoundary>
