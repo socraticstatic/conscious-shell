@@ -1,5 +1,5 @@
 import { Suspense, useEffect, useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { lazyWithRetry as lazy } from './lib/lazyWithRetry';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import Nav from './components/Nav';
@@ -119,6 +119,7 @@ export default function App() {
   } | null>(null);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const { pathname } = useLocation();
   // Computed once. crypto.randomUUID() is unavailable on iOS Safari < 15.4 and
   // throws there — calling it raw in render would crash the whole app.
   const [pid] = useState(safeUUID);
@@ -151,6 +152,12 @@ export default function App() {
   // Clamp body scrollHeight to actual content. Some fixed/animated overlays
   // were inflating documentElement.scrollHeight by several thousand pixels
   // on mobile, creating phantom blank space below the footer.
+  //
+  // `pathname` is a dependency so this re-attaches on every route change —
+  // without it, navigating from a short page (e.g. a case study) to the
+  // tall homepage left the ResizeObserver watching the OLD (now-unmounted)
+  // root.firstElementChild, so body.style.height stayed frozen at the short
+  // page's height forever, silently capping how far the page could scroll.
   useEffect(() => {
     const root = document.getElementById('root');
     if (!root) return;
@@ -164,7 +171,7 @@ export default function App() {
     const inner = root.firstElementChild;
     if (inner) ro.observe(inner);
     return () => ro.disconnect();
-  }, [data, hydrated]);
+  }, [data, hydrated, pathname]);
 
   useScrollToHash();
 
