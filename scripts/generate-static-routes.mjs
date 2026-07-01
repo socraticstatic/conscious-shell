@@ -21,7 +21,6 @@
 // render), so Googlebot's JS-render pass is still what covers the rest of
 // the interactive homepage experience.
 
-import { createClient } from '@supabase/supabase-js';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -86,11 +85,20 @@ async function main() {
     process.exit(1);
   }
 
-  const supabase = createClient(url, key, { auth: { persistSession: false } });
-  const { data: projects, error } = await supabase
-    .from('portfolio_projects')
-    .select('id,title,role,client,summary,tags,image_url,order_index')
-    .order('order_index');
+  // Plain REST call, not the supabase-js client: this script only ever does
+  // one anonymous read, so the client's realtime/auth machinery (which pulls
+  // in @supabase/realtime-js and needs a native WebSocket — absent on the
+  // Node 20 CI runner, present only from Node 22) is dead weight we don't
+  // need and shouldn't depend on.
+  const restUrl =
+    `${url}/rest/v1/portfolio_projects` +
+    `?select=id,title,role,client,summary,tags,image_url,order_index` +
+    `&order=order_index.asc`;
+  const res = await fetch(restUrl, {
+    headers: { apikey: key, Authorization: `Bearer ${key}` },
+  });
+  const projects = res.ok ? await res.json() : null;
+  const error = res.ok ? null : new Error(`${res.status} ${await res.text()}`);
 
   if (error) {
     console.error('[static-routes] Supabase fetch failed:', error.message);
