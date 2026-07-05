@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { Volume2, VolumeX } from 'lucide-react';
 
 /**
  * Two-layer ambient bed (rain + distant city), gently crossfaded in/out.
@@ -115,21 +114,7 @@ export default function AmbientAudio() {
     window.dispatchEvent(new CustomEvent('dock:state', { detail: { control: 'audio', active: on } }));
   }, [on]);
 
-  const Icon = on ? Volume2 : VolumeX;
-
-  return (
-    <button
-      type="button"
-      onClick={toggle}
-      aria-label={on ? 'silence ambient' : 'enable ambient'}
-      className={`pointer-events-auto fixed left-4 md:left-6 bottom-28 md:bottom-32 max-lg:hidden z-40 inline-flex items-center gap-2 border px-3 py-2 text-[10px] tracking-[0.3em] uppercase transition-colors ${
-        on
-          ? 'border-[#00d4ff]/60 text-[#00d4ff] bg-[#0b0a08]/80'
-          : 'border-[#1f1c17] text-[#6b6660] bg-[#0b0a08]/60 hover:border-[#00d4ff]/40 hover:text-[#00d4ff]'
-      }`}
-    >
-      <Icon className="w-3.5 h-3.5" />
-      {on ? 'amb · on' : 'amb · off'}
-    </button>
-  );
+  // No floating button — the control dock owns the amb toggle at every
+  // viewport and drives this component via the dock:audio event.
+  return null;
 }

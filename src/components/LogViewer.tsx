@@ -52,11 +52,6 @@ export default function LogViewer() {
     return unsub;
   }, [open, fetchLogs]);
 
-  const errorCount = useMemo(
-    () => rows.filter((r) => r.level === 'error').length,
-    [rows],
-  );
-
   const filtered = useMemo(
     () => rows.filter((r) => activeLevels.has(r.level as LogLevel)),
     [rows, activeLevels],
@@ -87,19 +82,8 @@ export default function LogViewer() {
 
   return (
     <>
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className="fixed bottom-[64px] right-6 max-lg:hidden z-40 inline-flex items-center gap-2 px-3 py-2 border border-[#1f1c17] bg-[#0b0a08]/85 backdrop-blur-sm text-[10px] tracking-[0.3em] uppercase text-[#6b6660] hover:text-[#00d4ff] hover:border-[#00d4ff]/40 transition-colors"
-        aria-label="Toggle log viewer"
-      >
-        <Terminal className="w-3.5 h-3.5" />
-        logs
-        {errorCount > 0 && (
-          <span className="ml-0.5 min-w-[16px] px-1 border border-[#ff006e]/60 text-[#ff006e] text-[9px] leading-[14px] text-center">
-            {errorCount > 99 ? '99+' : errorCount}
-          </span>
-        )}
-      </button>
+      {/* No floating button — the control dock owns the logs toggle at every
+          viewport via the dock:logs event. */}
 
       <AnimatePresence>
         {open && (

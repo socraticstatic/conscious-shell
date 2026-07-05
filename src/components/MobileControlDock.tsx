@@ -2,19 +2,19 @@ import { useEffect, useState } from 'react';
 import { Volume2, VolumeX, Mic, ChevronRight, ScrollText } from 'lucide-react';
 
 /**
- * Control dock for phones AND tablets (everything below the `lg` breakpoint).
+ * Control dock — every viewport.
  *
- * Below `lg` there is no room for the four floating controls (ambient audio,
- * Helen narrator, dead-drop console, log viewer) to live in the corners
- * without colliding with each other and with the content — on tablet the
- * centered content is full-width and the corner controls land on top of it.
- * Instead of hiding them, this consolidates them into a single "system bar" that
- * sits directly above the BlackLitany status marquee — together they read as a
- * Blade-Runner terminal taskbar.
+ * Started as the mobile consolidation of the four floating controls (ambient
+ * audio, Helen narrator, dead-drop console, log viewer); desktop kept its
+ * corner buttons and they never stopped colliding with content and each
+ * other. Now the dock is the ONLY home for these controls at every size:
+ * full-width taskbar on mobile, compact centered cluster above the
+ * BlackLitany marquee on desktop. Do not reintroduce floating control
+ * buttons — add controls here.
  *
- * Each button dispatches a CustomEvent; the original controls listen for it and
- * toggle. Audio/Helen report their on/off state back via `dock:state` so the
- * dock can light up the active control.
+ * Each button dispatches a CustomEvent; the owning components listen for it
+ * and toggle. Audio/Helen report their on/off state back via `dock:state` so
+ * the dock can light up the active control.
  */
 type DockState = { audio: boolean; helen: boolean };
 
@@ -43,7 +43,7 @@ export default function MobileControlDock() {
   return (
     <nav
       aria-label="system controls"
-      className="lg:hidden fixed inset-x-0 z-[45] flex items-stretch gap-1 px-2"
+      className="fixed inset-x-0 z-[45] flex items-stretch gap-1 px-2 lg:justify-center lg:pointer-events-none"
       style={{ bottom: 'calc(30px + env(safe-area-inset-bottom, 0px))' }}
     >
       {items.map(({ key, label, Icon, on, accent, ev }) => (
@@ -53,8 +53,8 @@ export default function MobileControlDock() {
           onClick={fire(ev)}
           aria-pressed={on}
           aria-label={label}
-          className={`flex-1 min-w-0 inline-flex items-center justify-center gap-1.5 border bg-[#0b0a08]/85 backdrop-blur-sm px-1.5 py-2.5 text-[10px] tracking-[0.15em] uppercase transition-colors active:bg-[#0b0a08] ${
-            on ? '' : 'border-[#1f1c17] text-[#6b6660]'
+          className={`flex-1 lg:flex-none lg:pointer-events-auto min-w-0 inline-flex items-center justify-center gap-1.5 border bg-[#0b0a08]/85 backdrop-blur-sm px-1.5 lg:px-4 py-2.5 text-[10px] tracking-[0.15em] uppercase transition-colors active:bg-[#0b0a08] ${
+            on ? '' : 'border-[#1f1c17] text-[#6b6660] lg:hover:text-[#a8a29e] lg:hover:border-[#2a2620]'
           }`}
           style={on ? { borderColor: accent, color: accent } : undefined}
         >

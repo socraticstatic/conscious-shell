@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Mic } from 'lucide-react'
 
 // Keys MUST match real <section id> values. The hero is `top`, the wayback is
 // `time` — earlier these were keyed `hero`/`archive`, so Helen was mute on the
@@ -193,20 +192,8 @@ export default function HelenNarrates() {
 
   return (
     <>
-      {/* Toggle Button */}
-      <button
-        onClick={() => setActive(!active)}
-        aria-label={active ? 'silence helen' : 'let helen narrate'}
-        className={`fixed z-40 max-lg:hidden inline-flex items-center gap-2 px-3 py-2 border backdrop-blur-sm text-[10px] tracking-[0.3em] uppercase transition-colors right-6 ${
-          active
-            ? 'border-[#e040fb]/60 text-[#e040fb] bg-[#0b0a08]/80'
-            : 'border-[#1f1c17] text-[#6b6660] bg-[#0b0a08]/60 hover:border-[#e040fb]/40 hover:text-[#e040fb]'
-        }`}
-        style={{ bottom: 'calc(108px + env(safe-area-inset-bottom, 0px))' }}
-      >
-        <Mic className="w-3.5 h-3.5" />
-        helen
-      </button>
+      {/* No floating toggle here — the control dock owns the helen button at
+          every viewport and drives this component via the dock:helen event. */}
 
       {/* Narration Bar — z-[80]: above the ambient corner HUDs (IntelligenceHUD
           z-70, MemoryDecay z-50, DeadDrop panel z-55), below takeover overlays

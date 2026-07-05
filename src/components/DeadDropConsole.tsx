@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronRight, Minus, X } from 'lucide-react';
+import { Minus, X } from 'lucide-react';
 
 type Entry = { id: number; kind: 'in' | 'out' | 'sys'; text: string; color?: string };
 
@@ -260,21 +260,10 @@ export default function DeadDropConsole() {
     }
   };
 
-  const tabLabel = useMemo(() => 'dead-drop', []);
-
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="fixed right-6 max-lg:hidden z-40 inline-flex items-center gap-2 border border-[#1f1c17] bg-[#0b0a08]/85 backdrop-blur-sm hover:border-[#00d4ff]/40 active:border-[#00d4ff]/40 text-[#6b6660] hover:text-[#00d4ff] active:text-[#00d4ff] px-3 py-2 text-[10px] tracking-[0.3em] uppercase transition-colors"
-        style={{ bottom: 'calc(152px + env(safe-area-inset-bottom, 0px))' }}
-        aria-label="open dead drop"
-      >
-        <ChevronRight className="w-3.5 h-3.5" />
-        {tabLabel}
-        <span className="text-[#6b6660]">` </span>
-      </button>
+      {/* No floating button — the control dock owns the drop toggle at every
+          viewport (dock:deaddrop event); the backtick shortcut still works. */}
 
       <AnimatePresence>
         {open && (
