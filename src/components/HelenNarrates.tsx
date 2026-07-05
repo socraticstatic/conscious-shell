@@ -49,15 +49,39 @@ export default function HelenNarrates() {
   const [displayedText, setDisplayedText] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const hushTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const fullTextRef = useRef('')
+
+  // Silencing is not one call. On macOS and iOS, cancel() alone can let the
+  // buffered phrase play to its end, and pause() can leave the engine stuck in
+  // a paused state that mutes every later speak(). pause → cancel → resume
+  // stops the audio AND clears the flag; the delayed second cancel() catches
+  // engines that re-assert their queue a tick later.
+  const hush = () => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return
+    try {
+      const synth = window.speechSynthesis
+      synth.pause()
+      synth.cancel()
+      synth.resume()
+      if (hushTimerRef.current) clearTimeout(hushTimerRef.current)
+      hushTimerRef.current = setTimeout(() => {
+        try { synth.cancel() } catch { /* ignore */ }
+      }, 80)
+    } catch { /* ignore */ }
+  }
 
   // Helen actually speaks now — the Mic icon was a promise the feature never
   // kept. Browser speechSynthesis, no server. The toggle click is the user
   // gesture browsers require, so the first utterance is allowed to play.
   const speak = (text: string) => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return
+    if (document.hidden) return // a tab you cannot see must not talk
     try {
+      // a pending delayed hush-cancel would kill this new utterance
+      if (hushTimerRef.current) clearTimeout(hushTimerRef.current)
       window.speechSynthesis.cancel()
+      window.speechSynthesis.resume()
       const u = new SpeechSynthesisUtterance(text)
       u.rate = 0.92
       u.pitch = 1.02
@@ -88,7 +112,7 @@ export default function HelenNarrates() {
       setLineText('')
       setCurrentSection(null)
       fullTextRef.current = ''
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel()
+      hush()
     }
   }, [active])
 
@@ -97,13 +121,21 @@ export default function HelenNarrates() {
     if (active && currentSection && NARRATIONS[currentSection]) setLineText(NARRATIONS[currentSection])
   }, [active, currentSection])
 
-  // Cancel any speech if the component unmounts mid-sentence.
-  useEffect(
-    () => () => {
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel()
-    },
-    [],
-  )
+  // Cancel any speech if the component unmounts mid-sentence, and fall silent
+  // the moment the tab is hidden or unloaded — a voice with no visible bar
+  // reads as Helen refusing to shut up.
+  useEffect(() => {
+    const onHide = () => {
+      if (document.hidden) hush()
+    }
+    document.addEventListener('visibilitychange', onHide)
+    window.addEventListener('pagehide', hush)
+    return () => {
+      document.removeEventListener('visibilitychange', onHide)
+      window.removeEventListener('pagehide', hush)
+      hush()
+    }
+  }, [])
 
   // Mobile dock integration: the dock's helen button toggles narration.
   useEffect(() => {
