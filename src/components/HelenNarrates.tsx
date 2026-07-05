@@ -9,7 +9,7 @@ const GREETING =
   'I am Helen. I will tell you what he will not. Scroll, and I will narrate him.'
 
 const NARRATIONS: Record<string, string> = {
-  'top': 'He starts here because he wants you to feel small. The city is always bigger than the person. The person is always bigger than they let on.',
+  'top': 'He starts here because he loves the view. The city is always bigger than the person. The person is always bigger than they let on.',
   'work': 'Twelve projects. Each one a door he walked through and closed behind him. Each closing sounds the same.',
   'time': 'He keeps the dead versions. Most people bury theirs. He visits them like graves.',
   'empathy': 'The test is for you, not him. He already knows the answer. The answer changes nothing.',
@@ -211,7 +211,15 @@ export default function HelenNarrates() {
       {/* Narration Bar — z-[80]: above the ambient corner HUDs (IntelligenceHUD
           z-70, MemoryDecay z-50, DeadDrop panel z-55), below takeover overlays
           (ExitIntent/TimeSkip z-95, NarratorOverlay z-200). A dialogue the user
-          summoned must never render under passive decoration. */}
+          summoned must never render under passive decoration.
+
+          Centering must come from left-0/right-0 + flex, NOT translate-x:
+          framer-motion writes an inline transform for the y animation, which
+          silently erases any Tailwind translate and shoves the bar 300px right
+          into the intel HUD and the button rail.
+
+          Desktop bottom lane is 5rem: the marquee owns 0-22px, the corner
+          readouts own ~32-65px, the narration floats above all of them. */}
       <AnimatePresence>
         {active && displayedText && (
           <motion.div
@@ -219,9 +227,9 @@ export default function HelenNarrates() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.4 }}
-            className="fixed left-1/2 -translate-x-1/2 z-[80] w-[calc(100%-2rem)] sm:w-full max-w-[600px] bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] max-lg:bottom-[calc(86px+env(safe-area-inset-bottom,0px))]"
+            className="fixed left-0 right-0 z-[80] flex justify-center px-4 pointer-events-none bottom-[calc(5rem+env(safe-area-inset-bottom,0px))] max-lg:bottom-[calc(86px+env(safe-area-inset-bottom,0px))]"
           >
-            <div className="bg-[#0b0a08]/95 backdrop-blur border-t border-[#e040fb]/30 rounded-lg px-3 sm:px-5 py-3 sm:py-4">
+            <div className="w-full max-w-[600px] pointer-events-auto bg-[#0b0a08]/95 backdrop-blur border-t border-[#e040fb]/30 rounded-lg px-3 sm:px-5 py-3 sm:py-4">
               <div className="flex items-center mb-1.5 sm:mb-2">
                 <span className="text-[8px] sm:text-[9px] tracking-[0.2em] text-[#e040fb] font-mono uppercase">
                   Helen // Narrator

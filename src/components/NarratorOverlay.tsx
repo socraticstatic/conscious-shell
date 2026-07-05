@@ -72,9 +72,12 @@ export default function NarratorOverlay() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="fixed top-4 left-1/2 -translate-x-1/2 z-[200] pointer-events-none font-mono text-amber-400 text-xs tracking-widest bg-black/80 px-4 py-2 border border-amber-400/40"
+            // flex centering, not translate-x — framer's y animation clobbers it
+            className="fixed top-4 left-0 right-0 z-[200] pointer-events-none flex justify-center"
           >
-            {triggerMsg}
+            <div className="font-mono text-amber-400 text-xs tracking-widest bg-black/80 px-4 py-2 border border-amber-400/40">
+              {triggerMsg}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

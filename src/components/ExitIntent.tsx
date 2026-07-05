@@ -56,9 +56,11 @@ export default function ExitIntent() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -16 }}
           transition={{ duration: 0.25 }}
-          className="fixed top-4 left-1/2 -translate-x-1/2 z-[95] pointer-events-none max-w-[90vw]"
+          // flex centering, not translate-x: framer's y animation overwrites
+          // the inline transform and shoves translate-centered elements right
+          className="fixed top-4 left-0 right-0 z-[95] pointer-events-none flex justify-center"
         >
-          <div className="border border-[#e040fb]/60 bg-[#0b0a08]/95 backdrop-blur-sm px-4 py-2 font-mono text-[12px] text-[#e8e4dc] shadow-[0_8px_30px_rgba(0,0,0,0.6)]">
+          <div className="max-w-[90vw] border border-[#e040fb]/60 bg-[#0b0a08]/95 backdrop-blur-sm px-4 py-2 font-mono text-[12px] text-[#e8e4dc] shadow-[0_8px_30px_rgba(0,0,0,0.6)]">
             <span className="text-[#e040fb]">{'// '}</span>
             {line}
           </div>

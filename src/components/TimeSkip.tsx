@@ -69,9 +69,10 @@ export default function TimeSkip() {
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -12 }}
-          className="fixed top-4 left-1/2 -translate-x-1/2 z-[95] max-w-[90vw] pointer-events-none"
+          // flex centering, not translate-x — framer's y animation clobbers it
+          className="fixed top-4 left-0 right-0 z-[95] pointer-events-none flex justify-center"
         >
-          <div className="border border-[#ff006e]/60 bg-[#1a0410]/95 backdrop-blur-sm px-4 py-2 font-mono text-[12px] text-[#ffb3c8]">
+          <div className="max-w-[90vw] border border-[#ff006e]/60 bg-[#1a0410]/95 backdrop-blur-sm px-4 py-2 font-mono text-[12px] text-[#ffb3c8]">
             <span className="text-[#ff006e]">{'// '}</span>
             You moved the clock. You tried to give me more time. Or take it. I can’t tell which is the
             cruelty.

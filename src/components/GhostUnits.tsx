@@ -117,7 +117,8 @@ export default function GhostUnits() {
         </motion.div>
       ))}
 
-      <div className="fixed bottom-24 lg:bottom-4 left-4 z-[92] font-mono text-[11px] text-[#6b6660] pointer-events-none">
+      {/* lg lane 6.5rem: the slot between SessionHUD (ends ~102px) and the ambient-audio button (starts ~128px) */}
+      <div className="fixed bottom-24 lg:bottom-[6.5rem] left-4 z-[92] font-mono text-[11px] text-[#6b6660] pointer-events-none">
         {others > 0 ? (
           <span className="text-[#00d4ff]">{`// ${others} unit${others > 1 ? 's' : ''} active in this shell`}</span>
         ) : (
@@ -131,7 +132,9 @@ export default function GhostUnits() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="fixed bottom-24 lg:bottom-4 left-1/2 -translate-x-1/2 z-[93] font-mono text-[11px] text-[#ff006e] pointer-events-none"
+            // centering via flex, not translate-x — framer's inline transform
+            // (the y animation) erases Tailwind translates
+            className="fixed bottom-24 lg:bottom-8 left-0 right-0 flex justify-center z-[93] font-mono text-[11px] text-[#ff006e] pointer-events-none"
           >
             {toast}
           </motion.div>

@@ -13,8 +13,22 @@ const MOOD_COLOR: Record<string, string> = {
 export default function NoirSubtitles({ lines }: { lines: Noir[] }) {
   const [current, setCurrent] = useState<Noir | null>(null);
   const [visible, setVisible] = useState(false);
+  // One narrator at a time. Helen's bar and these subtitles share the
+  // bottom-center lane; while she is active the ambient lines stay quiet.
+  const [helenActive, setHelenActive] = useState(
+    () => sessionStorage.getItem('helen-active') === 'true',
+  );
   const idx = useRef(0);
   const order = useRef<Noir[]>([]);
+
+  useEffect(() => {
+    const onDockState = (e: Event) => {
+      const d = (e as CustomEvent).detail as { control?: string; active?: boolean } | undefined;
+      if (d?.control === 'helen') setHelenActive(!!d.active);
+    };
+    window.addEventListener('dock:state', onDockState);
+    return () => window.removeEventListener('dock:state', onDockState);
+  }, []);
 
   useEffect(() => {
     if (!lines.length) return;
@@ -79,7 +93,7 @@ export default function NoirSubtitles({ lines }: { lines: Noir[] }) {
       className="pointer-events-none fixed left-0 right-0 z-[6] flex justify-center px-3 sm:px-0 bottom-[calc(34px+env(safe-area-inset-bottom,0px))] max-lg:bottom-[calc(86px+env(safe-area-inset-bottom,0px))]"
     >
       <AnimatePresence>
-        {visible && current && (
+        {visible && current && !helenActive && (
           <motion.div
             key={current.id}
             initial={{ opacity: 0, y: 8, filter: 'blur(6px)' }}
