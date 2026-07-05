@@ -176,7 +176,10 @@ export default function HelenNarrates() {
         helen
       </button>
 
-      {/* Narration Bar */}
+      {/* Narration Bar — z-[80]: above the ambient corner HUDs (IntelligenceHUD
+          z-70, MemoryDecay z-50, DeadDrop panel z-55), below takeover overlays
+          (ExitIntent/TimeSkip z-95, NarratorOverlay z-200). A dialogue the user
+          summoned must never render under passive decoration. */}
       <AnimatePresence>
         {active && displayedText && (
           <motion.div
@@ -184,7 +187,7 @@ export default function HelenNarrates() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.4 }}
-            className="fixed left-1/2 -translate-x-1/2 z-40 w-[calc(100%-2rem)] sm:w-full max-w-[600px] bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] max-lg:bottom-[calc(86px+env(safe-area-inset-bottom,0px))]"
+            className="fixed left-1/2 -translate-x-1/2 z-[80] w-[calc(100%-2rem)] sm:w-full max-w-[600px] bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] max-lg:bottom-[calc(86px+env(safe-area-inset-bottom,0px))]"
           >
             <div className="bg-[#0b0a08]/95 backdrop-blur border-t border-[#e040fb]/30 rounded-lg px-3 sm:px-5 py-3 sm:py-4">
               <div className="flex items-center mb-1.5 sm:mb-2">
