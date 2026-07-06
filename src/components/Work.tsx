@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import EsperPanel from './EsperPanel';
 import { slugify } from '../lib/slug';
@@ -8,34 +8,57 @@ import type { Project } from '../lib/supabase';
 export default function Work({ projects }: { projects: Project[] }) {
   const [active, setActive] = useState<Project | null>(null);
   const listRef = useRef<HTMLUListElement>(null);
+  // When the visitor last re-aimed the esper by hand (a click). Scroll stands
+  // down for a beat afterward so the two never yank `active` in opposite
+  // directions — that fight was the jarring part.
+  const lastManualRef = useRef(0);
+
+  const focusProject = useCallback((p: Project) => {
+    lastManualRef.current = performance.now();
+    setActive(p);
+  }, []);
 
   useEffect(() => {
     if (!active && projects[0]) setActive(projects[0]);
   }, [projects, active]);
 
-  // Auto-advance the active project as rows scroll into view
+  // Re-aim the esper as rows scroll past — but debounced, and only once the
+  // scroll has settled. Hover no longer touches `active` at all; it is a quiet
+  // highlight now. Intent comes from clicks and from stillness, not from the
+  // mouse skimming down the list.
   useEffect(() => {
     if (!projects.length || !listRef.current) return;
     const items = listRef.current.querySelectorAll<HTMLElement>('[data-project-id]');
     const map = new Map<string, Project>(projects.map((p) => [p.id, p]));
+    let pending: number | undefined;
+
+    const MANUAL_STANDDOWN = 1200; // ms the esper defers to a manual click
+    const SETTLE = 160; // ms of scroll-stillness before re-aiming
 
     const io = new IntersectionObserver(
       (entries) => {
-        // Pick the most-visible entry that is crossing into view
+        if (performance.now() - lastManualRef.current < MANUAL_STANDDOWN) return;
         const visible = entries
           .filter((e) => e.isIntersecting && e.intersectionRatio >= 0.5)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-        if (visible[0]) {
-          const id = (visible[0].target as HTMLElement).dataset.projectId!;
+        if (!visible[0]) return;
+        const id = (visible[0].target as HTMLElement).dataset.projectId!;
+        window.clearTimeout(pending);
+        pending = window.setTimeout(() => {
+          // Re-check the stand-down: a click may have landed during the settle.
+          if (performance.now() - lastManualRef.current < MANUAL_STANDDOWN) return;
           const p = map.get(id);
           if (p) setActive(p);
-        }
+        }, SETTLE);
       },
       { threshold: 0.5 }
     );
 
     items.forEach((el) => io.observe(el));
-    return () => io.disconnect();
+    return () => {
+      window.clearTimeout(pending);
+      io.disconnect();
+    };
   }, [projects]);
 
   return (
@@ -50,7 +73,7 @@ export default function Work({ projects }: { projects: Project[] }) {
                 key={p.id}
                 project={p}
                 index={i}
-                onFocus={() => setActive(p)}
+                onFocus={() => focusProject(p)}
                 active={active?.id === p.id}
               />
             ))}
@@ -109,7 +132,6 @@ function ProjectRow({
     <motion.li
       data-cursor="hover"
       data-project-id={project.id}
-      onMouseEnter={onFocus}
       onClick={onFocus}
       initial={{ opacity: 0, y: 8 }}
       whileInView={{ opacity: 1, y: 0 }}

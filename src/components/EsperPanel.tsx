@@ -20,10 +20,10 @@ export default function EsperPanel({ project }: { project: Project | null }) {
       {project && (
         <motion.div
           key={project.id}
-          initial={{ opacity: 0, scale: 0.98 }}
+          initial={{ opacity: 0, scale: 0.985 }}
           animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.98 }}
-          transition={{ duration: 0.25 }}
+          exit={{ opacity: 0, scale: 0.985 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           className="relative aspect-[4/3] border border-[#e040fb]/40 bg-[#07070a] overflow-hidden"
         >
           <div className="absolute top-0 inset-x-0 z-10 flex items-center justify-between px-3 py-1.5 text-[10px] bg-[#0b0a08]/80 border-b border-[#e040fb]/30">
