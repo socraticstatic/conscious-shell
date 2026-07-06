@@ -9,20 +9,20 @@ type Phase = 'idle' | 'track' | 'enhance' | 'resolve';
 // the same curve. Two machines, one hand on the dial.
 const ESPER_EASE = [0.22, 1, 0.36, 1] as const;
 
-// The frames. Curated down: the thin ones (a leaf, a pendant light) are gone.
-// What's left is night, glass, and one table of cut flowers that has no business
-// aching as much as it does. `pos` is object-position for frames the 16:10 crop
-// would otherwise behead.
+// The frames. Every one is Micah's own (Unsplash @greyharbor7 — his account), so
+// there is no borrowed byline anywhere on this section. Night, glass, a road, two
+// empty chairs, a flower, a filament. `pos` is object-position for the portrait
+// frames the 16:10 crop would otherwise behead.
 const PHOTOS: { id: string; caption: string; pos?: string }[] = [
-  { id: 'photo-1666554757112-91093a627335', caption: 'case file #2049 · elevator reflection' },
+  { id: 'photo-1666554757112-91093a627335', caption: 'case file #2049 · a close-up of a light' },
   { id: 'photo-1601743240194-f45724587958', caption: 'case file #2049 · blue light streaks' },
-  { id: 'photo-1542484183-17a107e68edf', caption: 'case file #2049 · blue wooden door' },
   { id: 'photo-1608688107623-c5e228d8df63', caption: 'case file #2049 · green stone fragment' },
-  { id: 'photo-1559313240-d9398a1ce018', caption: 'case file #2049 · white and blue building' },
   { id: 'photo-1601742891608-9c1577b3a4b3', caption: 'case file #2049 · red and brown ceiling' },
-  { id: 'photo-1519608487953-e999c86e7455', caption: 'case file #2049 · empty tram corridor' },
-  { id: 'photo-1493514789931-586cb221d7a7', caption: 'case file #2049 · arterial grid at altitude' },
-  { id: 'photo-1516617442634-75371039cb3a', caption: 'case file #2049 · roses against damaged steel', pos: '50% 40%' },
+  { id: 'photo-1603324905312-0f8fe8117cd8', caption: 'case file #2049 · el capitolio, after dark', pos: '50% 34%' },
+  { id: 'photo-1676505073681-82b680b71725', caption: 'case file #2049 · the road into fog' },
+  { id: 'photo-1665697724166-5d6bfd0cdcbd', caption: 'case file #2049 · two chairs, unoccupied', pos: '50% 42%' },
+  { id: 'photo-1660258785270-45fa53c00e81', caption: 'case file #2049 · one bloom, three buds', pos: '50% 50%' },
+  { id: 'photo-1660260964885-528df60aa658', caption: 'case file #2049 · a single filament over dark water', pos: '50% 45%' },
 ];
 
 // The buried line. It is not in any case file. The machine surfaces it only when
@@ -71,8 +71,8 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
   const currentPhoto = PHOTOS[variantIdx];
   const currentPhotoId = currentPhoto.id;
   const photo = `https://images.unsplash.com/${currentPhotoId}?fm=jpg&q=75&w=1600&auto=format&fit=crop`;
-  const caption = `${currentPhoto.caption} · m. boswell`;
-  const credit = 'photo · micah boswell / unsplash · @micahboswell';
+  const caption = currentPhoto.caption;
+  // No byline. These are his own frames — nothing to attribute.
 
   const activeHotspots = useMemo(
     () => hotspots.filter((h) => h.photo_id === currentPhotoId),
@@ -263,19 +263,6 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
                 esper · v9 · {phase}
               </div>
             </div>
-
-            {credit && (
-              <div className="absolute left-3 bottom-3 right-3 flex items-center justify-between pointer-events-none">
-                <a
-                  href="https://unsplash.com/@micahboswell"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="pointer-events-auto text-[9px] tracking-[0.4em] uppercase text-[#00d4ff]/70 hover:text-[#00d4ff] bg-black/50 px-2 py-1 backdrop-blur-sm transition-colors"
-                >
-                  {credit}
-                </a>
-              </div>
-            )}
 
             <AnimatePresence>
               {phase !== 'idle' && (
