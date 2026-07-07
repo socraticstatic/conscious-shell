@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { usePersonalization } from '../lib/personalization'
+import { getIdentity, type Identity } from '../lib/identity'
 
 const TRAIT_COLORS: Record<string, string> = {
   empathy: '#e040fb', logic: '#00d4ff', creativity: '#7aff8c', darkness: '#ff006e', honesty: '#ffffff',
@@ -11,6 +12,9 @@ export default function VisitorDossier() {
   const [open, setOpen] = useState(false)
   const [rawOpen, setRawOpen] = useState(false)
   const [visible, setVisible] = useState(false)
+  const [identity, setIdentity] = useState<Identity | null>(null)
+
+  useEffect(() => { getIdentity().then(setIdentity).catch(() => {}) }, [])
 
   useEffect(() => {
     if (localStorage.getItem('vk-dossier')) setVisible(true)
@@ -68,6 +72,12 @@ export default function VisitorDossier() {
                 <button onClick={() => setOpen(false)} className="text-[9px]" style={{ color: '#6b6660' }}>CLOSE</button>
               </div>
               <div className="text-sm" style={{ color: '#00d4ff' }}>{profile.name}</div>
+
+              {identity && (
+                <div className="font-mono text-[9px] tracking-widest mb-2" style={{ color: '#7aff8c' }}>
+                  CLEARANCE: GRANTED — {identity.email}
+                </div>
+              )}
 
               <div>
                 <div className="text-[9px] tracking-widest mb-1" style={{ color: '#6b6660' }}>TRAIT ANALYSIS</div>

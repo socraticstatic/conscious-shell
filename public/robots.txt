@@ -1,4 +1,2 @@
 User-agent: *
-Allow: /
-
-Sitemap: https://conscious-shell.com/sitemap.xml
+Disallow: /

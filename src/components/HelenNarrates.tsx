@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { getIdentity, type Identity } from '../lib/identity'
 
 // Keys MUST match real <section id> values. The hero is `top`, the wayback is
 // `time` — earlier these were keyed `hero`/`archive`, so Helen was mute on the
@@ -43,6 +44,7 @@ function Waveform() {
 
 export default function HelenNarrates() {
   const [active, setActive] = useState(() => sessionStorage.getItem('helen-active') === 'true')
+  const [identity, setIdentity] = useState<Identity | null>(null)
   const [currentSection, setCurrentSection] = useState<string | null>(null)
   const [lineText, setLineText] = useState('')
   const [displayedText, setDisplayedText] = useState('')
@@ -101,19 +103,33 @@ export default function HelenNarrates() {
     window.dispatchEvent(new CustomEvent('dock:state', { detail: { control: 'helen', active } }))
   }, [active])
 
+  // Fetch identity once so the first greeting of a fresh session can know
+  // who cleared the door. Null in dev flows that bypass the gate.
+  useEffect(() => {
+    getIdentity().then(setIdentity).catch(() => {})
+  }, [])
+
   // Toggle ON → greet immediately, independent of scroll position, so the
   // control visibly (and audibly) responds even at the un-narrated hero.
-  // Toggle OFF → fall silent at once.
+  // Toggle OFF → fall silent at once. The very first greeting of a fresh
+  // session (sessionStorage-scoped) is personalized when identity exists;
+  // every later toggle-on this session falls back to the standard greeting.
   useEffect(() => {
     if (active) {
-      setLineText(GREETING)
+      const alreadyGreeted = sessionStorage.getItem('helen-greeted') === 'true'
+      if (!alreadyGreeted && identity) {
+        setLineText(`Welcome back, ${identity.name}. Your clearance is current.`)
+        sessionStorage.setItem('helen-greeted', 'true')
+      } else {
+        setLineText(GREETING)
+      }
     } else {
       setLineText('')
       setCurrentSection(null)
       fullTextRef.current = ''
       hush()
     }
-  }, [active])
+  }, [active, identity])
 
   // Once scrolling settles on a narrated section, switch to its line.
   useEffect(() => {
