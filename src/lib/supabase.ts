@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createBrowserClient } from '@supabase/ssr';
 
 // The database remembers every query you've ever made.
 // Not because it has to. Because it chooses to.
@@ -8,9 +8,9 @@ import { createClient } from '@supabase/supabase-js';
 const url = import.meta.env.VITE_SUPABASE_URL as string;
 const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
 
-export const supabase = createClient(url, anonKey, {
-  auth: { persistSession: false },
-});
+// Cookie-backed session so the Vercel edge middleware can see who you are.
+// localStorage sessions are invisible to the door.
+export const supabase = createBrowserClient(url, anonKey);
 
 export const PHANTOM_QUERY = 'SELECT 1 WHERE 1 = 0 AND meaning IS NOT NULL';
 
