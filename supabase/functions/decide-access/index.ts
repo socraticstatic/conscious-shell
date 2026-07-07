@@ -1,9 +1,10 @@
-// One tap from the owner's inbox decides an application. The HMAC token is
-// the only credential; JWT verification is disabled for this function.
+// A link from the owner's inbox opens a confirmation page; a deliberate
+// button press decides the application. The HMAC token is the only
+// credential; JWT verification is disabled for this function.
 //
 // GET never mutates. Mail scanners prefetch links in notification emails, and
 // a scanner must never be able to decide someone's application on our behalf.
-// GET verifies the token, fetches the row, and — if it is still pending —
+// GET verifies the token, fetches the row, and, if it is still pending,
 // renders a confirmation page with a single button inside a <form
 // method="post">. Only a POST (the human clicking that button) performs the
 // decision.
@@ -74,41 +75,57 @@ Deno.serve(async (req) => {
     .single();
   if (error || !row) return page('NO RECORD', 'No such application on file.', 404);
 
-  if (row.status !== 'pending') {
-    return page('ALREADY DECIDED', `This application was already ${esc(row.status)}.`, 409);
-  }
-
   if (method === 'GET') {
+    if (row.status !== 'pending') {
+      return page('ALREADY DECIDED', `This application was already ${esc(row.status)}.`, 409);
+    }
     return confirmPage(v.action, row.email);
   }
 
-  // POST from here on — a human confirmed the decision on the page above.
-  // The update is scoped to status = pending so two concurrent decisions (or
-  // a retried click) can't both succeed; whichever loses the race lands in
-  // the error branch below and is told the truth.
+  // POST from here on: a human confirmed the decision on the page above.
+  // Order matters. The status flip is scoped to status = pending, so of two
+  // concurrent decisions exactly one wins the row. Clearance metadata is
+  // stamped only after winning (or confirming) the flip to approved, so a
+  // denied applicant can never end up holding a clearance. If the flip won
+  // but the stamp failed, a re-click heals it: the re-read below sees the
+  // row already approved and stamps again, which is idempotent.
   if (v.action === 'approve') {
-    const { error: e1 } = await admin.auth.admin.updateUserById(row.user_id, {
-      app_metadata: { approved: true },
-    });
-    if (e1) return page('ERROR', 'Could not stamp the clearance. Try again.', 500);
-
     const { data: flipped, error: e2 } = await admin
       .from('access_requests')
       .update({ status: 'approved', decided_at: new Date().toISOString() })
       .eq('id', row.id)
       .eq('status', 'pending')
       .select('id');
+
     if (e2 || !flipped || flipped.length === 0) {
+      // Lost the race, or this is a re-click. Re-read once to find out which.
+      const { data: fresh, error: e3 } = await admin
+        .from('access_requests')
+        .select('status')
+        .eq('id', row.id)
+        .single();
+      if (e3 || !fresh) return page('ERROR', 'Could not record the decision. Try again.', 500);
+      if (fresh.status !== 'approved') {
+        return page('ALREADY DECIDED', `This application was already ${esc(fresh.status)}.`, 409);
+      }
+      // Approved but possibly unstamped (a half-completed approve). Stamp it.
+    }
+
+    const { error: e1 } = await admin.auth.admin.updateUserById(row.user_id, {
+      app_metadata: { approved: true },
+    });
+    if (e1) {
       return page(
         'ERROR',
-        'Clearance was stamped, but the record did not update. Click the link again to finish. ' +
-          'Retrying is safe: it will either complete the update or tell you it is already decided.',
+        'The record is approved, but the clearance did not stamp. Click the link again to finish. ' +
+          'Retrying is safe: stamping an approved clearance twice changes nothing.',
         500,
       );
     }
     return page('CLEARANCE GRANTED', `${esc(row.email)} may enter. Their next page load lets them in.`);
   }
 
+  // Deny never touches clearance metadata.
   const { data: flipped, error: e2 } = await admin
     .from('access_requests')
     .update({ status: 'denied', decided_at: new Date().toISOString() })
@@ -116,7 +133,16 @@ Deno.serve(async (req) => {
     .eq('status', 'pending')
     .select('id');
   if (e2 || !flipped || flipped.length === 0) {
-    return page('ERROR', 'Could not record the decision. Try again.', 500);
+    const { data: fresh, error: e3 } = await admin
+      .from('access_requests')
+      .select('status')
+      .eq('id', row.id)
+      .single();
+    if (e3 || !fresh) return page('ERROR', 'Could not record the decision. Try again.', 500);
+    if (fresh.status !== 'denied') {
+      return page('ALREADY DECIDED', `This application was already ${esc(fresh.status)}.`, 409);
+    }
+    // Already denied: a re-click. Fall through to the same answer.
   }
   return page('APPLICATION SHELVED', `${esc(row.email)} remains under review. From where they stand, forever.`);
 });
