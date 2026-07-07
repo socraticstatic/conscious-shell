@@ -58,7 +58,11 @@ function Gate() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (busy || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return;
+    if (busy) return;
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      setNote('Enter a valid registry contact.');
+      return;
+    }
     setBusy(true);
     setNote('');
     const { error } = await supabase.auth.signInWithOtp({
