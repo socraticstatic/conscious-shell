@@ -656,7 +656,9 @@ git commit -m "feat(gate): decide-access edge function — one tap decides"
 
 (Deployment happens in Task 10.)
 
----### Task 6: Client cookie sessions + identity lib
+---
+
+### Task 6: Client cookie sessions + identity lib
 
 The middleware can only see cookies. Swap the browser client to `@supabase/ssr`.
 
