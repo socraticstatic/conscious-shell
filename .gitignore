@@ -30,3 +30,4 @@ supabase/.temp/
 
 # pnpm regenerates this from the esbuild build-script gate; it breaks Pages CI
 pnpm-workspace.yaml
+.vercel
