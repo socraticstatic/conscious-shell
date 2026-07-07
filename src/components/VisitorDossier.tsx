@@ -75,7 +75,7 @@ export default function VisitorDossier() {
 
               {identity && (
                 <div className="font-mono text-[9px] tracking-widest mb-2" style={{ color: '#7aff8c' }}>
-                  CLEARANCE: GRANTED — {identity.email}
+                  CLEARANCE: GRANTED // {identity.email}
                 </div>
               )}
 

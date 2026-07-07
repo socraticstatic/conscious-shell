@@ -114,6 +114,8 @@ export default function HelenNarrates() {
   // Toggle OFF → fall silent at once. The very first greeting of a fresh
   // session (sessionStorage-scoped) is personalized when identity exists;
   // every later toggle-on this session falls back to the standard greeting.
+  // Known: a toggle faster than getIdentity() resolves flashes the generic
+  // greeting first; the personalized line follows once identity lands.
   useEffect(() => {
     if (active) {
       const alreadyGreeted = sessionStorage.getItem('helen-greeted') === 'true'
