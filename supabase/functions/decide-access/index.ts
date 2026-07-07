@@ -76,6 +76,12 @@ Deno.serve(async (req) => {
   if (error || !row) return page('NO RECORD', 'No such application on file.', 404);
 
   if (method === 'GET') {
+    // An approve link on an already-approved row still shows the confirm
+    // form. A half-stamped clearance (flip won, stamp failed) heals when the
+    // owner clicks the link again and confirms; re-stamping is idempotent.
+    if (v.action === 'approve' && row.status === 'approved') {
+      return confirmPage(v.action, row.email);
+    }
     if (row.status !== 'pending') {
       return page('ALREADY DECIDED', `This application was already ${esc(row.status)}.`, 409);
     }
@@ -105,6 +111,10 @@ Deno.serve(async (req) => {
         .eq('id', row.id)
         .single();
       if (e3 || !fresh) return page('ERROR', 'Could not record the decision. Try again.', 500);
+      if (fresh.status === 'pending') {
+        // Nothing decided; the update itself failed. Retrying is safe.
+        return page('ERROR', 'Could not record the decision. Try again.', 500);
+      }
       if (fresh.status !== 'approved') {
         return page('ALREADY DECIDED', `This application was already ${esc(fresh.status)}.`, 409);
       }
@@ -139,6 +149,10 @@ Deno.serve(async (req) => {
       .eq('id', row.id)
       .single();
     if (e3 || !fresh) return page('ERROR', 'Could not record the decision. Try again.', 500);
+    if (fresh.status === 'pending') {
+      // Nothing decided; the update itself failed. Retrying is safe.
+      return page('ERROR', 'Could not record the decision. Try again.', 500);
+    }
     if (fresh.status !== 'denied') {
       return page('ALREADY DECIDED', `This application was already ${esc(fresh.status)}.`, 409);
     }
