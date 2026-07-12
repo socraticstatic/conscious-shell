@@ -38,6 +38,7 @@ export default function CommandPalette({
     { id: 'mail', label: 'mail Deckard@conscious-shell.com', hint: 'send email', run: () => (window.location.href = 'mailto:Deckard@conscious-shell.com') },
     { id: 'witness', label: 'run witness-protocol', hint: 'we need to ask you some questions', run: () => { onClose(); window.dispatchEvent(new CustomEvent('egg:witness')); } },
     { id: 'who', label: 'who --units', hint: 'who else is in the shell', run: () => { onClose(); window.dispatchEvent(new CustomEvent('egg:who')); } },
+    { id: 'verse', label: 'cat /verse', hint: 'read a poem', run: () => { onClose(); window.dispatchEvent(new Event('verse:play')); } },
     ...projects.map<Cmd>((p) => ({
       id: `p:${p.id}`,
       label: `open ${p.title.toLowerCase()}`,

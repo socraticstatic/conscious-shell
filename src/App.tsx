@@ -37,6 +37,7 @@ import type {
   Certification,
   LinkedInRecommendation,
   LinkedInArticle,
+  Poem,
 } from './lib/supabase';
 
 // Heavy / below-the-fold / on-demand → split into separate chunks and
@@ -116,6 +117,7 @@ export default function App() {
     certifications: Certification[];
     recommendations: LinkedInRecommendation[];
     articles: LinkedInArticle[];
+    poems: Poem[];
   } | null>(null);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
@@ -231,7 +233,7 @@ export default function App() {
           <TearsInRain />
           <SystemBreach />
           <NoirSubtitles lines={data?.noir ?? []} />
-          <DeadDropConsole />
+          <DeadDropConsole poems={data?.poems ?? []} />
           <OverrideMode />
           <SocraticStatic />
           <OrigamiUnicorns />

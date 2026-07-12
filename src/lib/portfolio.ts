@@ -17,6 +17,7 @@ import {
   type Certification,
   type LinkedInRecommendation,
   type LinkedInArticle,
+  type Poem,
 } from './supabase';
 
 // 15 parallel queries fired at the speed of Promise.all.
@@ -28,7 +29,7 @@ export async function fetchPortfolio() {
   const [
     projects, services, testimonials, awards, publications,
     vk, github, trivia, haiku, noir, esper, skyline, designRounds, dossier, certs,
-    recs, articles,
+    recs, articles, poems,
   ] = await Promise.all([
     supabase.from('portfolio_projects').select('*').order('order_index'),
     supabase.from('portfolio_services').select('*').order('order_index'),
@@ -47,6 +48,7 @@ export async function fetchPortfolio() {
     supabase.from('certifications').select('*').order('order_index'),
     supabase.from('linkedin_recommendations').select('*').order('given_date', { ascending: false }),
     supabase.from('linkedin_articles').select('*').order('published_date', { ascending: false }),
+    supabase.from('poems').select('*').order('order_index'),
   ]);
 
   return {
@@ -67,5 +69,6 @@ export async function fetchPortfolio() {
     certifications: (certs.data ?? []) as Certification[],
     recommendations: (recs.data ?? []) as LinkedInRecommendation[],
     articles: (articles.data ?? []) as LinkedInArticle[],
+    poems: (poems.data ?? []) as Poem[],
   };
 }

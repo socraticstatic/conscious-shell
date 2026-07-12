@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Minus, X } from 'lucide-react';
+import type { Poem } from '../lib/supabase';
 
 type Entry = { id: number; kind: 'in' | 'out' | 'sys'; text: string; color?: string };
 
@@ -22,6 +23,7 @@ const HELP = [
   'konami         · how to flip to override',
   'roll           · roll a vk suspicion score',
   'weather        · off-world station report',
+  'verse          · read a poem',
   'clear          · wipe the terminal',
   'exit           · dock the console',
 ];
@@ -38,7 +40,33 @@ function rhex(len = 24) {
   return Array.from({ length: len }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
 }
 
-export default function DeadDropConsole() {
+// Accent- and punctuation-insensitive key: "Perú" and "peru" collapse to the
+// same token, matching a poem's slug or a folded title/theme.
+function foldKey(s: string) {
+  return s
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+function pickRandom<T>(arr: T[]): T | null {
+  return arr.length ? arr[Math.floor(Math.random() * arr.length)] : null;
+}
+
+// Resolve `verse <arg>`: exact slug/title first, then a random poem carrying
+// the theme, else null (caller reports "no verse by that name").
+function resolveVerse(poems: Poem[], arg: string): Poem | null {
+  const key = foldKey(arg);
+  if (!key) return pickRandom(poems);
+  const hit = poems.find((p) => p.slug === key || foldKey(p.title) === key);
+  if (hit) return hit;
+  const themed = poems.filter((p) => p.themes.some((t) => foldKey(t) === key));
+  return pickRandom(themed);
+}
+
+export default function DeadDropConsole({ poems = [] }: { poems?: Poem[] }) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState('');
   const [history, setHistory] = useState<string[]>([]);
@@ -60,9 +88,12 @@ export default function DeadDropConsole() {
     window.addEventListener('keydown', onKey);
     const onDock = () => setOpen((v) => !v);
     window.addEventListener('dock:deaddrop', onDock);
+    const onVerse = () => runVerseRef.current();
+    window.addEventListener('verse:play', onVerse);
     return () => {
       window.removeEventListener('keydown', onKey);
       window.removeEventListener('dock:deaddrop', onDock);
+      window.removeEventListener('verse:play', onVerse);
     };
   }, []);
 
@@ -77,6 +108,26 @@ export default function DeadDropConsole() {
   const push = (kind: Entry['kind'], text: string, color?: string) => {
     const id = ++nextId.current;
     setEntries((e) => [...e.slice(-300), { id, kind, text, color }]);
+  };
+
+  // Print a poem inline: title in accent, body staggered line by line in the
+  // terminal's parchment, a faint closing rule. No byline — it's Micah's own.
+  const printVerse = (p: Poem) => {
+    push('out', p.title, '#e040fb');
+    push('out', '', '#c9b8a6');
+    const lines = p.body.split('\n');
+    lines.forEach((ln, i) => setTimeout(() => push('out', ln, '#c9b8a6'), 45 * i));
+    setTimeout(() => push('out', '· · ·', '#6b6660'), 45 * lines.length + 80);
+  };
+
+  // Refreshed every render so the verse:play listener (bound once on mount)
+  // always sees the latest loaded poems rather than the empty mount snapshot.
+  const runVerseRef = useRef<() => void>(() => {});
+  runVerseRef.current = () => {
+    const p = pickRandom(poems);
+    if (!p) return;
+    setOpen(true);
+    printVerse(p);
   };
 
   const submit = () => {
@@ -232,6 +283,28 @@ export default function DeadDropConsole() {
         push('out', `  condition  ${s.cond}`, '#c9b8a6');
         push('out', `  visibility ${s.vis}`, '#e040fb');
         push('out', '  advisory   all those moments, lost in time.', '#6b6660');
+        break;
+      }
+      case 'verse': {
+        if (!poems.length) {
+          push('out', 'no verses loaded', '#6b6660');
+          break;
+        }
+        const sub = arg.trim();
+        if (sub.toLowerCase() === 'list') {
+          push('out', `${poems.length} verses · "verse <name>" or "verse <theme>"`, '#00d4ff');
+          poems.forEach((p) => {
+            const th = p.themes.length ? p.themes.join(' · ') : '';
+            push('out', `  ${p.title.padEnd(34)}${th}`, '#c9b8a6');
+          });
+          break;
+        }
+        const poem = sub ? resolveVerse(poems, sub) : pickRandom(poems);
+        if (!poem) {
+          push('out', 'no verse by that name · try "verse list"', '#ff006e');
+          break;
+        }
+        printVerse(poem);
         break;
       }
       case 'clear':

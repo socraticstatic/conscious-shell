@@ -214,6 +214,15 @@ export type LinkedInArticle = {
   order_index: number;
 };
 
+export type Poem = {
+  id: string;
+  slug: string;
+  title: string;
+  body: string;
+  themes: string[];
+  order_index: number;
+};
+
 export type LogRow = {
   id: string;
   level: LogLevel;
