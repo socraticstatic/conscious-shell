@@ -11,10 +11,13 @@ Work Micah's poetry into conscious-shell.com. Constraint from Micah: **no pop-up
 
 - **Role:** on-demand, earned — discoverable via the terminal, not front-and-center.
 - **Command shape:** `verse`, `verse list`, `verse <name|theme>`.
-- **Corpus:** 37 poems. All 44 vault poems in `📝 Poems/` **except** the 6 that are about Micah's son Nova, cut for his privacy:
+- **Corpus:** 32 poems. All 44 vault poems in `📝 Poems/` **except** the 6 that are about Micah's son Nova, cut for his privacy:
   `Nova`, `Still his dad`, `Tuesday night`, `What dads do`, `Inheritance`, `Mayakovski's Ghost`.
   `Abilene` is also dropped: its vault file holds only a Substack subscribe
-  footer, no poem body (removed by migration `20260712030000`). 44 − 6 − 1 = 37.
+  footer, no poem body (removed by migration `20260712030000`).
+  Five AI-assisted songs are dropped too (chorus/verse tracks): Bring Back The
+  Family Pride, Come As You Are, You've Been Waiting, In Your Arms, They say
+  (migration `20260712040000`). 44 − 6 − 1 − 5 = 32.
 - **Theme tag `nova` is stripped** from every seeded poem, so `verse nova` returns nothing rather than surfacing Peru/memoir poems that merely mention him.
 - **Data source:** Supabase (never hardcoded content). New `poems` table, public read.
 
@@ -40,7 +43,7 @@ New table `public.poems`:
 
 ## Seeding
 
-A migration (`supabase/migrations/<ts>_create_and_seed_poems.sql`) creates the table and inserts the 37 poems. It is **generated** by a one-off local script (not shipped) that:
+A migration (`supabase/migrations/<ts>_create_and_seed_poems.sql`) creates the table and inserts the 32 poems. It is **generated** by a one-off local script (not shipped) that:
 
 1. Reads each `📝 Poems/*.md` file from the vault, skipping the 6 Nova poems.
 2. Strips YAML frontmatter and the boilerplate "Find this track on your favorite music platform here." lead line where present.
