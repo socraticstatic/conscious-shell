@@ -70,7 +70,6 @@ const LogViewer = lazy(() => import('./components/LogViewer'));
 const IntelligenceHUD = lazy(() => import('./components/IntelligenceHUD'));
 const SocraticStatic = lazy(() => import('./components/SocraticStatic'));
 const OrigamiUnicorns = lazy(() => import('./components/OrigamiUnicorns'));
-const HelenNarrates = lazy(() => import('./components/HelenNarrates'));
 const GitArchaeology = lazy(() => import('./components/GitArchaeology'));
 const BaselineGate = lazy(() => import('./components/BaselineGate'));
 const BaselineUnlocked = lazy(() =>
@@ -237,7 +236,6 @@ export default function App() {
           <OverrideMode />
           <SocraticStatic />
           <OrigamiUnicorns />
-          <HelenNarrates />
           <ConsoleHijack />
           <LateNight />
           <SelfDestruct />

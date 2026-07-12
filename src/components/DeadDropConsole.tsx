@@ -346,7 +346,7 @@ export default function DeadDropConsole({ poems = [] }: { poems?: Poem[] }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.98 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-3 sm:inset-auto sm:right-3 md:right-6 sm:bottom-3 md:bottom-6 z-[55] sm:w-[min(94vw,520px)] sm:h-[min(70vh,460px)] border border-[#00d4ff]/40 bg-[#050608]/96 backdrop-blur-md flex flex-col"
+            className="fixed inset-3 sm:inset-auto sm:right-3 md:right-6 sm:bottom-3 md:bottom-6 z-[85] sm:w-[min(94vw,520px)] sm:h-[min(70vh,460px)] border border-[#00d4ff]/40 bg-[#050608]/96 backdrop-blur-md flex flex-col"
             style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)', boxShadow: '0 10px 40px rgba(0,0,0,0.6), 0 0 24px rgba(94,200,216,0.12), inset 0 0 30px rgba(0,0,0,0.5)' }}
             onMouseDown={() => inputRef.current?.focus()}
           >

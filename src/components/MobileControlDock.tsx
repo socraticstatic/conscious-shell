@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Volume2, VolumeX, Mic, ChevronRight, ScrollText } from 'lucide-react';
+import { Volume2, VolumeX, ChevronRight, ScrollText } from 'lucide-react';
 
 /**
  * Control dock — every viewport.
@@ -16,10 +16,10 @@ import { Volume2, VolumeX, Mic, ChevronRight, ScrollText } from 'lucide-react';
  * and toggle. Audio/Helen report their on/off state back via `dock:state` so
  * the dock can light up the active control.
  */
-type DockState = { audio: boolean; helen: boolean };
+type DockState = { audio: boolean };
 
 export default function MobileControlDock() {
-  const [state, setState] = useState<DockState>({ audio: false, helen: false });
+  const [state, setState] = useState<DockState>({ audio: false });
 
   useEffect(() => {
     const onState = (e: Event) => {
@@ -35,7 +35,6 @@ export default function MobileControlDock() {
 
   const items = [
     { key: 'audio', label: 'amb',   Icon: state.audio ? Volume2 : VolumeX, on: state.audio, accent: '#00d4ff', ev: 'dock:audio' },
-    { key: 'helen', label: 'helen', Icon: Mic,          on: state.helen, accent: '#e040fb', ev: 'dock:helen' },
     { key: 'drop',  label: 'drop',  Icon: ChevronRight, on: false,       accent: '#00d4ff', ev: 'dock:deaddrop' },
     { key: 'logs',  label: 'logs',  Icon: ScrollText,   on: false,       accent: '#a8a29e', ev: 'dock:logs' },
   ] as const;
