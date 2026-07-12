@@ -21,6 +21,15 @@ export default function NoirSubtitles({ lines }: { lines: Noir[] }) {
     order.current = [...lines].sort(() => Math.random() - 0.5);
     idx.current = 0;
 
+    // Ambient lines only surface once the hero has mostly scrolled away, so a
+    // line never lands over the "MICAH BOSWELL" hero content. The manual
+    // `noir:narrate` trigger is intentional and stays ungated.
+    const pastHero = () => {
+      const hero = document.getElementById('top');
+      if (hero) return hero.getBoundingClientRect().bottom < window.innerHeight * 0.6;
+      return window.scrollY > window.innerHeight * 0.85;
+    };
+
     let showTimer: number;
     let hideTimer: number;
 
@@ -29,7 +38,7 @@ export default function NoirSubtitles({ lines }: { lines: Noir[] }) {
       // rather than another interruption. ~3–6min between lines.
       const nextDelay = 180000 + Math.random() * 180000;
       showTimer = window.setTimeout(() => {
-        if (document.hidden) { tick(); return; }
+        if (document.hidden || !pastHero()) { tick(); return; }
         const next = order.current[idx.current % order.current.length];
         idx.current += 1;
         setCurrent(next);
