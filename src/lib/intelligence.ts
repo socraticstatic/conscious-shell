@@ -127,8 +127,6 @@ function scheduleSync() {
 async function syncNow() {
   if (!state) return;
   try {
-    const { data: authData } = await supabase.auth.getSession();
-    const userId = authData.session?.user?.id ?? null;
     await supabase.from('visitor_sessions').upsert(
       {
         visitor_id: state.vid,
@@ -137,7 +135,6 @@ async function syncNow() {
         signals: state.signals,
         sessions_count: (state.signals.returnVisits ?? 0) + 1,
         last_seen: new Date().toISOString(),
-        user_id: userId,
       },
       { onConflict: 'visitor_id' },
     );
