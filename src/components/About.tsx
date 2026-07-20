@@ -1,20 +1,7 @@
 import { motion } from 'framer-motion';
 import { SectionHeader } from './Work';
 import type { Testimonial } from '../lib/supabase';
-
-const bio = [
-  ['name', 'Micah Boswell'],
-  ['title', 'Design Leader'],
-  ['practicing_since', '1990s'],
-  ['based', 'earth / remote'],
-  ['output', 'product · research · leadership'],
-  ['fuel', 'yerba mate'],
-];
-
-const paragraphs = [
-  'I started practicing UX in the 1990s, before the label existed. Since then I have shipped product across finance, telecom, healthcare, retail, and government — through 126 projects and a couple of eras of the web.',
-  'Today I run a small design practice focused on three things: leading product design engagements, advising teams that want design to drive outcomes, and mentoring the next generation of senior designers.',
-];
+import { bio, paragraphs } from '../lib/about-copy';
 
 export default function About({ testimonial }: { testimonial?: Testimonial }) {
   return (

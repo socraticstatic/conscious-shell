@@ -84,13 +84,14 @@ if (!SUPABASE_URL || !SUPABASE_KEY) {
 }
 
 // ---------------------------------------------------------------------------
-// slugify — transpiled from the app's own src/lib/slug.ts so it cannot drift
+// shared source of truth — transpile the app's own src/lib modules on the fly
+// so the prerendered HTML can never drift from what the app renders.
 // ---------------------------------------------------------------------------
-async function loadSlugify() {
-  const tmp = join(ROOT, 'node_modules', '.cache', 'prerender-slug.mjs');
+async function loadTsModule(relPath) {
+  const tmp = join(ROOT, 'node_modules', '.cache', `prerender-${relPath.replace(/\W+/g, '-')}.mjs`);
   mkdirSync(dirname(tmp), { recursive: true });
   await esbuild({
-    entryPoints: [join(ROOT, 'src', 'lib', 'slug.ts')],
+    entryPoints: [join(ROOT, relPath)],
     outfile: tmp,
     format: 'esm',
     platform: 'node',
@@ -99,8 +100,24 @@ async function loadSlugify() {
   });
   const mod = await import(pathToFileURL(tmp).href + '?t=' + Date.now());
   rmSync(tmp, { force: true });
+  return mod;
+}
+
+async function loadSlugify() {
+  const mod = await loadTsModule('src/lib/slug.ts');
   if (typeof mod.slugify !== 'function') die('src/lib/slug.ts did not export slugify().');
   return mod.slugify;
+}
+
+async function loadAboutCopy() {
+  const mod = await loadTsModule('src/lib/about-copy.ts');
+  if (!Array.isArray(mod.paragraphs) || mod.paragraphs.length === 0) {
+    die('src/lib/about-copy.ts did not export a non-empty paragraphs array.');
+  }
+  if (!Array.isArray(mod.bio) || mod.bio.length === 0) {
+    die('src/lib/about-copy.ts did not export a non-empty bio array.');
+  }
+  return { bio: mod.bio, paragraphs: mod.paragraphs };
 }
 
 // ---------------------------------------------------------------------------
@@ -123,6 +140,65 @@ async function table(name, query) {
   return res.json();
 }
 
+// ---------------------------------------------------------------------------
+// award dedupe (defensive — does not mutate the database)
+//
+// portfolio_awards currently holds the same Ignite award twice, entered a day
+// apart with different phrasing:
+//
+//   "Best Speaker"          / "Ignite"       / 2012
+//   "Best Speaker — Ignite" / "Ignite talks" / 2012
+//
+// A plain normalized name+year key does NOT collapse those — the titles
+// genuinely differ. So the key is the *token set* of title + organization, and
+// an entry is dropped when its tokens are a subset of an entry already kept for
+// the same year. That catches both exact repeats and the
+// "same award, more words" case above.
+//
+// Containment requires at least two shared meaningful tokens so a terse
+// one-word award can never be swallowed by an unrelated longer one.
+// First row wins, so order_index still decides which phrasing survives.
+// ---------------------------------------------------------------------------
+const STOPWORDS = new Set(['the', 'of', 'for', 'and', 'a', 'an', 'award', 'awards']);
+
+function awardTokens(a) {
+  return new Set(
+    `${a.title ?? ''} ${a.organization ?? ''}`
+      .toLowerCase()
+      .normalize('NFKD')
+      .replace(/[̀-ͯ]/g, '')
+      .split(/[^a-z0-9]+/)
+      .filter((t) => t && !STOPWORDS.has(t)),
+  );
+}
+
+const isSubset = (small, big) => [...small].every((t) => big.has(t));
+
+export function dedupeAwards(awards) {
+  const kept = [];
+  const dropped = [];
+
+  for (const a of awards) {
+    const tokens = awardTokens(a);
+    const year = String(a.year ?? '').trim();
+
+    const match = kept.find((k) => {
+      if (k.year !== year) return false;
+      const shared = [...tokens].filter((t) => k.tokens.has(t)).length;
+      if (shared < 2) return false;
+      return isSubset(tokens, k.tokens) || isSubset(k.tokens, tokens);
+    });
+
+    if (match) {
+      dropped.push({ award: a, mergedInto: match.award });
+      continue;
+    }
+    kept.push({ award: a, tokens, year });
+  }
+
+  return { awards: kept.map((k) => k.award), dropped };
+}
+
 async function fetchAll() {
   const [projects, services, testimonials, awards, publications, certifications, dossier] =
     await Promise.all([
@@ -138,7 +214,25 @@ async function fetchAll() {
   if (!Array.isArray(projects) || projects.length === 0) {
     die('portfolio_projects returned zero rows. Nothing to prerender.');
   }
-  return { projects, services, testimonials, awards, publications, certifications, dossier };
+
+  const { awards: uniqueAwards, dropped } = dedupeAwards(awards);
+  for (const d of dropped) {
+    console.warn(
+      `[prerender] duplicate award suppressed: "${d.award.title}" (${d.award.organization}, ` +
+        `${d.award.year}) — already covered by "${d.mergedInto.title}" ` +
+        `(${d.mergedInto.organization}). Row id ${d.award.id} is still in the database.`,
+    );
+  }
+
+  return {
+    projects,
+    services,
+    testimonials,
+    awards: uniqueAwards,
+    publications,
+    certifications,
+    dossier,
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -209,12 +303,30 @@ function personSchema(d) {
       addressCountry: 'US',
     },
     knowsAbout: specialties,
-    // certifications table — all four are eCornell / Cornell University
-    alumniOf: {
-      '@type': 'EducationalOrganization',
-      name: 'Cornell University (eCornell)',
-      url: 'https://www.ecornell.com/',
-    },
+    // Both entries are backed by visible page copy, which is the only reason
+    // they belong here. Hardin-Simmons is stated in the About section
+    // (src/lib/about-copy.ts — prose + the identity.conf "studied" row); the
+    // eCornell certificates are listed in the certifications table. Attendance
+    // only — no degree, major, or dates are claimed anywhere, because none are
+    // confirmed.
+    alumniOf: [
+      {
+        '@type': 'EducationalOrganization',
+        name: 'Hardin-Simmons University',
+        url: 'https://www.hsutx.edu/',
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: 'Abilene',
+          addressRegion: 'TX',
+          addressCountry: 'US',
+        },
+      },
+      {
+        '@type': 'EducationalOrganization',
+        name: 'Cornell University (eCornell)',
+        url: 'https://www.ecornell.com/',
+      },
+    ],
     hasCredential: d.certifications.map((c) => ({
       '@type': 'EducationalOccupationalCredential',
       name: c.title,
@@ -358,8 +470,12 @@ function projectBlock(p, slugify) {
 }
 
 function homeBlock(d, slugify) {
-  const { projects, services, awards, publications, certifications, testimonials } = d;
+  const { projects, services, awards, publications, certifications, testimonials, about } = d;
   const t = testimonials[0];
+
+  // Same strings the React About section renders — see src/lib/about-copy.ts.
+  const aboutProse = about.paragraphs.map((p) => `<p>${esc(p)}</p>`).join('\n');
+  const aboutBio = about.bio.map(([k, v]) => `${esc(k)} = &quot;${esc(v)}&quot;`).join(' &middot; ');
 
   return `<div id="prerender-content"><div class="wrap">
 <h1>Micah Boswell — Design Leader</h1>
@@ -367,9 +483,8 @@ function homeBlock(d, slugify) {
 <p>research &rarr; product &rarr; traction &rarr; organizations that ship</p>
 
 <h2>About</h2>
-<p>I started practicing UX in the 1990s, before the label existed. Since then I have shipped product across finance, telecom, healthcare, retail, and government — through 126 projects and a couple of eras of the web.</p>
-<p>Today I run a small design practice focused on three things: leading product design engagements, advising teams that want design to drive outcomes, and mentoring the next generation of senior designers.</p>
-<p class="meta">name = "Micah Boswell" &middot; title = "Design Leader" &middot; practicing_since = "1990s" &middot; based = "earth / remote" &middot; output = "product &middot; research &middot; leadership"</p>
+${aboutProse}
+<p class="meta">${aboutBio}</p>
 
 <h2>Impact</h2>
 <p><span class="stat">126</span> products shipped &nbsp; <span class="stat">47</span> designers mentored &nbsp; <span class="stat">$300K+</span> hardware savings &nbsp; <span class="stat">48%</span> error reduction</p>
@@ -580,9 +695,10 @@ function llmsTxt(d, slugify) {
 
 ## Who he is
 
-Micah Boswell started practicing UX in the 1990s, before the label existed.
-Since then he has shipped product across finance, telecom, healthcare, retail,
-and government — 126 projects across a couple of eras of the web.
+Micah Boswell came up through Hardin-Simmons University in Abilene, Texas, and
+started practicing UX in the 1990s, before the label existed. Since then he has
+shipped product across finance, telecom, healthcare, retail, and government —
+126 projects across a couple of eras of the web.
 
 Today he runs a small design practice focused on three things: leading product
 design engagements, advising teams that want design to drive outcomes, and
@@ -743,7 +859,13 @@ async function main() {
   const slugify = await loadSlugify();
   console.log('[prerender] slugify loaded from src/lib/slug.ts');
 
-  const d = await fetchAll();
+  const about = await loadAboutCopy();
+  console.log(
+    `[prerender] about copy loaded from src/lib/about-copy.ts ` +
+      `(${about.paragraphs.length} paragraphs, ${about.bio.length} bio rows)`,
+  );
+
+  const d = { ...(await fetchAll()), about };
   console.log(
     `[prerender] fetched: ${d.projects.length} projects, ${d.services.length} services, ` +
       `${d.awards.length} awards, ${d.certifications.length} certifications`,
