@@ -34,3 +34,6 @@ pnpm-workspace.yaml
 
 # TS incremental build cache
 *.tsbuildinfo
+
+# Claude Code per-session state (worktrees, transcripts)
+.claude/
