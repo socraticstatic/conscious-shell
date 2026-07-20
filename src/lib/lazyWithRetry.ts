@@ -1,4 +1,5 @@
 import { lazy, type ComponentType, type LazyExoticComponent } from 'react';
+import { saveRecoveryScroll } from './recoveryScroll';
 
 // Why this file exists:
 //
@@ -77,6 +78,9 @@ export function lazyWithRetry<T extends ComponentType<any>>(
       // or we'd recreate the crash loop.
       if (isChunkLoadError(firstError) && typeof window !== 'undefined' && !recentlyReloaded()) {
         markReloaded();
+        // Carry the scroll position across, or the recovery reads as a random
+        // auto-refresh that throws the visitor back to the hero mid-scroll.
+        saveRecoveryScroll();
         window.location.reload();
         // Hang until the reload takes over so React never renders a
         // half-broken state in the meantime.

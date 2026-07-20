@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App.tsx';
 import './index.css';
 import { installLogger } from './lib/logger';
+import { restoreRecoveryScroll } from './lib/recoveryScroll';
 import { __BIRTH__, __HAUNT__ } from './lib/void';
 
 installLogger();
@@ -14,6 +15,11 @@ __BIRTH__();
 // scrolling (useScrollToHash) and the body-height sync in App.tsx. Take
 // explicit control instead of leaving it to browser default behavior.
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
+// Taking manual control above means a chunk-recovery reload (lazyWithRetry)
+// lands at the top of the page. If we just came from one, put the visitor back
+// where they were. No-ops on every other page load.
+restoreRecoveryScroll();
 
 // The interactive layer waits until the page is quiet, then starts listening.
 {
