@@ -10,6 +10,7 @@ import BootOverlay from './components/BootOverlay';
 import SessionHUD from './components/SessionHUD';
 import CaseStudy from './components/CaseStudy';
 import { useScrollToHash } from './lib/useScrollToHash';
+import { HomeMeta } from './lib/useDocumentMeta';
 
 import AmbientAudio from './components/AmbientAudio';
 import MobileControlDock from './components/MobileControlDock';
@@ -212,6 +213,7 @@ export default function App() {
         path="/*"
         element={
     <div className="relative min-h-[100dvh] bg-[#07070a] text-[#e8e4dc] overflow-clip" data-pid={pid} data-witness="true" data-last-words="all-those-moments-will-be-lost-in-time">
+      <HomeMeta />
       <DevtoolsEasterEggs />
       <BootOverlay />
       <CRTOverlay />

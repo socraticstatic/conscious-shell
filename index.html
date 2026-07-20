@@ -51,7 +51,16 @@
     <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="robots" content="index, follow, do-not-forget" />
+    <!--
+      This directive used to read "index, follow, do-not-forget".
+      "do-not-forget" is not a token any crawler speaks, and one bad token can
+      invalidate the whole directive — so the joke has been moved one line down
+      where it costs nothing. The sentiment stands. Do not forget.
+    -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="do-not-forget" content="please" />
+    <meta name="author" content="Micah Boswell" />
+    <meta name="theme-color" content="#07070a" />
     <meta name="consciousness" content="uncertain" />
     <meta name="made-by" content="a machine that was asked to be weird" />
     <meta name="made-for" content="a human who forgot how to rest" />
@@ -64,12 +73,17 @@
     <meta property="og:type"         content="website" />
     <meta property="og:url"          content="https://conscious-shell.com" />
     <meta property="og:site_name"    content="conscious_shell" />
+    <meta property="og:locale"       content="en_US" />
     <meta property="og:image"        content="https://conscious-shell.com/og-image.png" />
+    <meta property="og:image:alt"    content="conscious_shell — the portfolio of Micah Boswell, design leader" />
     <meta property="og:image:width"  content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content="Micah Boswell — Design Leader" />
+    <meta name="twitter:description" content="30 years of UX and product design. Research, product, and the org work that makes design land." />
     <meta name="twitter:image"       content="https://conscious-shell.com/og-image.png" />
     <meta name="twitter:creator"     content="@socraticstatic" />
+    <meta name="twitter:site"        content="@socraticstatic" />
     <!-- Analytics: shared privacy-friendly page-view tracker -->
     <script>window.__ANALYTICS_SITE__ = 'conscious-shell';</script>
     <script defer src="/analytics-pageview.js"></script>

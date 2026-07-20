@@ -52,6 +52,8 @@ export function useDocumentMeta(meta: Partial<MetaInput>) {
     setMeta('og:type', merged.type ?? 'website', 'property');
     setMeta('og:url', merged.url, 'property');
     setMeta('og:image', merged.image ?? DEFAULTS.image!, 'property');
+    setMeta('twitter:title', merged.title);
+    setMeta('twitter:description', merged.description);
     setMeta('twitter:image', merged.image ?? DEFAULTS.image!);
     setCanonical(merged.url);
 
@@ -63,9 +65,20 @@ export function useDocumentMeta(meta: Partial<MetaInput>) {
       setMeta('og:type', 'website', 'property');
       setMeta('og:url', DEFAULTS.url, 'property');
       setMeta('og:image', DEFAULTS.image!, 'property');
+      setMeta('twitter:title', DEFAULTS.title);
+      setMeta('twitter:description', DEFAULTS.description);
       setMeta('twitter:image', DEFAULTS.image!);
       setCanonical(DEFAULTS.url);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [meta.title, meta.description, meta.url, meta.image, meta.type]);
+}
+
+// The homepage previously never called useDocumentMeta at all, so "/" shipped
+// with no canonical on the SPA path (the prerendered document carries one, but
+// a client-side navigation back to "/" did not restore it reliably). Renders
+// nothing — it exists purely for the head effect.
+export function HomeMeta() {
+  useDocumentMeta({ url: 'https://conscious-shell.com/' });
+  return null;
 }
