@@ -172,8 +172,9 @@ export default function Hero() {
             </div>
           </div>
 
-          <div className="col-span-12 lg:col-span-4 lg:pl-6">
+          <div className="col-span-12 lg:col-span-4 lg:pl-6 space-y-4">
             <BiometricPanel />
+            <PhoenixPanel />
           </div>
         </div>
       </div>
@@ -238,6 +239,253 @@ function BiometricPanel() {
       <div className="border-t border-[#1f1c17] px-3 py-2 text-[10px] text-[#4a453e] flex items-center justify-between">
         <span>// monitoring</span>
         <span className="text-[#00d4ff]">● live</span>
+      </div>
+    </div>
+  );
+}
+
+// ── Phoenix: burn → ash → rebirth, looping ────────────────────────────
+type PhoenixFrame = { art: string[]; color: string; ms: number; label: string; flicker?: boolean };
+
+const PHOENIX_FRAMES: PhoenixFrame[] = [
+  {
+    label: 'perched',
+    color: '#00d4ff',
+    ms: 2400,
+    art: [
+      "        _v_",
+      "       (o o)",
+      "    __/ \\_/ \\__",
+      "  _/   \\   /   \\_",
+      " /  .-'' | ''-.  \\",
+      "/ /'     |     '\\ \\",
+      "`        |        `",
+      "      \\  |  /",
+      "       \\ | /",
+      "      '/ | \\'",
+      "         '",
+    ],
+  },
+  {
+    label: 'ignition',
+    color: '#ffcf6b',
+    ms: 480,
+    art: [
+      "        _v_",
+      "       (o o)",
+      "    __/ \\_/ \\__",
+      "  _/   \\   /   \\_",
+      " /  .-'' | ''-.  \\",
+      "/ )'     |     '( \\",
+      "` )  \\   |   /  ( `",
+      "   ) \\  |  / (",
+      "    ) \\ | / (",
+      "   ( )'/|\\'( )",
+      "     ) ''' (",
+    ],
+  },
+  {
+    label: 'combustion',
+    color: '#ff8c1a',
+    ms: 440,
+    flicker: true,
+    art: [
+      "     )  _v_  (",
+      "    ( )(o o)( )",
+      "   __/)\\_/(\\__",
+      "  _/ ( \\ / ) \\_",
+      " /( .-''|''-. )\\",
+      "/ )'  ( | )  '( \\",
+      "` ) ) \\|/ ( ( `",
+      "   ( ) \\|/ ( )",
+      "    )( \\|/ )(",
+      "   ( ) /|\\ ( )",
+      "    )  '''  (",
+    ],
+  },
+  {
+    label: 'immolation',
+    color: '#ff3b1a',
+    ms: 700,
+    flicker: true,
+    art: [
+      "   )  ( ^ )  (",
+      "  ( ) )(o)( ( )",
+      "   )( )/|\\( )(",
+      "  ( )(/ | \\)( )",
+      "   )(  \\|/  )(",
+      "  ( )( /|\\ )( )",
+      "   )(  \\|/  )(",
+      "  ( ) )/|\\( ( )",
+      "   )( ( | ) )(",
+      "  ( )  \\|/  ( )",
+      "   )  ( V )  (",
+    ],
+  },
+  {
+    label: 'collapse',
+    color: '#ff5a3c',
+    ms: 520,
+    flicker: true,
+    art: [
+      "       ) (",
+      "      ( ) )",
+      "     )( )( (",
+      "    ( )/|\\( )",
+      "     )(\\|/)(",
+      "    .( )|( ).",
+      "   .:)( | )(:.",
+      "  .::.:\\|/:.::.",
+      " .::.::.|.::.::.",
+      ".,:.::.::.::.:,.",
+      "  ~~~~~~~~~~~~~",
+    ],
+  },
+  {
+    label: 'ash',
+    color: '#6b6660',
+    ms: 1800,
+    art: [
+      "        .",
+      "       . .",
+      "      . . .",
+      "    .  .:.  .",
+      "   .::.:.:.::.",
+      "  .::.::.::.::.",
+      " .::.::.::.::.::.",
+      ".,:.::.::.::.::.,.",
+      " .,:.:: ash ::.,.",
+      "  ~~~~~~~~~~~~~~",
+      "",
+    ],
+  },
+  {
+    label: 'ember',
+    color: '#ffb347',
+    ms: 900,
+    flicker: true,
+    art: [
+      "          *",
+      "         '",
+      "        .",
+      "       *",
+      "      .:.",
+      "     .:*:.",
+      "    .::.::.",
+      "   .::.:.::.",
+      "  .,:.:*:.:,.",
+      "   ~ ~~~ ~",
+      "",
+    ],
+  },
+  {
+    label: 'rekindle',
+    color: '#7fe3ff',
+    ms: 620,
+    art: [
+      "        .*.",
+      "       (o o)",
+      "      / \\_/ \\",
+      "     /   |   \\",
+      "    '.   |   .'",
+      "      \\  |  /",
+      "       \\ | /",
+      "       .:|:.",
+      "      .:.|.:.",
+      "     .::.:.::.",
+      "      ~~~~~",
+    ],
+  },
+  {
+    label: 'reborn',
+    color: '#00d4ff',
+    ms: 760,
+    art: [
+      "     \\  _v_  /",
+      "      \\(o o)/",
+      "    __/ \\_/ \\__",
+      "  _/   \\   /   \\_",
+      " /  .-'' | ''-.  \\",
+      "/ /'     |     '\\ \\",
+      "`    )   |   (    `",
+      "      \\  |  /",
+      "       \\ | /",
+      "      '/ | \\'",
+      "       ~'''~",
+    ],
+  },
+];
+
+// Normalize every frame to one fixed grid so the panel never reflows.
+const PHX_W = Math.max(...PHOENIX_FRAMES.flatMap((f) => f.art.map((l) => l.length)));
+const PHX_H = Math.max(...PHOENIX_FRAMES.map((f) => f.art.length));
+const PHOENIX = PHOENIX_FRAMES.map((f) => {
+  const padded = f.art.map((l) => l.padEnd(PHX_W, ' '));
+  while (padded.length < PHX_H) padded.unshift(' '.repeat(PHX_W));
+  return { ...f, text: padded.join('\n') };
+});
+
+function usePrefersReducedMotion() {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const on = () => setReduced(mq.matches);
+    on();
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  }, []);
+  return reduced;
+}
+
+function PhoenixPanel() {
+  const reduced = usePrefersReducedMotion();
+  const [i, setI] = useState(0);
+  const [cycle, setCycle] = useState(1);
+
+  useEffect(() => {
+    if (reduced) return;
+    const id = setTimeout(() => {
+      setI((prev) => {
+        const next = (prev + 1) % PHOENIX.length;
+        if (next === 0) setCycle((c) => c + 1);
+        return next;
+      });
+    }, PHOENIX[i].ms);
+    return () => clearTimeout(id);
+  }, [i, reduced]);
+
+  const frame = PHOENIX[i];
+
+  return (
+    <div className="border border-[#1f1c17] bg-[#0b0a08]/70 backdrop-blur-sm" aria-hidden="true">
+      <div className="flex items-center justify-between px-3 py-2 border-b border-[#1f1c17] text-[10px]">
+        <span className="flex items-center gap-2" style={{ color: frame.color }}>
+          <span className="w-1.5 h-1.5 animate-pulse" style={{ backgroundColor: frame.color }} />
+          REGEN::REP-7
+        </span>
+        <span className="font-jp text-[#ff8c1a]">不死鳥</span>
+      </div>
+
+      <div className="flex items-center justify-center py-3">
+        <pre
+          className="font-mono text-[10px] sm:text-[11px] leading-[1.15] tracking-tight select-none transition-colors duration-300"
+          style={{
+            color: frame.color,
+            textShadow: `0 0 6px ${frame.color}66, 0 0 14px ${frame.color}33`,
+            animation: frame.flicker ? 'phx-flicker 0.14s steps(2) infinite' : undefined,
+          }}
+        >
+          {frame.text}
+        </pre>
+      </div>
+
+      <div className="border-t border-[#1f1c17] px-3 py-2 text-[10px] text-[#4a453e] flex items-center justify-between">
+        <span>
+          // phase: <span style={{ color: frame.color }}>{frame.label}</span>
+        </span>
+        <span className="tabular-nums text-[#6b6660]">
+          cycle {String(cycle).padStart(3, '0')}
+        </span>
       </div>
     </div>
   );
