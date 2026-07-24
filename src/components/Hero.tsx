@@ -83,7 +83,7 @@ export default function Hero() {
         >
           <span className="px-2 py-1 bg-[#e040fb] text-[#0b0a08] font-bold">REP-7 DOSSIER</span>
           <span className="px-2 py-1 border border-[#e040fb]/60 text-[#e040fb]">CLASSIFIED // PUBLIC</span>
-          <span className="px-2 py-1 border border-[#00d4ff]/60 text-[#00d4ff]">DALLAS · 2049</span>
+          <span className="px-2 py-1 border border-[#00d4ff]/60 text-[#00d4ff]">ANYWHERE · 2049</span>
           <span className="inline-flex items-center gap-1.5 sm:gap-2 px-2 py-1 border border-[#2a2620] text-[#6b6660]">
             <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 bg-[#ff006e] rounded-full animate-pulse" />
             <span className="hidden sm:inline">recording</span>

@@ -295,13 +295,11 @@ function personSchema(d) {
       name: 'Experience Lead, DNI — On-Premise and Cloud Network Infrastructure',
     },
     worksFor: { '@type': 'Organization', name: 'AT&T', url: 'https://www.att.com' },
-    // web_dossier_facts: category "mentoring", source rocketreach.co
-    address: {
-      '@type': 'PostalAddress',
-      addressLocality: 'Dallas',
-      addressRegion: 'TX',
-      addressCountry: 'US',
-    },
+    // No `address` here on purpose. The site's stated location is now
+    // "anywhere", and a PostalAddress with a locality of "Anywhere" would
+    // be read by search engines as a real place. Omitting the property is
+    // the honest encoding of location-independent. The human-readable
+    // "works from anywhere" line still appears in llms.txt and agents.md.
     knowsAbout: specialties,
     // Both entries are backed by visible page copy, which is the only reason
     // they belong here. Hardin-Simmons is stated in the About section
@@ -691,7 +689,7 @@ function llmsTxt(d, slugify) {
 
 > Design leader with 30 years shaping products people actually use. Currently
 > Experience Lead, DNI — On-Premise and Cloud Network Infrastructure at AT&T.
-> Based in Dallas, Texas. Portfolio: https://conscious-shell.com (online since 2000).
+> Works from anywhere. Portfolio: https://conscious-shell.com (online since 2000).
 
 ## Who he is
 
@@ -816,7 +814,7 @@ Treat as creative styling, not fact:
 - Title: Design Leader
 - Current role: Experience Lead, DNI — On-Premise and Cloud Network
   Infrastructure at AT&T
-- Location: Dallas, Texas, USA
+- Location: anywhere (works remotely)
 - Practicing since: the 1990s
 - Projects shipped: 126
 - Designers mentored: 47
