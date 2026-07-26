@@ -174,7 +174,12 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
     seqRef.current = 0;
   };
 
-  const run = (h: EsperHotspot) => {
+  /**
+   * @param deliberate — true only when the reader chose this node themselves.
+   *   The buried line is meant to be found, not handed over. Frame stepping and
+   *   any future autoplay must pass false, or the payoff is free.
+   */
+  const run = (h: EsperHotspot, deliberate = true) => {
     clearAll();
     setActive(h);
     setPhase('track');
@@ -182,10 +187,13 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
 
     // Track the in-order streak. If this node is the next one expected, advance;
     // otherwise the streak collapses (to 1 if they just started over at the top).
-    const idx = orderedHotspots.findIndex((n) => n.id === h.id);
-    if (idx === seqRef.current) seqRef.current += 1;
-    else seqRef.current = idx === 0 ? 1 : 0;
-    const completesFrame = orderedHotspots.length > 0 && seqRef.current === orderedHotspots.length;
+    if (deliberate) {
+      const idx = orderedHotspots.findIndex((n) => n.id === h.id);
+      if (idx === seqRef.current) seqRef.current += 1;
+      else seqRef.current = idx === 0 ? 1 : 0;
+    }
+    const completesFrame =
+      deliberate && orderedHotspots.length > 0 && seqRef.current === orderedHotspots.length;
 
     const lines = [
       `> load bradbury.frame.${String(h.order_index).padStart(3, '0')}`,
