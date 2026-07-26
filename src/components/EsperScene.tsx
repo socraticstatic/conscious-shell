@@ -9,23 +9,65 @@ type Phase = 'idle' | 'track' | 'enhance' | 'resolve';
 // the same curve. Two machines, one hand on the dial.
 const ESPER_EASE = [0.22, 1, 0.36, 1] as const;
 
-// The frames. Every one is Micah's own photograph, published on Unsplash as
+// Every frame is Micah's own photograph, published on Unsplash as
 // @micahboswell. A 2026-07-06 pass asserted this handle was fictional and
 // substituted @greyharbor7; that was wrong. Corroborated by his author bio in
 // the vault and by supabase/migrations/20260422102044_create_web_dossier.sql.
-// `pos` is object-position for the portrait frames the 16:10 crop would
-// otherwise behead.
-const PHOTOS: { id: string; caption: string; pos?: string }[] = [
-  { id: 'photo-1666554757112-91093a627335', caption: 'case file #2049 · a close-up of a light' },
-  { id: 'photo-1601743240194-f45724587958', caption: 'case file #2049 · blue light streaks' },
-  { id: 'photo-1608688107623-c5e228d8df63', caption: 'case file #2049 · green stone fragment' },
-  { id: 'photo-1601742891608-9c1577b3a4b3', caption: 'case file #2049 · red and brown ceiling' },
-  { id: 'photo-1603324905312-0f8fe8117cd8', caption: 'case file #2049 · el capitolio, after dark', pos: '50% 34%' },
-  { id: 'photo-1676505073681-82b680b71725', caption: 'case file #2049 · the road into fog' },
-  { id: 'photo-1665697724166-5d6bfd0cdcbd', caption: 'case file #2049 · two chairs, unoccupied', pos: '50% 42%' },
-  { id: 'photo-1660258785270-45fa53c00e81', caption: 'case file #2049 · one bloom, three buds', pos: '50% 50%' },
-  { id: 'photo-1660260964885-528df60aa658', caption: 'case file #2049 · a single filament over dark water', pos: '50% 45%' },
-];
+export type EsperFrame = {
+  photoId: string;
+  url: string;
+  caption: string;
+  credit: string;
+  pos?: string;
+  hotspots: EsperHotspot[];
+};
+
+/**
+ * Group hotspot rows into frames.
+ *
+ * The frame list used to be a hardcoded 9-entry array in this file while the
+ * table held 13, which stranded 4 frames and 12 reveal passages. Deriving the
+ * list from the data means a new frame is an INSERT, not a code change, and the
+ * caption on screen is the caption in the database.
+ *
+ * Frame order comes from `photo_order`, not from first appearance: every row
+ * carries order_index 10/20/30, so `order by order_index` ties on all thirteen
+ * frames and leaves their sequence to whatever the heap hands back. Rows with no
+ * photo_order sort last, alphabetically, so a freshly inserted frame shows up at
+ * the end instead of disappearing. Nodes inside a frame keep order_index.
+ */
+function buildFrames(hotspots: EsperHotspot[]): EsperFrame[] {
+  const byPhoto = new Map<string, EsperFrame>();
+  const rank = new Map<string, number>();
+
+  for (const h of hotspots) {
+    if (!h.photo_id) continue;
+    let frame = byPhoto.get(h.photo_id);
+    if (!frame) {
+      frame = {
+        photoId: h.photo_id,
+        url:
+          h.photo_url ||
+          `https://images.unsplash.com/${h.photo_id}?fm=jpg&q=75&w=1600&auto=format&fit=crop`,
+        caption: h.photo_caption || '',
+        credit: h.photo_credit || '',
+        pos: h.photo_pos || undefined,
+        hotspots: [],
+      };
+      byPhoto.set(h.photo_id, frame);
+      rank.set(h.photo_id, h.photo_order ?? Number.MAX_SAFE_INTEGER);
+    }
+    frame.hotspots.push(h);
+  }
+
+  const frames = [...byPhoto.values()];
+  frames.sort((a, b) => {
+    const d = (rank.get(a.photoId) ?? 0) - (rank.get(b.photoId) ?? 0);
+    return d !== 0 ? d : a.photoId.localeCompare(b.photoId);
+  });
+  for (const f of frames) f.hotspots.sort((a, b) => a.order_index - b.order_index);
+  return frames;
+}
 
 // The buried line. It is not in any case file. The machine surfaces it only when
 // someone enhances every node on a single frame, in order — the patient, the ones
@@ -52,14 +94,18 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
   // the buried line. Any out-of-order click resets the streak.
   const seqRef = useRef(0);
 
-  const [variantIdx, setVariantIdx] = useState(() => Math.floor(Math.random() * PHOTOS.length));
+  // Thirteen frames, from the table. Nine used to be hardcoded here.
+  const frames = useMemo(() => buildFrames(hotspots), [hotspots]);
+
+  const [variantIdx, setVariantIdx] = useState(0);
 
   useEffect(() => {
+    if (frames.length < 2) return;
     const interval = window.setInterval(() => {
-      setVariantIdx((i) => (i + 1) % PHOTOS.length);
+      setVariantIdx((i) => (i + 1) % frames.length);
     }, 25000);
     return () => clearInterval(interval);
-  }, []);
+  }, [frames.length]);
 
   useEffect(() => {
     clearAll();
@@ -70,21 +116,16 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
     seqRef.current = 0;
   }, [variantIdx]);
 
-  const currentPhoto = PHOTOS[variantIdx];
-  const currentPhotoId = currentPhoto.id;
-  const photo = `https://images.unsplash.com/${currentPhotoId}?fm=jpg&q=75&w=1600&auto=format&fit=crop`;
-  const caption = currentPhoto.caption;
-  // No byline. These are his own frames — nothing to attribute.
+  const frame = frames[Math.min(variantIdx, Math.max(frames.length - 1, 0))];
+  const photo = frame?.url ?? '';
+  const caption = frame?.caption ?? '';
+  // The byline is not painted on the frame — these are his. It lives in
+  // photo_credit so the record is unambiguous, not so the visitor reads it.
 
-  const activeHotspots = useMemo(
-    () => hotspots.filter((h) => h.photo_id === currentPhotoId),
-    [hotspots, currentPhotoId]
-  );
-
-  const orderedHotspots = useMemo(
-    () => [...activeHotspots].sort((a, b) => a.order_index - b.order_index),
-    [activeHotspots]
-  );
+  // Already grouped and sorted by buildFrames; the second name is kept because
+  // the streak logic reads specifically as "the nodes, in order".
+  const activeHotspots = frame?.hotspots ?? [];
+  const orderedHotspots = activeHotspots;
 
   const clearAll = () => {
     timers.current.forEach(clearTimeout);
@@ -156,7 +197,7 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
     };
   }, [active, phase]);
 
-  if (!hotspots.length) return null;
+  if (!frames.length || !frame) return null;
 
   return (
     <section id="esper" className="relative py-24 px-6 md:px-10 bg-[#05060a]">
@@ -196,7 +237,7 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
                 src={photo}
                 alt="esper frame"
                 className="w-full h-full object-cover"
-                style={{ objectPosition: currentPhoto.pos ?? '50% 50%' }}
+                style={{ objectPosition: frame?.pos ?? '50% 50%' }}
                 draggable={false}
               />
               <div

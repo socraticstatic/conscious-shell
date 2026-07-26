@@ -115,6 +115,10 @@ export type EsperHotspot = {
   reveal: string;
   order_index: number;
   photo_credit: string;
+  // Frame-level metadata. Added 20260725120000; nullable on older rows and
+  // absent entirely if that migration has not been applied to a given database.
+  photo_pos?: string | null;   // object-position, for the portrait frames
+  photo_order?: number | null; // frame sequence; order_index only orders nodes
 };
 
 export type WebDossierFact = {
