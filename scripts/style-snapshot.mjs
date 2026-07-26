@@ -34,7 +34,7 @@
  * visitor" state. From a cold visitor, persona classification is a pure
  * function of (near-zero) sessionMs and (empty) sectionDwell, which
  * deterministically resolves to the 'off_world' persona almost immediately
- * on mount and stays there for the (short) duration of a capture — see
+ * on mount and stays there for the (short) duration of a capture - see
  * src/lib/persona.ts classifyPersona/scorePersona.
  *
  * src/components/LateNight.tsx toggles a `late-night` class on <html> from
@@ -47,45 +47,66 @@
  * performance.now(), independent of the reduced-motion CSS). It is never
  * read into PROPS because `document.querySelectorAll('*')` does not return
  * pseudo-elements, and `--heartbeat-color` is only consumed by #root::after
- * — verified empirically (see task-2-report.md) by diffing two DOM walks
+ * - verified empirically (see task-2-report.md) by diffing two DOM walks
  * taken seconds apart on a running page: the real #root element's own
  * computed style was identical both times.
  *
- * src/components/WebDossier.tsx (#dossier — "live · randomized · cited", in
- * its own on-page copy) is EXCLUDED from the walk entirely (see
- * SKIP_SELECTORS below), and this took real investigation to reach rather
- * than being the first thing reached for. In order: (1) confirmed with
- * direct Math.random() calls after each navigation that the override below
- * really is 0.5 every time; (2) queried web_dossier_facts and
- * linkedin_recommendations directly over the Supabase REST API and found no
- * ties in their `order_index` / `given_date` sort keys, so the fetched data
- * order is stable; (3) confirmed via App.tsx that `data` is set exactly once
- * (a single `fetchPortfolio().then(setData)`), so WebDossier's `facts` and
- * `recommendations` props are referentially stable once populated; (4)
- * tightened the mount-completion gate (readyText, below) so capture always
- * happens well before the component's own 7s rotation interval could fire.
- * None of it helped — the displayed "current" fact and its 5 "secondary"
- * cards, and therefore their category accent colours, still varied between
- * otherwise-identical navigations. The remaining variable is
- * `src/main.tsx`'s `<StrictMode>`: WebDossier seeds a small hand-rolled LCG
- * once (`rng`, a *stateful* closure — each call mutates and advances it) and
- * then draws from that same closure across two separate `useMemo`s (`order`,
- * `secondary`). React 18 StrictMode intentionally double-invokes memo
- * callbacks in dev to surface exactly this kind of impurity; because `rng`
- * carries mutable state across calls, a double-invoke changes how far the
- * sequence advances, which is enough to change which facts land in the
- * five-card secondary grid. `pnpm dev` (what this script targets — see
- * "WHY `load`, NOT `networkidle0`" below) always runs with StrictMode
- * active, so this isn't fixable from the harness without patching src/,
- * which Task 2 doesn't allow. It would not reproduce against a production
- * build, where React does not double-invoke. Excluding #dossier trades
- * away coverage of one section's accent colours for a gate that is honest
- * everywhere else; that section's colours will need eyeballing by hand
- * during the token migration instead of relying on this gate.
+ * src/components/WebDossier.tsx (#dossier - "live · randomized · cited", in
+ * its own on-page copy) has part of its subtree excluded (see
+ * SKIP_SELECTORS / SKIP_OWN_SELECTORS below), and this took real
+ * investigation to reach rather than being the first thing reached for. In
+ * order: (1) confirmed with direct Math.random() calls after each
+ * navigation that the override below really is 0.5 every time; (2) queried
+ * web_dossier_facts and linkedin_recommendations directly over the Supabase
+ * REST API and found no ties in their `order_index` / `given_date` sort
+ * keys, so the fetched data order is stable; (3) confirmed via App.tsx that
+ * `data` is set exactly once (a single `fetchPortfolio().then(setData)`),
+ * so WebDossier's `facts` and `recommendations` props are referentially
+ * stable once populated; (4) tightened the mount-completion gate (readyText,
+ * below) so capture always happens well before the component's own 7s
+ * rotation interval could fire. None of it helped - the displayed "current"
+ * fact and its 5 "secondary" cards, and therefore their category accent
+ * colours, still varied between otherwise-identical navigations. The
+ * remaining variable is `src/main.tsx`'s `<StrictMode>`: WebDossier seeds a
+ * small hand-rolled LCG once (`rng`, a *stateful* closure - each call
+ * mutates and advances it) and then draws from that same closure across two
+ * separate `useMemo`s (`order`, `secondary`). React 18 StrictMode
+ * intentionally double-invokes memo callbacks in dev to surface exactly
+ * this kind of impurity; because `rng` carries mutable state across calls,
+ * a double-invoke changes how far the sequence advances, which is enough to
+ * change which facts land in the five-card secondary grid. `pnpm dev` (what
+ * this script targets - see "WHY `load`, NOT `networkidle0`" below) always
+ * runs with StrictMode active, so this isn't fixable from the harness
+ * without patching src/, which Task 2 doesn't allow. It would not reproduce
+ * against a production build, where React does not double-invoke.
+ *
+ * Only 9 of WebDossier.tsx's 23 hex literals - the CATEGORY_META accents,
+ * consumed exclusively through `meta.accent` / `m.accent`, which are only
+ * ever reachable through `order` / `secondary` (the shuffle output) - are
+ * downstream of that RNG. The other 14 are plain Tailwind classes
+ * (`text-[#7a6e62]`, `bg-[#0b0a08]/80`, etc.) that render unconditionally
+ * regardless of which fact wins the shuffle, and are perfectly deterministic
+ * under this harness. So the exclusion below is scoped to exactly the
+ * elements that carry an accent colour, not the whole `<section
+ * id="dossier">`: the current-fact card's own border/header colour, the
+ * AnimatePresence current-card content, the progress bar, and the five
+ * secondary-fact cards. Everything else in #dossier - the static header
+ * row's "acquired" / reshuffle / hold controls, the "N facts on file"
+ * caption, the "also on record" label, and the fixed-colour chrome inside
+ * every secondary card - stays inside the gate.
+ *
+ * None of these selectors reference colour-bearing classes (which the token
+ * migration will rewrite) or nth-child position (which shifts if unrelated
+ * markup changes). They anchor instead on `button[aria-label="reshuffle
+ * dossier"]`, a stable, intentional, non-colour attribute already in the
+ * markup, and reach the accent-bearing elements purely through structural
+ * relationships (`:has()`, `+`) to that anchor. CSS forbids nesting `:has()`
+ * inside `:has()`, so each level is one `:has()` call whose argument is a
+ * plain combinator chain, not a nested pseudo-class.
  *
  * WHY `load`, NOT `networkidle0`
  * -------------------------------------------------------------------------
- * Against a `vite` dev server (which is what this script targets — see
+ * Against a `vite` dev server (which is what this script targets - see
  * .claude/launch.json) the page opens a Vite HMR client WebSocket
  * (`ws://…/?token=…`) that never closes. Puppeteer's `networkidle0` waits
  * for zero in-flight network connections for 500ms, so with that socket
@@ -126,13 +147,52 @@ const VIEWPORTS = [
   { name: 'desktop', width: 1440, height: 900 },
 ];
 
-// Subtrees excluded from the walk entirely — not just individual
-// properties. See the WebDossier paragraph in the file header comment for
-// why #dossier is here and what was tried before landing on exclusion.
-const SKIP_SELECTORS = ['#dossier'];
+// #dossier's accent-bearing elements, anchored to the reshuffle button
+// (see the WebDossier paragraph in the file header comment for the full
+// reasoning). `BTN` never appears in the selector strings directly - it's
+// substituted in below so each level reads as "N divs up from the button".
+const DOSSIER_BTN = 'button[aria-label="reshuffle dossier"]';
+// 118, "acquired / reshuffle / hold" - the direct parent of the button.
+// Not skipped itself; it's the anchor everything else is measured from.
+const DOSSIER_ACQUIRED_ROW = `div:has(> ${DOSSIER_BTN})`;
+// 111, the header row - its own border/colour come from `meta.accent`, but
+// DOSSIER_ACQUIRED_ROW (its child) must stay covered, so this is an
+// own-record-only skip, not a subtree skip.
+const DOSSIER_HEADER_ROW = `div:has(> div > ${DOSSIER_BTN})`;
+// 110, the card's outer wrapper - its border colour is `meta.accent`; same
+// own-record-only reasoning as the header row.
+const DOSSIER_CARD_WRAPPER = `div:has(> div > div > ${DOSSIER_BTN})`;
+// 109, the col-span-8 wrapper - not skipped, only used below to reach the
+// secondary-cards column via its next sibling.
+const DOSSIER_CARD_COLUMN = `div:has(> div > div > div > ${DOSSIER_BTN})`;
+
+// Whole subtrees excluded from the walk (the element and every descendant).
+const SKIP_SELECTORS = [
+  // 114, "surveillance · <category>" - no colour of its own, but inherits
+  // `color: meta.accent` from the header row (111), which `color` does
+  // inherit unlike the other tracked properties.
+  `div:has(+ div > ${DOSSIER_BTN})`,
+  // 141, the AnimatePresence current-fact content - both its own accent
+  // colours and its internal shape (which branch renders, whether the
+  // source is a link or plain text) depend on which fact won the shuffle.
+  `${DOSSIER_HEADER_ROW} + div`,
+  // 190, the accent-colour underline bar beneath the card.
+  `${DOSSIER_HEADER_ROW} + div + div`,
+  // The ProgressTicker wrapper - its bar colour is `meta.accent`.
+  `${DOSSIER_HEADER_ROW} + div + div + div`,
+  // The five secondary-fact cards - every child of the secondary column
+  // except the first, which is the static "also on record" label.
+  `${DOSSIER_CARD_COLUMN} + div > *:not(:first-child)`,
+];
+
+// Elements excluded from the walk by themselves only - their descendants
+// are still walked normally. Both carry their own `meta.accent`-derived
+// colour but have a static, gate-worthy child (DOSSIER_ACQUIRED_ROW) that a
+// whole-subtree skip would otherwise remove too.
+const SKIP_OWN_SELECTORS = [DOSSIER_HEADER_ROW, DOSSIER_CARD_WRAPPER];
 
 // `modifier` is applied after load, before collection. `wait` is the
-// selector this route's mount is considered complete by — the home route
+// selector this route's mount is considered complete by - the home route
 // mounts a <Footer/> at the bottom of its lazy tree, but /work/:slug is a
 // standalone route that never renders one (see src/App.tsx), so it needs
 // its own signal.
@@ -140,14 +200,14 @@ const SKIP_SELECTORS = ['#dossier'];
 // `readyText` is a second, tighter gate for the home-family routes only:
 // src/components/Hero.tsx types its terminal intro out character by
 // character and only reveals its three CTA buttons (one reads
-// "[ enter archive ]") once that finishes — around 4.5s with Math.random
+// "[ enter archive ]") once that finishes - around 4.5s with Math.random
 // pinned. <Footer/> mounts as soon as the lazy Suspense tree resolves,
 // which is well before that, so waiting on 'footer' alone captures the
 // page mid-type, and the boot/typewriter sequences are still adding and
 // removing DOM nodes at that point. Gating on readyText instead of a blind
 // fixed delay keeps every capture on the same side of that one-time
 // sequence without over- or under-waiting for it. (It does not, on its
-// own, fully stabilise #dossier — see the WebDossier paragraph above.)
+// own, fully stabilise #dossier - see the WebDossier paragraph above.)
 const ROUTES = [
   { name: 'home', path: '/', modifier: null, wait: 'footer', readyText: '[ enter archive ]' },
   { name: 'home-late', path: '/', modifier: 'late-night', wait: 'footer', readyText: '[ enter archive ]' },
@@ -155,11 +215,16 @@ const ROUTES = [
   { name: 'case', path: '/work/acumen', modifier: null, wait: 'article', readyText: null },
 ];
 
-const collect = (props, skipSelectors) => {
+const collect = (props, skipSelectors, skipOwnSelectors) => {
   const out = {};
   const seen = new Map();
+  // Whole subtree: the element and every descendant are left out.
   const skipRoots = skipSelectors.flatMap((sel) => [...document.querySelectorAll(sel)]);
   const isSkipped = (el) => skipRoots.some((root) => root === el || root.contains(el));
+  // Own record only: this exact element is left out, but its descendants
+  // are still walked (used where a colour-bearing container has a static,
+  // gate-worthy child - see SKIP_OWN_SELECTORS above).
+  const ownSkipSet = new Set(skipOwnSelectors.flatMap((sel) => [...document.querySelectorAll(sel)]));
   const pathOf = (el) => {
     const parts = [];
     for (let n = el; n && n.nodeType === 1 && n !== document.documentElement; n = n.parentElement) {
@@ -169,7 +234,7 @@ const collect = (props, skipSelectors) => {
     return parts.join('>');
   };
   for (const el of document.querySelectorAll('*')) {
-    if (isSkipped(el)) continue;
+    if (isSkipped(el) || ownSkipSet.has(el)) continue;
     const p = pathOf(el);
     if (seen.has(p)) continue;
     seen.set(p, true);
@@ -184,7 +249,7 @@ const collect = (props, skipSelectors) => {
 // A last settle poll after the readiness gates above, for the trailing
 // framer-motion opacity transitions on things like the Hero CTA row. Kept
 // short and capped well under WebDossier's 7s rotation interval (see the
-// ROUTES comment and DETERMINISM NOTES) — by the time this runs, readyText
+// ROUTES comment and DETERMINISM NOTES) - by the time this runs, readyText
 // has already done the heavy lifting, so this only needs to catch the last
 // paint or two, not a whole mount sequence.
 async function waitForDomStable(page, { intervalMs = 150, stableReads = 3, maxWaitMs = 1200 } = {}) {
@@ -224,16 +289,18 @@ await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduc
 // only stays in sync across two runs if every consumer calls it in the same
 // order and the same number of times, and with a dozen independent effects
 // racing to mount off a lazy-loaded Suspense tree, that order is not
-// guaranteed. A constant is immune to call-order — every caller gets the
+// guaranteed. A constant is immune to call-order - every caller gets the
 // same value no matter when or how often it asks. This alone was not
-// enough to stabilise WebDossier (#dossier is excluded outright — see the
-// WebDossier paragraph above for why), but it is what makes everything
-// else on the page reproducible. See DETERMINISM NOTES above.
+// enough to stabilise WebDossier's shuffle (its accent-bearing elements are
+// excluded by selector instead - see the WebDossier paragraph above for
+// why), but it is what makes everything else on the page reproducible,
+// including the rest of #dossier that stays in the gate. See DETERMINISM
+// NOTES above.
 await page.evaluateOnNewDocument(() => {
   try {
     localStorage.clear();
   } catch {
-    /* storage blocked — nothing to clear */
+    /* storage blocked - nothing to clear */
   }
   Math.random = () => 0.5;
 });
@@ -275,7 +342,7 @@ for (const route of ROUTES) {
     }
     await waitForDomStable(page);
     const key = `${route.name}@${vp.name}`;
-    snapshot[key] = await page.evaluate(collect, PROPS, SKIP_SELECTORS);
+    snapshot[key] = await page.evaluate(collect, PROPS, SKIP_SELECTORS, SKIP_OWN_SELECTORS);
     console.log(`  ${key}: ${Object.keys(snapshot[key]).length} elements`);
   }
 }
