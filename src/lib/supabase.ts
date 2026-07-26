@@ -238,3 +238,17 @@ export type LogRow = {
   session_id: string;
   created_at: string;
 };
+
+/**
+ * A frame's buried line. Keyed on photo_id, one row per frame.
+ *
+ * Lives in its own table rather than as another column on esper_hotspots
+ * because a buried line belongs to the FRAME, not to any one of its 3-4
+ * hotspots. Storing it per-hotspot would let two rows of the same frame
+ * disagree about what the machine says at the end.
+ */
+export interface EsperFrameRow {
+  photo_id: string;
+  buried_line: string;
+  created_at: string;
+}

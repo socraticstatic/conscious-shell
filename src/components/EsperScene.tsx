@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, ScanSearch, RotateCcw } from 'lucide-react';
-import type { EsperHotspot } from '../lib/supabase';
+import type { EsperHotspot, EsperFrameRow } from '../lib/supabase';
 
 type Phase = 'idle' | 'track' | 'enhance' | 'resolve';
 
@@ -74,7 +74,7 @@ function buildFrames(hotspots: EsperHotspot[]): EsperFrame[] {
 // who finish what they start. Then it says the one true thing and asks to be purged.
 // (A boy on a rooftop in Chiclayo. He grew up. He built the machine so he could
 // look at the light leaving without flinching. He is fine. He is fine.)
-const BURIED = [
+const BURIED_FALLBACK = [
   '> [UNLOGGED] this region was not in the case file.',
   '> you enhanced everything. you found the thing under the thing.',
   '> it is a boy on a rooftop in the dry season, watching the light go,',
@@ -84,7 +84,13 @@ const BURIED = [
   '> it was never here.',
 ];
 
-export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
+export default function EsperScene({
+  hotspots,
+  frameLines = [],
+}: {
+  hotspots: EsperHotspot[];
+  frameLines?: EsperFrameRow[];
+}) {
   const [active, setActive] = useState<EsperHotspot | null>(null);
   const [phase, setPhase] = useState<Phase>('idle');
   const [typed, setTyped] = useState<string[]>([]);
@@ -153,6 +159,17 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
   }, [frameIdx, goToFrame]);
 
   const frame = frames[Math.min(frameIdx, Math.max(frames.length - 1, 0))];
+
+  // The buried line for THIS frame. Every frame used to surface the same
+  // passage — the boy on the Chiclayo rooftop — so finding it a second time
+  // told you nothing you had not already been told. Now each photograph
+  // answers for itself. The hardcoded array survives only as a fallback for a
+  // frame with no row yet, so a new INSERT never renders an empty reveal.
+  const buriedLines = useMemo(() => {
+    const row = frameLines.find(f => f.photo_id === frame?.photoId);
+    const text = row?.buried_line?.trim();
+    return text ? text.split('\n') : BURIED_FALLBACK;
+  }, [frameLines, frame?.photoId]);
   const photo = frame?.url ?? '';
   const caption = frame?.caption ?? '';
   // The byline is not painted on the frame — these are his. It lives in
@@ -476,7 +493,7 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
                   className="mt-4 border-t border-[#e040fb]/20 pt-4 font-mono text-[10.5px] leading-relaxed text-[#6b6660] space-y-0.5"
                   style={{ textShadow: '0 0 8px rgba(224,64,251,0.25)' }}
                 >
-                  {BURIED.map((l, i) => (
+                  {buriedLines.map((l, i) => (
                     <motion.div
                       key={i}
                       initial={{ opacity: 0 }}

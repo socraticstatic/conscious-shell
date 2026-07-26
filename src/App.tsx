@@ -39,6 +39,7 @@ import type {
   LinkedInRecommendation,
   LinkedInArticle,
   Poem,
+  EsperFrameRow,
 } from './lib/supabase';
 
 // Heavy / below-the-fold / on-demand → split into separate chunks and
@@ -111,6 +112,7 @@ export default function App() {
     haiku: Haiku[];
     noir: Noir[];
     esper: EsperHotspot[];
+    esperFrames: EsperFrameRow[];
     skyline: SkylineSign[];
     designRounds: DesignRound[];
     dossier: WebDossierFact[];
@@ -248,7 +250,7 @@ export default function App() {
           <VKInterview recommendations={data?.recommendations ?? []} />
           <LiveSites />
           <Certifications certs={data?.certifications ?? []} />
-          <EsperScene hotspots={data?.esper ?? []} />
+          <EsperScene hotspots={data?.esper ?? []} frameLines={data?.esperFrames ?? []} />
           <Manifesto articles={data?.articles ?? []} />
           <BaselineGate>
             <BaselineUnlocked />
