@@ -9,10 +9,12 @@ type Phase = 'idle' | 'track' | 'enhance' | 'resolve';
 // the same curve. Two machines, one hand on the dial.
 const ESPER_EASE = [0.22, 1, 0.36, 1] as const;
 
-// The frames. Every one is Micah's own (Unsplash @greyharbor7 — his account), so
-// there is no borrowed byline anywhere on this section. Night, glass, a road, two
-// empty chairs, a flower, a filament. `pos` is object-position for the portrait
-// frames the 16:10 crop would otherwise behead.
+// The frames. Every one is Micah's own photograph, published on Unsplash as
+// @micahboswell. A 2026-07-06 pass asserted this handle was fictional and
+// substituted @greyharbor7; that was wrong. Corroborated by his author bio in
+// the vault and by supabase/migrations/20260422102044_create_web_dossier.sql.
+// `pos` is object-position for the portrait frames the 16:10 crop would
+// otherwise behead.
 const PHOTOS: { id: string; caption: string; pos?: string }[] = [
   { id: 'photo-1666554757112-91093a627335', caption: 'case file #2049 · a close-up of a light' },
   { id: 'photo-1601743240194-f45724587958', caption: 'case file #2049 · blue light streaks' },

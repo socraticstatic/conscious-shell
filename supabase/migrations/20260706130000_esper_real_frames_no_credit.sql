@@ -1,5 +1,14 @@
 /*
-  # Esper — his own frames, no borrowed byline
+  # Esper — his own frames
+
+  CORRECTION, 2026-07-25: the paragraph that follows called "@micahboswell" a
+  fictional credit and named "@greyharbor7" instead. Both claims were wrong.
+  @micahboswell is his real Unsplash handle — 104 photographs, profile linking
+  back to conscious-shell.com. See 20260725120000_esper_correct_photo_credit.sql,
+  which restores the credit on the rows this file blanked. The header is left
+  standing rather than quietly rewritten, because the mistake is the record.
+
+  ---- as written, 2026-07-06 ----
 
   The previous pass added three frames that were NOT Micah's photography, under a
   fictional "@micahboswell" credit. This corrects that: removes those three stock
