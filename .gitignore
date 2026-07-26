@@ -37,3 +37,5 @@ pnpm-workspace.yaml
 
 # Claude Code per-session state (worktrees, transcripts)
 .claude/
+
+docs/tokens/snapshots/current/

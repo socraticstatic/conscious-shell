@@ -11,7 +11,9 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
     "test": "vitest run",
-    "audit:tokens": "node scripts/token-audit.mjs"
+    "audit:tokens": "node scripts/token-audit.mjs",
+    "snapshot:styles": "node scripts/style-snapshot.mjs docs/tokens/snapshots/baseline.json",
+    "gate:styles": "node scripts/style-gate.mjs"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -46,6 +48,7 @@
     "eslint-plugin-react-refresh": "^0.4.11",
     "globals": "^15.9.0",
     "postcss": "^8.4.35",
+    "puppeteer-core": "^25.3.0",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.3.0",
