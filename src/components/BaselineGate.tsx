@@ -106,7 +106,7 @@ export default function BaselineGate({ children }: { children: React.ReactNode }
             constant k. <span className="text-[#ff006e]">prove it.</span>
           </h2>
           <p className="mt-4 text-[#6b6660] text-sm max-w-lg mx-auto leading-relaxed">
-            this section is locked. to proceed, you must know who built this.
+            this section is locked. every answer is on this page or in the film.
             answer the call. stay within baseline.
           </p>
         </div>
