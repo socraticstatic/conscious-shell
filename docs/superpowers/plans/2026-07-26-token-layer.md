@@ -1000,7 +1000,7 @@ In `src/index.css`, inside the existing `:root` block, **after** the `--void-5` 
   --fg-dim: 122 110 98;
   --fg-ghost: 107 102 96;
   --accent: 224 64 251;
-  --accent-hot: 255 45 120;
+  --accent-hot: 255 0 110;
   --signal: 0 212 255;
   --signal-hot: 79 195 247;
   --alert: 255 59 59;
@@ -1080,19 +1080,26 @@ Then delete the probe element.
 
 Run: `pnpm gate:styles`
 
-Expected, if Task 3 Step 1 resolved the page background as option 1 or 2: **exactly one kind of diff**, `background-color` on `html` and `body` (option 1) or on the App wrapper div (option 2), across all twelve scenarios. Nothing else.
+**Expected: exactly 60 diffs, on exactly 5 element paths, and nothing else.** These numbers were measured against the committed baseline, so treat any deviation as a bug rather than as noise.
 
-Verify that is all it is, then re-capture the baseline so later tasks compare against the unified value:
+Per scenario, across all 12 scenarios:
+
+| Elements | Property | From | To | Why |
+|---|---|---|---|---|
+| `html`, `body` (2) | `background-color` | `rgb(8, 6, 10)` | `rgb(7, 7, 10)` | The ruled `#08060a` retirement. `--bg` now carries the token value. |
+| `body`, `body>div:nth-child(1)`, `body>script:nth-child(2)` (3) | `color` | `rgb(239, 230, 212)` | `rgb(232, 228, 220)` | `:root` declared `--fg: #efe6d4`, which has 3 uses. The token value is `#e8e4dc`, which has 62. Blast radius stays tiny because `App.tsx` re-declares `text-[#e8e4dc]` on its own wrapper, so everything inside `#root` already computed to the token value. |
+
+That is 2 × 12 = 24 background diffs plus 3 × 12 = 36 colour diffs.
+
+Verify the report matches, then re-baseline and confirm:
 
 ```bash
 pnpm snapshot:styles
 pnpm gate:styles   # must now be clean
-git add docs/tokens/snapshots/baseline.json
+git add docs/tokens/snapshots/baseline.json.gz
 ```
 
-Expected, if Task 3 Step 1 resolved it as option 3 (seventeenth token): `style gate: clean` immediately, with no re-capture.
-
-Either way, **any diff beyond the one you predicted means Step 2 broke an existing `var()` consumer.** Do not re-capture a baseline to make an unexplained diff go away. That turns the gate into decoration for every task that follows.
+**Any diff outside those five paths means Step 2 broke an existing `var()` consumer.** Do not re-baseline to make an unexplained diff go away. That turns the gate into decoration for every task after this one.
 
 - [ ] **Step 6: Typecheck, lint, build**
 
