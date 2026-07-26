@@ -723,7 +723,7 @@ Create `tests/tokens.test.ts`:
 
 ```ts
 import { describe, it, expect } from 'vitest';
-import { TOKENS, HEX_TO_ROLE, channelsToHex } from '../src/lib/tokens';
+import { TOKENS, HEX_TO_ROLE, COLLAPSED_HEX, CODEMOD_MAP, channelsToHex } from '../src/lib/tokens';
 
 describe('tokens', () => {
   it('declares every token as three space-separated channels', () => {
@@ -756,6 +756,27 @@ describe('tokens', () => {
     for (const hex of ['#e040fb', '#00d4ff', '#6b6660', '#1f1c17', '#ff006e']) {
       expect(HEX_TO_ROLE[hex], `${hex} must be mapped`).toBeDefined();
     }
+  });
+
+  it('keeps collapsed hexes out of the exact map, so the round-trip stays honest', () => {
+    for (const hex of Object.keys(COLLAPSED_HEX)) {
+      expect(HEX_TO_ROLE[hex], `${hex} is a collapse, not an exact mapping`).toBeUndefined();
+    }
+  });
+
+  it('collapses to a value that is genuinely different, and documents why', () => {
+    for (const [hex, { role, why, sites }] of Object.entries(COLLAPSED_HEX)) {
+      expect(channelsToHex(TOKENS[role]), `${hex} collapse is a no-op, so it belongs in HEX_TO_ROLE`).not.toBe(hex);
+      expect(why.length, `${hex} needs a real justification`).toBeGreaterThan(40);
+      expect(sites).toBeGreaterThan(0);
+    }
+  });
+
+  it('gives the codemod both the exact map and the collapses', () => {
+    expect(CODEMOD_MAP['#6b6660']).toBe('fg-dim');
+    expect(CODEMOD_MAP['#7a6e62']).toBe('fg-dim');
+    expect(CODEMOD_MAP['#08060a']).toBe('bg');
+    expect(CODEMOD_MAP['#07070a']).toBe('bg');
   });
 });
 ```
@@ -801,8 +822,8 @@ export const TOKENS: Record<TokenName, string> = {
   fg: '232 228 220',       // #e8e4dc
   'fg-warm': '201 184 166', // #c9b8a6
   'fg-muted': '168 162 158', // #a8a29e
-  'fg-dim': '122 110 98',  // #7a6e62
-  'fg-ghost': '107 102 96', // #6b6660
+  'fg-dim': '107 102 96',  // #6b6660, absorbs #7a6e62 per the step 1 ruling
+  'fg-ghost': '74 69 62',  // #4a453e
   accent: '224 64 251',    // #e040fb
   'accent-hot': '255 45 120', // #ff2d78
   signal: '0 212 255',     // #00d4ff
@@ -820,14 +841,47 @@ export const HEX_TO_ROLE: Record<string, TokenName> = {
   '#e8e4dc': 'fg',
   '#c9b8a6': 'fg-warm',
   '#a8a29e': 'fg-muted',
-  '#7a6e62': 'fg-dim',
-  '#6b6660': 'fg-ghost',
+  '#6b6660': 'fg-dim',
+  '#4a453e': 'fg-ghost',
   '#e040fb': 'accent',
   '#ff2d78': 'accent-hot',
   '#00d4ff': 'signal',
   '#4fc3f7': 'signal-hot',
   '#ff3b3b': 'alert',
   '#7c3aed': 'ember',
+};
+
+/**
+ * Deliberate collapses, ruled on by Micah in task 3 step 1.
+ *
+ * These hexes do NOT round-trip: each is being retired into a token whose
+ * value differs slightly, so the sites using them change colour by a visible-
+ * on-paper, invisible-in-practice amount. Kept separate from HEX_TO_ROLE so
+ * the round-trip test stays a real assertion instead of being weakened to
+ * accommodate them.
+ *
+ * Each entry costs exactly one intentional wave of gate diffs, at the phase
+ * where the sites using it are rewritten. Expected diff counts are noted.
+ */
+export const COLLAPSED_HEX: Record<string, { role: TokenName; sites: number; why: string }> = {
+  '#7a6e62': {
+    role: 'fg-dim',
+    sites: 19,
+    why: 'Same job as #6b6660 (small uppercase tracked labels) at 44% vs 40% luminance. #6b6660 has 132 uses to its 19. Was the value :root called --muted, which the components ignored.',
+  },
+  '#08060a': {
+    role: 'bg',
+    sites: 2,
+    why: 'Vestigial page background. #07070a is the de facto value with 13 uses including the App wrapper. This one survived only in the --bg declaration itself and AgentBattle.tsx:197.',
+  },
+};
+
+/** What the codemod actually consults. Exact matches plus ruled collapses. */
+export const CODEMOD_MAP: Record<string, TokenName> = {
+  ...HEX_TO_ROLE,
+  ...Object.fromEntries(
+    Object.entries(COLLAPSED_HEX).map(([hex, { role }]) => [hex, role]),
+  ),
 };
 
 export const RGBA_TO_ROLE: Record<string, TokenName> = Object.fromEntries(
@@ -878,7 +932,7 @@ Note: `#4fc3f7`, `#ff2d78` and `#7c3aed` appear in `:root` today but barely in c
 - [ ] **Step 5: Run the test and confirm it passes**
 
 Run: `pnpm test`
-Expected: PASS, 18 tests total.
+Expected: PASS, 22 tests total (8 extractor + 5 style-diff + 9 tokens).
 
 - [ ] **Step 6: Verify every high-traffic audit value is mapped**
 
@@ -1063,14 +1117,16 @@ Phase C. 901 sites, entirely map-driven.
 
 **Files:**
 - Create: `scripts/lib/codemod.mjs`
+- Create: `scripts/lib/load-ts.mjs`
 - Create: `scripts/token-codemod.mjs`
 - Create: `tests/codemod.test.mjs`
 - Modify: every file under `src/` containing an arbitrary colour class
 - Modify: `package.json` (add `codemod:tokens`)
 
 **Interfaces:**
-- Consumes: `HEX_TO_ROLE` from Task 3.
+- Consumes: `CODEMOD_MAP` from Task 3 (the exact map plus the ruled collapses).
 - Produces: `applyCodemod(source: string, hexToRole: Record<string,string>): { output: string, unmapped: Array<{ value: string, line: number }> }`.
+- Produces: `loadTsModule(relPath: string): Promise<Module>`.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -1179,7 +1235,44 @@ export function applyCodemod(source, hexToRole) {
 Run: `pnpm test`
 Expected: PASS, 26 tests total.
 
-- [ ] **Step 5: Write the runner**
+- [ ] **Step 5a: Extract the TypeScript loader**
+
+Create `scripts/lib/load-ts.mjs`. This is lifted from `scripts/prerender.mjs:90`, which already does exactly this to keep prerendered slugs from drifting from the app's own `slug.ts`. `esbuild` is already a devDependency.
+
+```js
+// Transpile-and-import a TypeScript module from a plain node script.
+//
+// Node cannot import .ts directly, and hand-parsing TypeScript with regex is
+// how map-drift bugs get in. scripts/prerender.mjs has carried a private copy
+// of this for the same reason; this is the shared version.
+
+import { mkdirSync, rmSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { build as esbuild } from 'esbuild';
+
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+
+export async function loadTsModule(relPath) {
+  const tmp = join(ROOT, 'node_modules', '.cache', `loadts-${relPath.replace(/\W+/g, '-')}.mjs`);
+  mkdirSync(dirname(tmp), { recursive: true });
+  await esbuild({
+    entryPoints: [join(ROOT, relPath)],
+    outfile: tmp,
+    format: 'esm',
+    platform: 'node',
+    bundle: false,
+    logLevel: 'silent',
+  });
+  const mod = await import(pathToFileURL(tmp).href + '?t=' + Date.now());
+  rmSync(tmp, { force: true });
+  return mod;
+}
+```
+
+Leave `scripts/prerender.mjs` alone. Its copy is load-bearing for SEO and consolidating it is not in this task's scope; the duplication is recorded in the ledger for a later cleanup.
+
+- [ ] **Step 5b: Write the runner**
 
 Create `scripts/token-codemod.mjs`:
 
@@ -1197,21 +1290,19 @@ import { readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { applyCodemod } from './lib/codemod.mjs';
+import { loadTsModule } from './lib/load-ts.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DRY = process.argv.includes('--dry');
 const EXTS = ['.ts', '.tsx'];
 
-// tokens.ts is TypeScript, so read the map out of its source text rather
-// than importing it. Keeps this script dependency-free.
-const tokensSrc = readFileSync(join(ROOT, 'src', 'lib', 'tokens.ts'), 'utf8');
-const mapBlock = tokensSrc.split('HEX_TO_ROLE')[1].split('};')[0];
-const HEX_TO_ROLE = Object.fromEntries(
-  [...mapBlock.matchAll(/'(#[0-9a-f]{6})':\s*'([a-z-]+)'/g)].map((m) => [m[1], m[2]]),
-);
+// tokens.ts is TypeScript and CODEMOD_MAP is assembled with spreads, so it
+// cannot be scraped out of the source text. Transpile and import it, the same
+// way scripts/prerender.mjs loads src/lib/slug.ts. One source of truth.
+const { CODEMOD_MAP } = await loadTsModule('src/lib/tokens.ts');
 
-if (Object.keys(HEX_TO_ROLE).length < 10) {
-  console.error('parsed fewer than 10 map entries from tokens.ts; refusing to run');
+if (!CODEMOD_MAP || Object.keys(CODEMOD_MAP).length < 10) {
+  console.error('CODEMOD_MAP has fewer than 10 entries; refusing to run');
   process.exit(2);
 }
 
@@ -1229,7 +1320,7 @@ const allUnmapped = [];
 
 for (const file of walk(join(ROOT, 'src'))) {
   const source = readFileSync(file, 'utf8');
-  const { output, unmapped } = applyCodemod(source, HEX_TO_ROLE);
+  const { output, unmapped } = applyCodemod(source, CODEMOD_MAP);
   for (const u of unmapped) allUnmapped.push({ ...u, file: relative(ROOT, file) });
   if (output === source) continue;
   changedFiles += 1;
@@ -1278,9 +1369,20 @@ Expected: clean. TypeScript does not check class strings, so a failure here mean
 - [ ] **Step 9: Run the gate**
 
 Run: `pnpm gate:styles`
-Expected: `style gate: clean.`
 
-**This is the most important verification in the plan.** A non-empty diff means the map is wrong or the codemod mangled a class. Read the reported `from -> to` values: they name the exact token whose mapping is incorrect. Do not proceed with any diff outstanding.
+**This is the most important verification in the plan.** Read the result carefully rather than pattern-matching on "clean".
+
+Expected: **exactly one class of diff, and no other.** The `#7a6e62` collapse ruled on in Task 3 Step 1 lands here for its 16 Tailwind-class sites, so you should see roughly 16 elements whose `color` moves from `rgb(122, 110, 98)` to `rgb(107, 102, 96)`. Nothing else.
+
+Verify that is all it is, then re-baseline and confirm:
+
+```bash
+pnpm snapshot:styles
+pnpm gate:styles   # must now be clean
+git add docs/tokens/snapshots/baseline.json
+```
+
+**Any diff that is not that collapse means the map is wrong or the codemod mangled a class.** The reported `from -> to` values name the exact token at fault. Do not re-baseline to make an unexplained diff disappear, and do not proceed with one outstanding. The remaining 3 `#7a6e62` sites are bare hex and land in Task 7, not here.
 
 - [ ] **Step 10: Add the script and commit**
 
@@ -1430,7 +1532,12 @@ Three sites: the ErrorBoundary fallback at `src/App.tsx:199` and `:203`, and the
 - [ ] **Step 5: Run the gate after every two or three files**
 
 Run: `pnpm gate:styles`
-Expected: `style gate: clean.`
+
+Expected: clean, with two ruled exceptions that land in this task and nowhere else:
+- the last 3 `#7a6e62` sites (bare hex, the other 16 landed in Task 5)
+- `AgentBattle.tsx:197`, the last `#08060a` site (the other was the `--bg` declaration, handled in Task 4)
+
+Both are the Task 3 Step 1 collapses finishing. When you hit them, confirm the diff is only those elements, then re-baseline as in Task 5 Step 9. Anything else is a bug.
 
 - [ ] **Step 6: Verify the three.js scene by eye**
 
