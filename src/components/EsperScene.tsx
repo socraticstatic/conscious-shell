@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ScanSearch, RotateCcw } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ScanSearch, RotateCcw } from 'lucide-react';
 import type { EsperHotspot } from '../lib/supabase';
 
 type Phase = 'idle' | 'track' | 'enhance' | 'resolve';
@@ -94,19 +94,42 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
   // the buried line. Any out-of-order click resets the streak.
   const seqRef = useRef(0);
 
+  const sectionRef = useRef<HTMLElement | null>(null);
+
+  // framer-motion writes transforms in JS, so the @media (prefers-reduced-motion)
+  // block in index.css never reaches them — the 1.6s zoom ran at full length for
+  // people who had asked for less. Read at mount, like GhostUnits and MemoryDecay.
+  const reduced = useRef(
+    typeof window !== 'undefined' &&
+      !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches,
+  ).current;
+
   // Thirteen frames, from the table. Nine used to be hardcoded here.
   const frames = useMemo(() => buildFrames(hotspots), [hotspots]);
 
-  const [variantIdx, setVariantIdx] = useState(0);
+  const [frameIdx, setFrameIdx] = useState(0);
 
-  useEffect(() => {
-    if (frames.length < 2) return;
-    const interval = window.setInterval(() => {
-      setVariantIdx((i) => (i + 1) % frames.length);
-    }, 25000);
-    return () => clearInterval(interval);
-  }, [frames.length]);
+  const clearAll = useCallback(() => {
+    timers.current.forEach(clearTimeout);
+    timers.current = [];
+  }, []);
 
+  // Manual by default. The frame used to advance on a 25s setInterval and wipe
+  // all state with it, so a reader partway through a reveal lost the reveal.
+  // Reading is the point of this component; it does not get interrupted.
+  const goToFrame = useCallback(
+    (next: number) => {
+      setFrameIdx((prev) => {
+        const n = frames.length;
+        if (n === 0) return prev;
+        return ((next % n) + n) % n;
+      });
+    },
+    [frames.length],
+  );
+
+  // Frame change resets the terminal, exactly as before. The streak resets too:
+  // a streak is per-frame by definition.
   useEffect(() => {
     clearAll();
     setActive(null);
@@ -114,9 +137,22 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
     setTyped([]);
     setBuried(false);
     seqRef.current = 0;
-  }, [variantIdx]);
+  }, [frameIdx, clearAll]);
 
-  const frame = frames[Math.min(variantIdx, Math.max(frames.length - 1, 0))];
+  // Left/right step frames when focus is inside the section. Scoped to the
+  // section so it cannot hijack arrow keys for the rest of the page.
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); goToFrame(frameIdx - 1); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); goToFrame(frameIdx + 1); }
+    };
+    el.addEventListener('keydown', onKey);
+    return () => el.removeEventListener('keydown', onKey);
+  }, [frameIdx, goToFrame]);
+
+  const frame = frames[Math.min(frameIdx, Math.max(frames.length - 1, 0))];
   const photo = frame?.url ?? '';
   const caption = frame?.caption ?? '';
   // The byline is not painted on the frame — these are his. It lives in
@@ -124,15 +160,10 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
 
   // Already grouped and sorted by buildFrames; the second name is kept because
   // the streak logic reads specifically as "the nodes, in order".
-  const activeHotspots = frame?.hotspots ?? [];
+  const activeHotspots = useMemo(() => frame?.hotspots ?? [], [frame]);
   const orderedHotspots = activeHotspots;
 
-  const clearAll = () => {
-    timers.current.forEach(clearTimeout);
-    timers.current = [];
-  };
-
-  useEffect(() => () => clearAll(), []);
+  useEffect(() => () => clearAll(), [clearAll]);
 
   const reset = () => {
     clearAll();
@@ -200,12 +231,15 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
   if (!frames.length || !frame) return null;
 
   return (
-    <section id="esper" className="relative py-24 px-6 md:px-10 bg-[#05060a]">
+    <section ref={sectionRef} id="esper" className="relative py-24 px-6 md:px-10 bg-[#05060a]">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-end justify-between flex-wrap gap-4 mb-10">
           <div>
-            <div className="text-[10px] tracking-[0.5em] uppercase text-[#00d4ff]/80 mb-3">
-              — esper machine · photo enhancement unit
+            <div className="text-[10px] tracking-[0.5em] uppercase text-[#00d4ff]/80 mb-3 flex items-center gap-3 flex-wrap">
+              <span>— esper machine · photo enhancement unit</span>
+              <span className="text-[#e040fb] tabular-nums tracking-[0.3em]">
+                {String(frameIdx + 1).padStart(2, '0')}/{String(frames.length).padStart(2, '0')}
+              </span>
             </div>
             <h2 className="text-4xl md:text-5xl font-mono font-light tracking-tight">
               enhance. enhance. <span className="text-[#e040fb]">enhance.</span>
@@ -227,19 +261,36 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-6">
+          <div className="flex flex-col">
           <div className="relative border border-[#1f1c17] bg-black overflow-hidden aspect-[16/10] select-none">
             <motion.div
               className="absolute inset-0"
               animate={zoomStyle}
-              transition={{ duration: phase === 'resolve' ? 1.6 : 1.1, ease: ESPER_EASE }}
+              transition={{
+                duration: reduced ? 0 : phase === 'resolve' ? 1.6 : 1.1,
+                ease: ESPER_EASE,
+              }}
             >
-              <img
-                src={photo}
-                alt="esper frame"
-                className="w-full h-full object-cover"
-                style={{ objectPosition: frame?.pos ?? '50% 50%' }}
-                draggable={false}
-              />
+              {/* Cross-fade, not mode="wait". mode="wait" holds the incoming
+                  frame until the outgoing one has finished leaving, and a second
+                  step landing inside that window desynced it — the counter and
+                  caption read 06 while the photograph was still 05. Both images
+                  are absolute inset-0, so overlapping them dissolves correctly
+                  and every step lands on the frame it says it landed on. */}
+              <AnimatePresence>
+                <motion.img
+                  key={frame.photoId}
+                  src={photo}
+                  alt={caption || 'esper frame'}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  style={{ objectPosition: frame.pos ?? '50% 50%' }}
+                  draggable={false}
+                  initial={{ opacity: 0, filter: 'blur(6px)' }}
+                  animate={{ opacity: 1, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0, filter: 'blur(6px)' }}
+                  transition={{ duration: reduced ? 0 : 0.45, ease: ESPER_EASE }}
+                />
+              </AnimatePresence>
               <div
                 className="absolute inset-0 pointer-events-none"
                 style={{
@@ -321,6 +372,44 @@ export default function EsperScene({ hotspots }: { hotspots: EsperHotspot[] }) {
                 />
               )}
             </AnimatePresence>
+          </div>
+
+          {/* Manual only. Cyan is what you can reach, magenta is where you are. */}
+          <div className="mt-4 flex items-center justify-between gap-4 font-mono text-[10px] tracking-[0.3em] uppercase">
+            <button
+              type="button"
+              onClick={() => goToFrame(frameIdx - 1)}
+              aria-label="Previous frame"
+              className="flex items-center gap-2 px-3 py-2 border border-[#1f1c17] text-[#00d4ff] hover:border-[#00d4ff] transition-colors"
+            >
+              <ChevronLeft size={14} /> prev
+            </button>
+
+            <div className="flex items-center gap-2 flex-wrap justify-center" role="tablist" aria-label="Esper frames">
+              {frames.map((f, i) => (
+                <button
+                  key={f.photoId}
+                  type="button"
+                  role="tab"
+                  aria-selected={i === frameIdx}
+                  aria-label={`Frame ${i + 1}: ${f.caption || f.photoId}`}
+                  onClick={() => goToFrame(i)}
+                  className={`h-1.5 transition-all ${
+                    i === frameIdx ? 'w-6 bg-[#e040fb]' : 'w-1.5 bg-[#4a453e] hover:bg-[#00d4ff]'
+                  }`}
+                />
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => goToFrame(frameIdx + 1)}
+              aria-label="Next frame"
+              className="flex items-center gap-2 px-3 py-2 border border-[#1f1c17] text-[#00d4ff] hover:border-[#00d4ff] transition-colors"
+            >
+              next <ChevronRight size={14} />
+            </button>
+          </div>
           </div>
 
           <div className="border border-[#1f1c17] bg-[#0a0a0d] p-5 flex flex-col min-h-[360px]">
