@@ -18,6 +18,14 @@
 - **Hex exemptions are exactly two:** `src/lib/tokens.ts`, and the `--void-1`…`--void-5` block in `src/index.css`. `src/lib/void.ts` is **not** exempt.
 - **Leave the prose alone.** `src/index.css` contains long comment blocks and never-matching selectors that are deliberate easter eggs. Do not tidy, reformat, or delete them.
 - **Never use em dashes** in any comment or commit message added by this work.
+- **Whenever `tailwind.config.js` changes, clear Vite's cache before trusting the dev server.** Found the hard way at the Task 4 to Task 5 boundary: a standalone `npx tailwindcss` build emitted every token utility correctly while the running dev server served none of them, and restarting the server did not fix it. `rm -rf node_modules/.vite`, then restart. Without this the gate reports on stale CSS, which means it reports a lie. Verify with:
+
+  ```bash
+  curl -s 'http://localhost:5185/src/index.css?direct' | grep -c 'border-accent'
+  ```
+
+  A zero there means the cache is stale, not that the config is wrong.
+- `pnpm lint` **already fails on `main`** with 20 errors and 28 warnings, all pre-existing and unrelated to this work. Do not treat a non-zero lint exit as caused by your task; compare against that baseline. This affects Task 9, whose "confirm it passes" step means "no NEW violations", not "zero violations".
 - Spec of record: `docs/superpowers/specs/2026-07-26-token-layer-design.md`.
 
 ## File Structure
@@ -1575,9 +1583,36 @@ Phase E. `override-mode` and `late-night` stop redeclaring hex.
 - Consumes: the sixteen `:root` tokens from Task 4.
 - Produces: nothing new.
 
+- [ ] **Step 0: Retire `--cyan` and `--pink`. This task owns that, and it is not optional.**
+
+Task 4 was required by the spec to delete both, and deliberately did not. The reason was sound and is worth understanding before you undo it.
+
+`.neon-cyan` reads `var(--cyan)` and `.neon-pink` reads `var(--pink)`. In the default theme those hold the same values as `--signal` and `--accent-hot`, so repointing looks free. It is not, because the two modifiers diverge:
+
+| | `--pink` | `--accent-hot` |
+|---|---|---|
+| default | `#ff006e` | `#ff006e` |
+| `body.override-mode` | `#ff9090` | `#ff6666` |
+| `html.late-night` | not overridden, stays `#ff006e` | `#a21caf` |
+
+So repointing `.neon-pink` at `--accent-hot` while the modifiers still carry independent values changes `.neon-pink`'s computed colour under both modifiers. Task 4 measured exactly that: 6 spurious diffs. It kept both variables alive in channel form rather than break its own no-op guarantee, and left the cleanup here.
+
+You are rewriting both modifier blocks in this task, which is what makes the cleanup possible. Do it in this order:
+
+1. Repoint `.neon-cyan` to `rgb(var(--signal))` and `.neon-pink` to `rgb(var(--accent-hot))`.
+2. Delete `--cyan` and `--pink` from `:root` and from both modifier blocks.
+3. In `body.override-mode`, the old `--pink: #ff9090` value disappears. Decide deliberately: either accept that `.neon-pink` now computes to `--accent-hot`'s override (`255 102 102`) under override-mode, which is a real one-time visual change on those elements, or keep the distinction by giving `.neon-pink` its own scoped rule inside the modifier block. **Pick one, state which in the commit message, and expect the gate to show that exact set of diffs and no others.**
+4. Same decision for `html.late-night`, where `--pink` was never overridden and `--accent-hot` becomes `162 28 175`.
+
+Count the affected elements first so you know what the gate should report before you run it. Do not discover the number from the gate.
+
+If you conclude the cleanup genuinely cannot be done here either, that is a finding to escalate, not to defer silently a second time. Two deferrals is how a stated constraint quietly becomes permanent.
+
+Also delete the two dead declarations `--bg-2: #140404` and `--line: #3a0f0f` inside `body.override-mode`. Nothing reads either one; verified by grepping for `var(--bg-2` and `var(--line`, zero hits.
+
 - [ ] **Step 1: Rewrite the override-mode block**
 
-Both modifiers stay Blade-Runner-scoped. Whether Future Primitive gets its own is a sub-project #2 question and is explicitly out of scope here.
+Both modifiers stay Blade-Runner-scoped. Whether Future Primitive gets its own is a sub-project #3 question and is explicitly out of scope here.
 
 ```css
 body.override-mode {
