@@ -2,15 +2,26 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldAlert, Unlock } from 'lucide-react';
 
-type Status = 'locked' | 'testing' | 'pass' | 'fail';
+// No 'fail' state: the gate reveals the answer and advances instead of
+// locking the reader out. See the third-miss branch in submit().
+type Status = 'locked' | 'testing' | 'pass';
 
+// Four prompts, and every answer is on the screen or in the film.
+//
+// The original six were: cells, pilot, tomoe river, hermes, helen, sail. One
+// film reference and five pieces of Micah's biography - his first fountain pen,
+// his paper, his agent, his assistant, his sailing project. No visitor could
+// pass, and the gate sits in front of the haiku, the trivia and the human
+// layer. A test nobody can pass is not a hard test, it is a locked door.
+//
+// These gate on attention instead: read the page, or know the film. The
+// answers are conscious_shell in the masthead, the Tyrell motto scrolling in
+// the footer, and two lines any Blade Runner viewer has by heart.
 const PROMPTS = [
   { call: 'cells.', response: 'cells', hint: 'within cells interlinked' },
-  { call: 'pen. what brand. first love.', response: 'pilot', hint: 'japanese. metropolitan.' },
-  { call: 'paper. what weight. holds the ink.', response: 'tomoe river', hint: '52gsm. ghosting.' },
-  { call: 'the agent. what name. yours.', response: 'hermes', hint: 'greek. messenger. grows.' },
-  { call: 'voice. her name. she speaks.', response: 'helen', hint: 'the sidecar. MPS. yours.' },
-  { call: 'boat. what moves you. wind.', response: 'sail', hint: 'gps. tidal. grib.' },
+  { call: 'the shell. what kind.', response: 'conscious', hint: 'top left of this page.' },
+  { call: 'more human than.', response: 'human', hint: 'the tyrell motto. it is scrolling along the bottom.' },
+  { call: 'what is lost. in rain.', response: 'tears', hint: 'all those moments.' },
 ];
 
 const SESSION_KEY = 'baseline-gate-passed';
@@ -24,6 +35,7 @@ export default function BaselineGate({ children }: { children: React.ReactNode }
   const [input, setInput] = useState('');
   const [shakes, setShakes] = useState(0);
   const [attempts, setAttempts] = useState(0);
+  const [revealed, setRevealed] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -54,13 +66,27 @@ export default function BaselineGate({ children }: { children: React.ReactNode }
       setAttempts((a) => a + 1);
       setShakes((s) => s + 1);
       if (attempts >= 2) {
-        setStatus('fail');
-        setTimeout(() => {
-          setStatus('locked');
-          setStep(0);
+        // Third miss: the machine concedes and moves on.
+        //
+        // This used to fail the whole test and restart from prompt one. Five of
+        // the six answers are Micah's own biography - his first pen, his paper,
+        // his agent, his assistant, his sailing project - so no visitor could
+        // ever have passed. The gate was not hard, it was shut, and it was shut
+        // in front of the haiku, the trivia and the human layer. Revealing costs
+        // the reader nothing they could have supplied themselves, and it keeps
+        // every prompt and the whole sequence intact.
+        setRevealed(correct);
+        window.setTimeout(() => {
+          setRevealed(null);
           setInput('');
           setAttempts(0);
-        }, 3000);
+          if (step === PROMPTS.length - 1) {
+            setStatus('pass');
+            sessionStorage.setItem(SESSION_KEY, '1');
+          } else {
+            setStep((v) => v + 1);
+          }
+        }, 2600);
       }
     }
   };
@@ -177,18 +203,24 @@ export default function BaselineGate({ children }: { children: React.ReactNode }
             </motion.div>
           )}
 
-          {status === 'fail' && (
+          {revealed && (
             <motion.div
-              key="fail"
-              initial={{ opacity: 0, scale: 0.95 }}
+              key="revealed"
+              initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="text-center py-12 border border-[#ff006e]/50 bg-[#1a0808]/60"
+              className="text-center py-10 border border-[#00d4ff]/40 bg-[#04121a]/60"
             >
-              <div className="text-4xl font-mono text-[#ff006e] mb-3" style={{ textShadow: '0 0 20px rgba(255,122,92,0.6)' }}>
-                BASELINE FAIL
+              <div className="text-[10px] tracking-[0.4em] uppercase text-[#6b6660] mb-3">
+                baseline drift · assisting
               </div>
-              <div className="text-[#6b6660] text-sm">
-                off-world detected. restarting sequence...
+              <div
+                className="text-3xl font-mono text-[#00d4ff]"
+                style={{ textShadow: '0 0 18px rgba(0,212,255,0.45)' }}
+              >
+                {revealed}
+              </div>
+              <div className="mt-3 text-[#6b6660] text-sm">
+                logged. continuing the sequence.
               </div>
             </motion.div>
           )}
