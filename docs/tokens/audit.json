@@ -1,0 +1,2611 @@
+{
+  "total": 1390,
+  "distinct": 224,
+  "entries": [
+    {
+      "value": "#e040fb",
+      "kind": "tw-class",
+      "count": 225,
+      "kinds": {
+        "tw-class": 150,
+        "hex": 54,
+        "tw-class-alpha": 21
+      },
+      "samples": [
+        "src/components/About.tsx:22:35",
+        "src/components/About.tsx:49:34",
+        "src/components/About.tsx:63:56"
+      ]
+    },
+    {
+      "value": "#00d4ff",
+      "kind": "hex",
+      "count": 140,
+      "kinds": {
+        "hex": 48,
+        "tw-class": 66,
+        "tw-class-alpha": 26
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:38:11",
+        "src/components/AgentBattle.tsx:55:28",
+        "src/components/AgentBattle.tsx:616:39"
+      ]
+    },
+    {
+      "value": "#6b6660",
+      "kind": "tw-class",
+      "count": 132,
+      "kinds": {
+        "tw-class": 103,
+        "hex": 29
+      },
+      "samples": [
+        "src/components/About.tsx:20:80",
+        "src/components/About.tsx:48:42",
+        "src/components/About.tsx:65:40"
+      ]
+    },
+    {
+      "value": "#1f1c17",
+      "kind": "tw-class",
+      "count": 122,
+      "kinds": {
+        "tw-class": 117,
+        "hex": 5
+      },
+      "samples": [
+        "src/components/About.tsx:8:74",
+        "src/components/About.tsx:18:62",
+        "src/components/About.tsx:20:53"
+      ]
+    },
+    {
+      "value": "#ff006e",
+      "kind": "hex",
+      "count": 87,
+      "kinds": {
+        "hex": 35,
+        "tw-class-alpha": 14,
+        "tw-class": 38
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:56:50",
+        "src/components/BaselineGate.tsx:102:69",
+        "src/components/BaselineGate.tsx:106:45"
+      ]
+    },
+    {
+      "value": "#4a453e",
+      "kind": "tw-class",
+      "count": 69,
+      "kinds": {
+        "tw-class": 69
+      },
+      "samples": [
+        "src/components/About.tsx:27:37",
+        "src/components/About.tsx:43:37",
+        "src/components/About.tsx:71:56"
+      ]
+    },
+    {
+      "value": "#e8e4dc",
+      "kind": "tw-class",
+      "count": 62,
+      "kinds": {
+        "tw-class": 57,
+        "tw-class-alpha": 3,
+        "hex": 2
+      },
+      "samples": [
+        "src/App.tsx:199:56",
+        "src/App.tsx:203:54",
+        "src/App.tsx:203:94"
+      ]
+    },
+    {
+      "value": "#a8a29e",
+      "kind": "tw-class",
+      "count": 48,
+      "kinds": {
+        "tw-class": 41,
+        "hex": 7
+      },
+      "samples": [
+        "src/components/About.tsx:39:63",
+        "src/components/CaseStudy.tsx:105:51",
+        "src/components/Certifications.tsx:110:54"
+      ]
+    },
+    {
+      "value": "#0b0a08",
+      "kind": "tw-class-alpha",
+      "count": 45,
+      "kinds": {
+        "tw-class-alpha": 19,
+        "tw-class": 21,
+        "hex": 5
+      },
+      "samples": [
+        "src/components/BaselineGate.tsx:142:51",
+        "src/components/BootOverlay.tsx:53:45",
+        "src/components/Certifications.tsx:62:53"
+      ]
+    },
+    {
+      "value": "#2a2620",
+      "kind": "tw-class",
+      "count": 24,
+      "kinds": {
+        "tw-class": 22,
+        "hex": 2
+      },
+      "samples": [
+        "src/components/BaselineGate.tsx:155:31",
+        "src/components/BaselineGate.tsx:186:68",
+        "src/components/BaselineGate.tsx:186:159"
+      ]
+    },
+    {
+      "value": "255,59,59",
+      "kind": "rgba",
+      "count": 22,
+      "kinds": {
+        "rgba": 22
+      },
+      "samples": [
+        "src/components/OverrideMode.tsx:62:54",
+        "src/components/SystemBreach.tsx:155:49",
+        "src/components/SystemBreach.tsx:155:72"
+      ]
+    },
+    {
+      "value": "#7a6e62",
+      "kind": "tw-class",
+      "count": 19,
+      "kinds": {
+        "tw-class": 16,
+        "hex": 3
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:436:66",
+        "src/components/AgentBattle.tsx:612:71",
+        "src/components/AgentBattle.tsx:636:72"
+      ]
+    },
+    {
+      "value": "0,0,0",
+      "kind": "rgba",
+      "count": 16,
+      "kinds": {
+        "rgba": 16
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:468:127",
+        "src/components/AgentBattle.tsx:468:149",
+        "src/components/AgentBattle.tsx:509:66"
+      ]
+    },
+    {
+      "value": "#c9b8a6",
+      "kind": "hex",
+      "count": 16,
+      "kinds": {
+        "hex": 13,
+        "tw-class": 3
+      },
+      "samples": [
+        "src/components/DeadDropConsole.tsx:117:21",
+        "src/components/DeadDropConsole.tsx:119:63",
+        "src/components/DeadDropConsole.tsx:167:95"
+      ]
+    },
+    {
+      "value": "#ff3b3b",
+      "kind": "hex",
+      "count": 16,
+      "kinds": {
+        "hex": 5,
+        "tw-class-alpha": 4,
+        "tw-class": 7
+      },
+      "samples": [
+        "src/components/DeadDropConsole.tsx:218:30",
+        "src/components/OverrideMode.tsx:79:85",
+        "src/components/OverrideMode.tsx:80:55"
+      ]
+    },
+    {
+      "value": "#07070a",
+      "kind": "tw-class",
+      "count": 13,
+      "kinds": {
+        "tw-class": 11,
+        "tw-class-alpha": 2
+      },
+      "samples": [
+        "src/App.tsx:199:41",
+        "src/App.tsx:217:46",
+        "src/components/CaseStudy.tsx:53:40"
+      ]
+    },
+    {
+      "value": "0,212,255",
+      "kind": "rgba",
+      "count": 9,
+      "kinds": {
+        "rgba": 9
+      },
+      "samples": [
+        "src/components/BaselineGate.tsx:218:47",
+        "src/components/EsperScene.tsx:395:47",
+        "src/components/GhostUnits.tsx:112:100"
+      ]
+    },
+    {
+      "value": "#1a1712",
+      "kind": "tw-class",
+      "count": 9,
+      "kinds": {
+        "tw-class": 9
+      },
+      "samples": [
+        "src/components/CommandPalette.tsx:126:27",
+        "src/components/Nav.tsx:91:114",
+        "src/components/Nav.tsx:91:134"
+      ]
+    },
+    {
+      "value": "224,64,251",
+      "kind": "rgba",
+      "count": 8,
+      "kinds": {
+        "rgba": 8
+      },
+      "samples": [
+        "src/components/EsperScene.tsx:353:54",
+        "src/components/EsperScene.tsx:395:103",
+        "src/components/EsperScene.tsx:494:48"
+      ]
+    },
+    {
+      "value": "255,122,92",
+      "kind": "rgba",
+      "count": 8,
+      "kinds": {
+        "rgba": 8
+      },
+      "samples": [
+        "src/components/LateNight.tsx:70:74",
+        "src/components/SelfDestruct.tsx:54:81",
+        "src/components/SelfDestruct.tsx:56:40"
+      ]
+    },
+    {
+      "value": "#5c544a",
+      "kind": "tw-class",
+      "count": 7,
+      "kinds": {
+        "tw-class": 7
+      },
+      "samples": [
+        "src/components/ArticleConstellation.tsx:96:50",
+        "src/components/ArticleConstellation.tsx:231:87",
+        "src/components/Nav.tsx:133:81"
+      ]
+    },
+    {
+      "value": "#7fd6b1",
+      "kind": "hex",
+      "count": 7,
+      "kinds": {
+        "hex": 6,
+        "tw-class": 1
+      },
+      "samples": [
+        "src/components/DeadDropConsole.tsx:201:51",
+        "src/components/DeadDropConsole.tsx:209:47",
+        "src/components/DeadDropConsole.tsx:218:63"
+      ]
+    },
+    {
+      "value": "#ffb3a1",
+      "kind": "tw-class",
+      "count": 7,
+      "kinds": {
+        "tw-class": 7
+      },
+      "samples": [
+        "src/components/OverrideMode.tsx:87:75",
+        "src/components/SystemBreach.tsx:180:91",
+        "src/components/SystemBreach.tsx:207:48"
+      ]
+    },
+    {
+      "value": "#4fc3f7",
+      "kind": "tw-class",
+      "count": 6,
+      "kinds": {
+        "tw-class": 3,
+        "hex": 3
+      },
+      "samples": [
+        "src/components/ArticleConstellation.tsx:93:50",
+        "src/components/ArticleConstellation.tsx:219:28",
+        "src/components/Manifesto.tsx:103:104"
+      ]
+    },
+    {
+      "value": "#0a0a0a",
+      "kind": "hex",
+      "count": 6,
+      "kinds": {
+        "hex": 6
+      },
+      "samples": [
+        "src/components/ConsoleHijack.tsx:4:72",
+        "src/components/ConsoleHijack.tsx:5:68",
+        "src/components/ConsoleHijack.tsx:6:52"
+      ]
+    },
+    {
+      "value": "255,0,110",
+      "kind": "rgba",
+      "count": 6,
+      "kinds": {
+        "rgba": 6
+      },
+      "samples": [
+        "src/index.css:83:49",
+        "src/index.css:152:68",
+        "src/index.css:153:69"
+      ]
+    },
+    {
+      "value": "#0a0908",
+      "kind": "tw-class",
+      "count": 5,
+      "kinds": {
+        "tw-class": 4,
+        "tw-class-alpha": 1
+      },
+      "samples": [
+        "src/components/CaseStudy.tsx:96:46",
+        "src/components/Nav.tsx:113:78",
+        "src/components/SessionHUD.tsx:65:160"
+      ]
+    },
+    {
+      "value": "#a78bfa",
+      "kind": "hex",
+      "count": 4,
+      "kinds": {
+        "hex": 4
+      },
+      "samples": [
+        "src/components/LiveSites.tsx:65:8",
+        "src/components/NoirSubtitles.tsx:9:10",
+        "src/components/WebDossier.tsx:11:44"
+      ]
+    },
+    {
+      "value": "#15130e",
+      "kind": "tw-class",
+      "count": 4,
+      "kinds": {
+        "tw-class": 4
+      },
+      "samples": [
+        "src/components/Nav.tsx:140:125",
+        "src/components/Nav.tsx:140:144",
+        "src/components/Nav.tsx:151:128"
+      ]
+    },
+    {
+      "value": "180,200,220",
+      "kind": "rgba",
+      "count": 4,
+      "kinds": {
+        "rgba": 4
+      },
+      "samples": [
+        "src/components/TearsInRain.tsx:102:53",
+        "src/components/TearsInRain.tsx:102:76",
+        "src/components/TearsInRain.tsx:102:101"
+      ]
+    },
+    {
+      "value": "143,184,200",
+      "kind": "rgba",
+      "count": 4,
+      "kinds": {
+        "rgba": 4
+      },
+      "samples": [
+        "src/index.css:201:6",
+        "src/index.css:202:6",
+        "src/index.css:203:6"
+      ]
+    },
+    {
+      "value": "180,140,220",
+      "kind": "rgba",
+      "count": 4,
+      "kinds": {
+        "rgba": 4
+      },
+      "samples": [
+        "src/index.css:216:6",
+        "src/index.css:217:6",
+        "src/index.css:218:6"
+      ]
+    },
+    {
+      "value": "#c9e8ef",
+      "kind": "hex",
+      "count": 3,
+      "kinds": {
+        "hex": 3
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:39:14",
+        "src/components/AgentBattle.tsx:55:39",
+        "src/lib/persona.ts:74:13"
+      ]
+    },
+    {
+      "value": "#ff3b6e",
+      "kind": "hex",
+      "count": 3,
+      "kinds": {
+        "hex": 3
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:54:50",
+        "src/components/AgentBattle.tsx:57:50",
+        "src/lib/persona.ts:46:13"
+      ]
+    },
+    {
+      "value": "255,255,255",
+      "kind": "rgba",
+      "count": 3,
+      "kinds": {
+        "rgba": 3
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:469:47",
+        "src/components/AgentBattle.tsx:469:132",
+        "src/components/EsperPanel.tsx:48:53"
+      ]
+    },
+    {
+      "value": "#0a0a0e",
+      "kind": "hex",
+      "count": 3,
+      "kinds": {
+        "hex": 1,
+        "tw-class": 1,
+        "tw-class-alpha": 1
+      },
+      "samples": [
+        "src/components/ArticleConstellation.tsx:201:28",
+        "src/components/TransmissionPanel.tsx:105:90",
+        "src/components/TransmissionPanel.tsx:119:75"
+      ]
+    },
+    {
+      "value": "#8a8279",
+      "kind": "tw-class",
+      "count": 3,
+      "kinds": {
+        "tw-class": 3
+      },
+      "samples": [
+        "src/components/BaselineGate.tsx:169:53",
+        "src/components/BaselineGate.tsx:235:39",
+        "src/components/Footer.tsx:15:76"
+      ]
+    },
+    {
+      "value": "255,108,72",
+      "kind": "rgba",
+      "count": 3,
+      "kinds": {
+        "rgba": 3
+      },
+      "samples": [
+        "src/components/BlackLitany.tsx:43:31",
+        "src/components/TearsInRain.tsx:95:133",
+        "src/components/TearsInRain.tsx:139:67"
+      ]
+    },
+    {
+      "value": "94,200,216",
+      "kind": "rgba",
+      "count": 3,
+      "kinds": {
+        "rgba": 3
+      },
+      "samples": [
+        "src/components/DeadDropConsole.tsx:350:122",
+        "src/components/OverrideMode.tsx:63:54",
+        "src/components/TearsInRain.tsx:95:55"
+      ]
+    },
+    {
+      "value": "#0f0d0a",
+      "kind": "tw-class",
+      "count": 3,
+      "kinds": {
+        "tw-class": 2,
+        "tw-class-alpha": 1
+      },
+      "samples": [
+        "src/components/HumanLayer.tsx:96:52",
+        "src/components/HumanLayer.tsx:153:126",
+        "src/components/Manifesto.tsx:97:102"
+      ]
+    },
+    {
+      "value": "#55504a",
+      "kind": "tw-class",
+      "count": 3,
+      "kinds": {
+        "tw-class": 3
+      },
+      "samples": [
+        "src/components/IntelligenceHUD.tsx:271:77",
+        "src/components/WebDossier.tsx:195:76",
+        "src/components/WebDossier.tsx:211:41"
+      ]
+    },
+    {
+      "value": "8,6,4",
+      "kind": "rgba",
+      "count": 3,
+      "kinds": {
+        "rgba": 3
+      },
+      "samples": [
+        "src/components/NoirSubtitles.tsx:103:54",
+        "src/components/NoirSubtitles.tsx:103:72",
+        "src/components/NoirSubtitles.tsx:103:94"
+      ]
+    },
+    {
+      "value": "#efe6d4",
+      "kind": "tw-class",
+      "count": 3,
+      "kinds": {
+        "tw-class": 2,
+        "hex": 1
+      },
+      "samples": [
+        "src/components/WebDossier.tsx:157:87",
+        "src/components/WebDossier.tsx:161:88",
+        "src/index.css:20:8"
+      ]
+    },
+    {
+      "value": "#05060a",
+      "kind": "hex",
+      "count": 2,
+      "kinds": {
+        "hex": 1,
+        "tw-class": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:54:6",
+        "src/components/EsperScene.tsx:259:83"
+      ]
+    },
+    {
+      "value": "#ffffff",
+      "kind": "hex",
+      "count": 2,
+      "kinds": {
+        "hex": 2
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:56:28",
+        "src/components/VisitorDossier.tsx:6:94"
+      ]
+    },
+    {
+      "value": "#5a0e14",
+      "kind": "hex",
+      "count": 2,
+      "kinds": {
+        "hex": 2
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:171:38",
+        "src/components/AgentBattle.tsx:196:28"
+      ]
+    },
+    {
+      "value": "#c14a5b",
+      "kind": "hex",
+      "count": 2,
+      "kinds": {
+        "hex": 1,
+        "tw-class": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:180:11",
+        "src/components/AgentBattle.tsx:616:94"
+      ]
+    },
+    {
+      "value": "#08060a",
+      "kind": "hex",
+      "count": 2,
+      "kinds": {
+        "hex": 2
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:197:6",
+        "src/index.css:18:8"
+      ]
+    },
+    {
+      "value": "#050304",
+      "kind": "hex",
+      "count": 2,
+      "kinds": {
+        "hex": 1,
+        "tw-class-alpha": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:198:6",
+        "src/components/BlackLitany.tsx:35:108"
+      ]
+    },
+    {
+      "value": "#7aff8c",
+      "kind": "hex",
+      "count": 2,
+      "kinds": {
+        "hex": 2
+      },
+      "samples": [
+        "src/components/Certifications.tsx:23:47",
+        "src/components/VisitorDossier.tsx:6:53"
+      ]
+    },
+    {
+      "value": "#141210",
+      "kind": "tw-class",
+      "count": 2,
+      "kinds": {
+        "tw-class": 2
+      },
+      "samples": [
+        "src/components/CommandPalette.tsx:127:67",
+        "src/components/IndexList.tsx:74:122"
+      ]
+    },
+    {
+      "value": "#ff8c1a",
+      "kind": "hex",
+      "count": 2,
+      "kinds": {
+        "hex": 1,
+        "tw-class": 1
+      },
+      "samples": [
+        "src/components/Hero.tsx:289:12",
+        "src/components/Hero.tsx:466:37"
+      ]
+    },
+    {
+      "value": "#c9a030",
+      "kind": "tw-class-alpha",
+      "count": 2,
+      "kinds": {
+        "tw-class-alpha": 1,
+        "tw-class": 1
+      },
+      "samples": [
+        "src/components/LiveSites.tsx:143:86",
+        "src/components/LiveSites.tsx:144:73"
+      ]
+    },
+    {
+      "value": "7,7,10",
+      "kind": "rgba",
+      "count": 2,
+      "kinds": {
+        "rgba": 2
+      },
+      "samples": [
+        "src/components/MemoryDecay.tsx:118:34",
+        "src/components/TimeMachine.tsx:205:118"
+      ]
+    },
+    {
+      "value": "11,10,8",
+      "kind": "rgba",
+      "count": 2,
+      "kinds": {
+        "rgba": 2
+      },
+      "samples": [
+        "src/components/NarratorOverlay.tsx:105:49",
+        "src/components/NarratorOverlay.tsx:133:34"
+      ]
+    },
+    {
+      "value": "#3a3530",
+      "kind": "tw-class",
+      "count": 2,
+      "kinds": {
+        "tw-class": 2
+      },
+      "samples": [
+        "src/components/Nav.tsx:164:33",
+        "src/components/WebDossier.tsx:151:46"
+      ]
+    },
+    {
+      "value": "#b8860b",
+      "kind": "hex",
+      "count": 2,
+      "kinds": {
+        "hex": 2
+      },
+      "samples": [
+        "src/components/OrigamiUnicorns.tsx:103:24",
+        "src/components/OrigamiUnicorns.tsx:110:24"
+      ]
+    },
+    {
+      "value": "#121008",
+      "kind": "tw-class",
+      "count": 2,
+      "kinds": {
+        "tw-class": 2
+      },
+      "samples": [
+        "src/components/Services.tsx:19:119",
+        "src/components/TimeMachine.tsx:241:50"
+      ]
+    },
+    {
+      "value": "232,228,220",
+      "kind": "rgba",
+      "count": 2,
+      "kinds": {
+        "rgba": 2
+      },
+      "samples": [
+        "src/components/SoulLayer.tsx:91:24",
+        "src/components/TearsInRain.tsx:140:35"
+      ]
+    },
+    {
+      "value": "231,183,102",
+      "kind": "rgba",
+      "count": 2,
+      "kinds": {
+        "rgba": 2
+      },
+      "samples": [
+        "src/components/SoulLayer.tsx:92:38",
+        "src/components/TimeMachine.tsx:205:57"
+      ]
+    },
+    {
+      "value": "#3a342c",
+      "kind": "tw-class",
+      "count": 2,
+      "kinds": {
+        "tw-class": 1,
+        "hex": 1
+      },
+      "samples": [
+        "src/components/TimeMachine.tsx:152:59",
+        "src/index.css:119:47"
+      ]
+    },
+    {
+      "value": "#0f0e0a",
+      "kind": "tw-class",
+      "count": 2,
+      "kinds": {
+        "tw-class": 2
+      },
+      "samples": [
+        "src/components/VKInterview.tsx:235:228",
+        "src/components/VKInterview.tsx:235:248"
+      ]
+    },
+    {
+      "value": "#0f0e0b",
+      "kind": "tw-class",
+      "count": 2,
+      "kinds": {
+        "tw-class": 1,
+        "tw-class-alpha": 1
+      },
+      "samples": [
+        "src/components/Work.tsx:141:20",
+        "src/components/Work.tsx:141:43"
+      ]
+    },
+    {
+      "value": "124,58,237",
+      "kind": "rgba",
+      "count": 2,
+      "kinds": {
+        "rgba": 2
+      },
+      "samples": [
+        "src/index.css:84:47",
+        "src/index.css:375:48"
+      ]
+    },
+    {
+      "value": "#ffd6d6",
+      "kind": "hex",
+      "count": 2,
+      "kinds": {
+        "hex": 2
+      },
+      "samples": [
+        "src/index.css:256:8",
+        "src/index.css:307:9"
+      ]
+    },
+    {
+      "value": "#0d1218",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:54:17"
+      ]
+    },
+    {
+      "value": "#3aa7b8",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:54:28"
+      ]
+    },
+    {
+      "value": "#0a0a0f",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:55:6"
+      ]
+    },
+    {
+      "value": "#1a1f28",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:55:17"
+      ]
+    },
+    {
+      "value": "#ff9a3c",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:55:50"
+      ]
+    },
+    {
+      "value": "#04070a",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:56:6"
+      ]
+    },
+    {
+      "value": "#121a22",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:56:17"
+      ]
+    },
+    {
+      "value": "#7ed7e4",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:56:39"
+      ]
+    },
+    {
+      "value": "#000000",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:57:6"
+      ]
+    },
+    {
+      "value": "#191d24",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:57:17"
+      ]
+    },
+    {
+      "value": "#4af1d1",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:57:28"
+      ]
+    },
+    {
+      "value": "#ffe06a",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:57:39"
+      ]
+    },
+    {
+      "value": "#010102",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:58:6"
+      ]
+    },
+    {
+      "value": "#0c1016",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:58:17"
+      ]
+    },
+    {
+      "value": "#a9d7e1",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:58:28"
+      ]
+    },
+    {
+      "value": "#ffd89a",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:58:39"
+      ]
+    },
+    {
+      "value": "#2c2a26",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:58:50"
+      ]
+    },
+    {
+      "value": "#080c12",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:59:6"
+      ]
+    },
+    {
+      "value": "#141e2a",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:59:17"
+      ]
+    },
+    {
+      "value": "#00e5ff",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:59:28"
+      ]
+    },
+    {
+      "value": "#b0bec5",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:59:39"
+      ]
+    },
+    {
+      "value": "#ff1744",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:59:50"
+      ]
+    },
+    {
+      "value": "#020408",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:60:6"
+      ]
+    },
+    {
+      "value": "#0a1822",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:60:17"
+      ]
+    },
+    {
+      "value": "#76ff03",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:60:28"
+      ]
+    },
+    {
+      "value": "#cfd8dc",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:60:39"
+      ]
+    },
+    {
+      "value": "#ff6e40",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:60:50"
+      ]
+    },
+    {
+      "value": "#0c0c14",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:61:6"
+      ]
+    },
+    {
+      "value": "#1a1a2e",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:61:17"
+      ]
+    },
+    {
+      "value": "#80deea",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:61:39"
+      ]
+    },
+    {
+      "value": "#ffd600",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:61:50"
+      ]
+    },
+    {
+      "value": "#000a0f",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:62:6"
+      ]
+    },
+    {
+      "value": "#002233",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:62:17"
+      ]
+    },
+    {
+      "value": "#00b8d4",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:62:28"
+      ]
+    },
+    {
+      "value": "#e0e0e0",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:62:39"
+      ]
+    },
+    {
+      "value": "#ff3d00",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:62:50"
+      ]
+    },
+    {
+      "value": "#06060e",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:63:6"
+      ]
+    },
+    {
+      "value": "#12121f",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:63:17"
+      ]
+    },
+    {
+      "value": "#69f0ae",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:63:28"
+      ]
+    },
+    {
+      "value": "#90a4ae",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:63:39"
+      ]
+    },
+    {
+      "value": "#ff5252",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:63:50"
+      ]
+    },
+    {
+      "value": "#0a0008",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:64:6"
+      ]
+    },
+    {
+      "value": "#1a0f22",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:64:17"
+      ]
+    },
+    {
+      "value": "#b388ff",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:64:28"
+      ]
+    },
+    {
+      "value": "#e8eaf6",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:64:39"
+      ]
+    },
+    {
+      "value": "#ff6d00",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:64:50"
+      ]
+    },
+    {
+      "value": "#040608",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:65:6"
+      ]
+    },
+    {
+      "value": "#0d1a20",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:65:17"
+      ]
+    },
+    {
+      "value": "#18ffff",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:65:28"
+      ]
+    },
+    {
+      "value": "#fafafa",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:65:39"
+      ]
+    },
+    {
+      "value": "#d50000",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:65:50"
+      ]
+    },
+    {
+      "value": "#efd6c8",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:181:14"
+      ]
+    },
+    {
+      "value": "#0a0807",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:196:6"
+      ]
+    },
+    {
+      "value": "#1a0f0c",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:196:17"
+      ]
+    },
+    {
+      "value": "#e7d6b8",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:196:39"
+      ]
+    },
+    {
+      "value": "#8a6a3b",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:196:50"
+      ]
+    },
+    {
+      "value": "#2a0d15",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:197:17"
+      ]
+    },
+    {
+      "value": "#8a1a2b",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:197:28"
+      ]
+    },
+    {
+      "value": "#c9a86a",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:197:39"
+      ]
+    },
+    {
+      "value": "#efe4cd",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:197:50"
+      ]
+    },
+    {
+      "value": "#1c1412",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:198:17"
+      ]
+    },
+    {
+      "value": "#4a0a18",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:198:28"
+      ]
+    },
+    {
+      "value": "#c8a673",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:198:39"
+      ]
+    },
+    {
+      "value": "#efe0c6",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:198:50"
+      ]
+    },
+    {
+      "value": "#0c0907",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:199:6"
+      ]
+    },
+    {
+      "value": "#2a1a12",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:199:17"
+      ]
+    },
+    {
+      "value": "#6a0e1c",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:199:28"
+      ]
+    },
+    {
+      "value": "#d9b87a",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:199:39"
+      ]
+    },
+    {
+      "value": "#f0e3ca",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:199:50"
+      ]
+    },
+    {
+      "value": "#020202",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:200:6"
+      ]
+    },
+    {
+      "value": "#130c0a",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:200:17"
+      ]
+    },
+    {
+      "value": "#7a2030",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:200:28"
+      ]
+    },
+    {
+      "value": "#b08a4a",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:200:39"
+      ]
+    },
+    {
+      "value": "#f5e8d0",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:200:50"
+      ]
+    },
+    {
+      "value": "#0a0506",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:201:6"
+      ]
+    },
+    {
+      "value": "#1c0e0e",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:201:17"
+      ]
+    },
+    {
+      "value": "#3d0c1c",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:201:28"
+      ]
+    },
+    {
+      "value": "#d4a373",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:201:39"
+      ]
+    },
+    {
+      "value": "#f2e9db",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:201:50"
+      ]
+    },
+    {
+      "value": "#070505",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:202:6"
+      ]
+    },
+    {
+      "value": "#18100f",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:202:17"
+      ]
+    },
+    {
+      "value": "#6b1528",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:202:28"
+      ]
+    },
+    {
+      "value": "#c89b60",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:202:39"
+      ]
+    },
+    {
+      "value": "#eadcc5",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:202:50"
+      ]
+    },
+    {
+      "value": "#050303",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:203:6"
+      ]
+    },
+    {
+      "value": "#140b0a",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:203:17"
+      ]
+    },
+    {
+      "value": "#4a1020",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:203:28"
+      ]
+    },
+    {
+      "value": "#b8944f",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:203:39"
+      ]
+    },
+    {
+      "value": "#e5d5b8",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:203:50"
+      ]
+    },
+    {
+      "value": "#080607",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:204:6"
+      ]
+    },
+    {
+      "value": "#200f12",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:204:17"
+      ]
+    },
+    {
+      "value": "#8c1a30",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:204:28"
+      ]
+    },
+    {
+      "value": "#e7c080",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:204:39"
+      ]
+    },
+    {
+      "value": "#f7eedd",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:204:50"
+      ]
+    },
+    {
+      "value": "#030202",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:205:6"
+      ]
+    },
+    {
+      "value": "#100808",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:205:17"
+      ]
+    },
+    {
+      "value": "#550e1e",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:205:28"
+      ]
+    },
+    {
+      "value": "#a08040",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:205:39"
+      ]
+    },
+    {
+      "value": "#ded0b0",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:205:50"
+      ]
+    },
+    {
+      "value": "#060404",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:206:6"
+      ]
+    },
+    {
+      "value": "#150a08",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:206:17"
+      ]
+    },
+    {
+      "value": "#720f22",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:206:28"
+      ]
+    },
+    {
+      "value": "#cda55a",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:206:39"
+      ]
+    },
+    {
+      "value": "#f0e4d0",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:206:50"
+      ]
+    },
+    {
+      "value": "#0b0708",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:207:6"
+      ]
+    },
+    {
+      "value": "#221412",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:207:17"
+      ]
+    },
+    {
+      "value": "#961e38",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:207:28"
+      ]
+    },
+    {
+      "value": "#ddb870",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:207:39"
+      ]
+    },
+    {
+      "value": "#f8f0e0",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:207:50"
+      ]
+    },
+    {
+      "value": "#2a2a2a",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:420:49"
+      ]
+    },
+    {
+      "value": "255,220,180",
+      "kind": "rgba",
+      "count": 1,
+      "kinds": {
+        "rgba": 1
+      },
+      "samples": [
+        "src/components/AgentBattle.tsx:468:52"
+      ]
+    },
+    {
+      "value": "#04121a",
+      "kind": "tw-class-alpha",
+      "count": 1,
+      "kinds": {
+        "tw-class-alpha": 1
+      },
+      "samples": [
+        "src/components/BaselineGate.tsx:211:72"
+      ]
+    },
+    {
+      "value": "#2a2622",
+      "kind": "tw-class",
+      "count": 1,
+      "kinds": {
+        "tw-class": 1
+      },
+      "samples": [
+        "src/components/Certifications.tsx:87:43"
+      ]
+    },
+    {
+      "value": "#8a857e",
+      "kind": "tw-class",
+      "count": 1,
+      "kinds": {
+        "tw-class": 1
+      },
+      "samples": [
+        "src/components/Certifications.tsx:125:59"
+      ]
+    },
+    {
+      "value": "#050608",
+      "kind": "tw-class-alpha",
+      "count": 1,
+      "kinds": {
+        "tw-class-alpha": 1
+      },
+      "samples": [
+        "src/components/DeadDropConsole.tsx:349:179"
+      ]
+    },
+    {
+      "value": "#8a837a",
+      "kind": "tw-class",
+      "count": 1,
+      "kinds": {
+        "tw-class": 1
+      },
+      "samples": [
+        "src/components/EsperScene.tsx:272:35"
+      ]
+    },
+    {
+      "value": "#0a0a0d",
+      "kind": "tw-class",
+      "count": 1,
+      "kinds": {
+        "tw-class": 1
+      },
+      "samples": [
+        "src/components/EsperScene.tsx:440:52"
+      ]
+    },
+    {
+      "value": "#0e0d0b",
+      "kind": "tw-class",
+      "count": 1,
+      "kinds": {
+        "tw-class": 1
+      },
+      "samples": [
+        "src/components/FalseMemory.tsx:88:48"
+      ]
+    },
+    {
+      "value": "#070707",
+      "kind": "tw-class",
+      "count": 1,
+      "kinds": {
+        "tw-class": 1
+      },
+      "samples": [
+        "src/components/FalseMemory.tsx:89:30"
+      ]
+    },
+    {
+      "value": "#8b7ea3",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/HaikuDeck.tsx:96:115"
+      ]
+    },
+    {
+      "value": "#ffcf6b",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/Hero.tsx:271:12"
+      ]
+    },
+    {
+      "value": "#ff3b1a",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/Hero.tsx:308:12"
+      ]
+    },
+    {
+      "value": "#ff5a3c",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/Hero.tsx:327:12"
+      ]
+    },
+    {
+      "value": "#ffb347",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/Hero.tsx:364:12"
+      ]
+    },
+    {
+      "value": "#7fe3ff",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/components/Hero.tsx:383:12"
+      ]
+    },
+    {
+      "value": "#14110d",
+      "kind": "tw-class",
+      "count": 1,
+      "kinds": {
+        "tw-class": 1
+      },
+      "samples": [
+        "src/components/HumanLayer.tsx:95:31"
+      ]
+    },
+    {
+      "value": "20,5,5",
+      "kind": "rgba",
+      "count": 1,
+      "kinds": {
+        "rgba": 1
+      },
+      "samples": [
+        "src/components/LateNight.tsx:48:42"
+      ]
+    },
+    {
+      "value": "255,60,30",
+      "kind": "rgba",
+      "count": 1,
+      "kinds": {
+        "rgba": 1
+      },
+      "samples": [
+        "src/components/LateNight.tsx:48:85"
+      ]
+    },
+    {
+      "value": "#8a6a10",
+      "kind": "tw-class",
+      "count": 1,
+      "kinds": {
+        "tw-class": 1
+      },
+      "samples": [
+        "src/components/LiveSites.tsx:145:46"
+      ]
+    },
+    {
+      "value": "#a07828",
+      "kind": "tw-class",
+      "count": 1,
+      "kinds": {
+        "tw-class": 1
+      },
+      "samples": [
+        "src/components/LiveSites.tsx:146:63"
+      ]
+    },
+    {
+      "value": "200,200,200",
+      "kind": "rgba",
+      "count": 1,
+      "kinds": {
+        "rgba": 1
+      },
+      "samples": [
+        "src/components/NarratorOverlay.tsx:139:86"
+      ]
+    },
+    {
+      "value": "#16140f",
+      "kind": "tw-class",
+      "count": 1,
+      "kinds": {
+        "tw-class": 1
+      },
+      "samples": [
+        "src/components/Nav.tsx:140:105"
+      ]
+    },
+    {
+      "value": "#1a0404",
+      "kind": "tw-class-alpha",
+      "count": 1,
+      "kinds": {
+        "tw-class-alpha": 1
+      },
+      "samples": [
+        "src/components/OverrideMode.tsx:79:101"
+      ]
+    },
+    {
+      "value": "#1a1814",
+      "kind": "tw-class",
+      "count": 1,
+      "kinds": {
+        "tw-class": 1
+      },
+      "samples": [
+        "src/components/SelfDestruct.tsx:75:43"
+      ]
+    },
+    {
+      "value": "#0a0604",
+      "kind": "tw-class-alpha",
+      "count": 1,
+      "kinds": {
+        "tw-class-alpha": 1
+      },
+      "samples": [
+        "src/components/SocraticStatic.tsx:172:49"
+      ]
+    },
+    {
+      "value": "#120202",
+      "kind": "tw-class-alpha",
+      "count": 1,
+      "kinds": {
+        "tw-class-alpha": 1
+      },
+      "samples": [
+        "src/components/SystemBreach.tsx:150:45"
+      ]
+    },
+    {
+      "value": "#ff9082",
+      "kind": "tw-class",
+      "count": 1,
+      "kinds": {
+        "tw-class": 1
+      },
+      "samples": [
+        "src/components/SystemBreach.tsx:233:57"
+      ]
+    },
+    {
+      "value": "#1a0410",
+      "kind": "tw-class-alpha",
+      "count": 1,
+      "kinds": {
+        "tw-class-alpha": 1
+      },
+      "samples": [
+        "src/components/TimeSkip.tsx:75:68"
+      ]
+    },
+    {
+      "value": "#ffb3c8",
+      "kind": "tw-class",
+      "count": 1,
+      "kinds": {
+        "tw-class": 1
+      },
+      "samples": [
+        "src/components/TimeSkip.tsx:75:135"
+      ]
+    },
+    {
+      "value": "#c8c2b7",
+      "kind": "tw-class",
+      "count": 1,
+      "kinds": {
+        "tw-class": 1
+      },
+      "samples": [
+        "src/components/TransmissionPanel.tsx:66:32"
+      ]
+    },
+    {
+      "value": "#0d0c09",
+      "kind": "tw-class",
+      "count": 1,
+      "kinds": {
+        "tw-class": 1
+      },
+      "samples": [
+        "src/components/VKInterview.tsx:235:156"
+      ]
+    },
+    {
+      "value": "#091418",
+      "kind": "tw-class-alpha",
+      "count": 1,
+      "kinds": {
+        "tw-class-alpha": 1
+      },
+      "samples": [
+        "src/components/VKInterview.tsx:320:58"
+      ]
+    },
+    {
+      "value": "#dfd9cd",
+      "kind": "tw-class",
+      "count": 1,
+      "kinds": {
+        "tw-class": 1
+      },
+      "samples": [
+        "src/components/VKInterview.tsx:325:53"
+      ]
+    },
+    {
+      "value": "#c9c2b4",
+      "kind": "tw-class",
+      "count": 1,
+      "kinds": {
+        "tw-class": 1
+      },
+      "samples": [
+        "src/components/WebDossier.tsx:216:50"
+      ]
+    },
+    {
+      "value": "#050506",
+      "kind": "tw-class-alpha",
+      "count": 1,
+      "kinds": {
+        "tw-class-alpha": 1
+      },
+      "samples": [
+        "src/components/WitnessProtocol.tsx:104:44"
+      ]
+    },
+    {
+      "value": "#ff2d78",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/index.css:24:16"
+      ]
+    },
+    {
+      "value": "#7c3aed",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/index.css:28:11"
+      ]
+    },
+    {
+      "value": "4,4,14",
+      "kind": "rgba",
+      "count": 1,
+      "kinds": {
+        "rgba": 1
+      },
+      "samples": [
+        "src/index.css:162:36"
+      ]
+    },
+    {
+      "value": "10,4,0",
+      "kind": "rgba",
+      "count": 1,
+      "kinds": {
+        "rgba": 1
+      },
+      "samples": [
+        "src/index.css:168:56"
+      ]
+    },
+    {
+      "value": "#ff6666",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/index.css:253:16"
+      ]
+    },
+    {
+      "value": "#ff9090",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/index.css:255:10"
+      ]
+    },
+    {
+      "value": "#0a0303",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/index.css:257:8"
+      ]
+    },
+    {
+      "value": "#140404",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/index.css:258:10"
+      ]
+    },
+    {
+      "value": "#3a0f0f",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/index.css:259:10"
+      ]
+    },
+    {
+      "value": "180,20,20",
+      "kind": "rgba",
+      "count": 1,
+      "kinds": {
+        "rgba": 1
+      },
+      "samples": [
+        "src/index.css:265:49"
+      ]
+    },
+    {
+      "value": "30,0,0",
+      "kind": "rgba",
+      "count": 1,
+      "kinds": {
+        "rgba": 1
+      },
+      "samples": [
+        "src/index.css:306:14"
+      ]
+    },
+    {
+      "value": "#c026d3",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/index.css:384:12"
+      ]
+    },
+    {
+      "value": "#0ea5e9",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/index.css:385:10"
+      ]
+    },
+    {
+      "value": "#a21caf",
+      "kind": "hex",
+      "count": 1,
+      "kinds": {
+        "hex": 1
+      },
+      "samples": [
+        "src/index.css:386:16"
+      ]
+    }
+  ]
+}
