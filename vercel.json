@@ -1,5 +1,24 @@
 {
   "buildCommand": "pnpm run build",
   "outputDirectory": "dist",
-  "rewrites": [{ "source": "/((?!assets/).*)", "destination": "/index.html" }]
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/en", "destination": "/", "permanent": true },
+    { "source": "/en/work", "destination": "/", "permanent": true },
+    { "source": "/en/:path*", "destination": "/:path*", "permanent": true },
+
+    { "source": "/work", "destination": "/", "permanent": true },
+    { "source": "/about", "destination": "/", "permanent": true },
+    { "source": "/contact", "destination": "/", "permanent": true },
+
+    { "source": "/work/att", "destination": "/work/at-and-t-product-design", "permanent": true },
+    { "source": "/work/at-t-product-design", "destination": "/work/at-and-t-product-design", "permanent": true },
+    { "source": "/work/usmint", "destination": "/work/us-mint-omnichannel-strategy", "permanent": true },
+    { "source": "/work/pcg", "destination": "/work/pcg-for-schools", "permanent": true },
+    { "source": "/work/treverity", "destination": "/work/treverity-founding-design-partner", "permanent": true },
+    { "source": "/work/dell", "destination": "/work/dell-technologies-ux-strategy", "permanent": true },
+    { "source": "/work/deserve", "destination": "/work/deserve-mobile", "permanent": true },
+
+    { "source": "/portfolio-items/real-sugar-soda", "destination": "/work/real-sugar-soda", "permanent": true }
+  ]
 }

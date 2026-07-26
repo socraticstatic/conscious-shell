@@ -648,6 +648,53 @@ function renderDocument(template, { title, description, url, image, type, graph,
   return html;
 }
 
+/**
+ * The 404 document.
+ *
+ * WHY THIS EXISTS
+ * ---------------
+ * vercel.json used to rewrite every unmatched path to /index.html, so any URL
+ * anyone invented returned 200 with the homepage — including a decade of dead
+ * WordPress endpoints (/comments/feed/, /tag/:t/feed/, /author/:a/feed/) that
+ * crawlers still request. To a search engine that is an infinite soft-404
+ * space, and the homepage's own canonical was served as the answer to all of
+ * it. The rewrite is gone; Vercel now falls through to this file, which it
+ * serves with a real 404 status.
+ *
+ * No canonical tag and an explicit noindex: this page must never compete with
+ * a real URL. The work links are here so a visitor who landed on a stale
+ * inbound link has somewhere to go.
+ */
+function notFoundDocument(template, d, slugify) {
+  const links = d.projects
+    .map((p) => `<li><a href="/work/${esc(slugify(p.title))}">${esc(p.title)}</a></li>`)
+    .join('\n');
+
+  let html = template;
+  html = html.replace(/<title>[\s\S]*?<\/title>/, '<title>Not found — Micah Boswell</title>');
+  // Replace the template's index directive rather than appending a second
+  // robots tag — two conflicting tags leave the outcome to the crawler's
+  // merge rules, and this page must be unambiguously out of the index.
+  const robots = '<meta name="robots" content="noindex, follow" />';
+  html = html.match(/<meta name="robots"[^>]*>/)
+    ? html.replace(/<meta name="robots"[^>]*>/, robots)
+    : html.replace('</head>', `    ${robots}\n  </head>`);
+  html = html.replace('</head>', `    ${BLOCK_STYLE}\n  </head>`);
+  html = html.replace(
+    '<div id="root"></div>',
+    `<div id="root"><div id="prerender-content"><div class="wrap">
+<h1>Not found</h1>
+<p>That address does not exist on this site. It may be a link from an older version of the portfolio.</p>
+<p><a href="/">Return to the homepage</a>, or pick up a case study:</p>
+<h2>Selected work</h2>
+<ul>
+${links}
+</ul>
+</div></div></div>`,
+  );
+  return html;
+}
+
 // ---------------------------------------------------------------------------
 // sitemap / llms.txt / agents.md
 // ---------------------------------------------------------------------------
@@ -912,6 +959,13 @@ async function main() {
     writeFileSync(join(dir, 'index.html'), html);
   }
   console.log(`[prerender] ${seen.size} case studies → dist/work/<slug>/index.html`);
+
+  // --- 404 ---
+  // Vercel serves dist/404.html for any path that matches no file and no
+  // redirect, with a real 404 status. Before this existed, vercel.json
+  // rewrote everything to /index.html and nothing on the site could 404.
+  writeFileSync(join(DIST, '404.html'), notFoundDocument(template, d, slugify));
+  console.log('[prerender] 404.html');
 
   // --- sitemap / llms.txt / agents.md ---
   writeFileSync(join(DIST, 'sitemap.xml'), sitemap(d, slugify));
