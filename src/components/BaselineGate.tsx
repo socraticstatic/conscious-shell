@@ -44,6 +44,11 @@ export default function BaselineGate({ children }: { children: React.ReactNode }
       } else {
         setStep((s) => s + 1);
         setInput('');
+        // The screen promises "3 attempts per prompt". `attempts` was global
+        // and never cleared on advance, so two misses early plus one miss any
+        // time later failed the whole test — three wrong answers total across
+        // six prompts, not three each. Reset it as the copy always claimed.
+        setAttempts(0);
       }
     } else {
       setAttempts((a) => a + 1);
@@ -135,7 +140,7 @@ export default function BaselineGate({ children }: { children: React.ReactNode }
                 <div className="text-2xl md:text-3xl font-light text-[#e8e4dc] leading-snug">
                   {PROMPTS[step].call}
                 </div>
-                <div className="mt-2 text-[10px] text-[#4a453e] italic">
+                <div className="mt-2 text-[10px] text-[#8a8279] italic">
                   hint: {PROMPTS[step].hint}
                 </div>
               </div>
@@ -195,7 +200,7 @@ export default function BaselineGate({ children }: { children: React.ReactNode }
               setStatus('pass');
               sessionStorage.setItem(SESSION_KEY, '1');
             }}
-            className="text-[10px] text-[#2a2620] hover:text-[#4a453e] transition-colors"
+            className="text-[10px] text-[#8a8279] hover:text-[#e040fb] transition-colors"
           >
             [ skip — i am not him ]
           </button>
