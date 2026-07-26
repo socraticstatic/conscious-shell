@@ -12,7 +12,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
     "test": "vitest run",
     "audit:tokens": "node scripts/token-audit.mjs",
-    "snapshot:styles": "node scripts/style-snapshot.mjs docs/tokens/snapshots/baseline.json",
+    "snapshot:styles": "node scripts/style-snapshot.mjs docs/tokens/snapshots/baseline.json.gz",
     "gate:styles": "node scripts/style-gate.mjs"
   },
   "pnpm": {

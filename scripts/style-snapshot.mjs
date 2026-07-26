@@ -114,20 +114,27 @@
  * fires normally; readiness for the lazy tree is still enforced below by
  * `waitForSelector`, which is the thing that actually matters here.
  *
- * Usage: node scripts/style-snapshot.mjs <out.json> [--base http://localhost:5185]
+ * Usage: node scripts/style-snapshot.mjs <out.json[.gz]> [--base http://localhost:5185]
+ * A `.gz`-suffixed output path is gzipped on write; anything else is plain JSON.
  */
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
+import { gzipSync } from 'node:zlib';
 import puppeteer from 'puppeteer-core';
 
 const OUT = process.argv[2];
 if (!OUT) {
-  console.error('usage: node scripts/style-snapshot.mjs <out.json> [--base URL]');
+  console.error('usage: node scripts/style-snapshot.mjs <out.json[.gz]> [--base URL]');
   process.exit(2);
 }
 const baseIdx = process.argv.indexOf('--base');
 const BASE = baseIdx > -1 ? process.argv[baseIdx + 1] : 'http://localhost:5185';
 
+// Colour properties (the token migration this gate exists for) plus type
+// and form properties (the migration planned to follow it - see
+// docs/superpowers/specs/2026-07-26-two-worlds-program-design.md,
+// sub-project 2). Capturing both now means one gate serves both
+// migrations instead of building a second harness later.
 const PROPS = [
   'color',
   'background-color',
@@ -139,6 +146,16 @@ const PROPS = [
   'stroke',
   'box-shadow',
   'text-shadow',
+  'font-family',
+  'font-size',
+  'font-weight',
+  'letter-spacing',
+  'text-transform',
+  'border-top-width',
+  'border-right-width',
+  'border-bottom-width',
+  'border-left-width',
+  'border-radius',
 ];
 
 const VIEWPORTS = [
@@ -351,5 +368,11 @@ await page.close();
 await browser.disconnect();
 
 mkdirSync(dirname(OUT), { recursive: true });
-writeFileSync(OUT, JSON.stringify(snapshot, null, 2) + '\n');
+const json = JSON.stringify(snapshot, null, 2) + '\n';
+// Ten more properties roughly doubles the file, and the baseline gets
+// re-committed on every intentional-diff re-baseline across both
+// migrations, so the committed form (anything ending .gz) is gzipped. The
+// working file the gate captures into docs/tokens/snapshots/current/ is
+// gitignored either way, so it stays plain JSON for easy inspection.
+writeFileSync(OUT, OUT.endsWith('.gz') ? gzipSync(Buffer.from(json)) : json);
 console.log(`wrote ${OUT}`);

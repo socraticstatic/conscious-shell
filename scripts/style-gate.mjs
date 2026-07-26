@@ -10,10 +10,14 @@ import { readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { gunzipSync } from 'node:zlib';
 import { diffSnapshots } from './lib/style-diff.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const BASELINE = join(ROOT, 'docs', 'tokens', 'snapshots', 'baseline.json');
+// Committed gzipped (see scripts/style-snapshot.mjs) to keep the growing
+// property set from re-committing an ever-larger plain-JSON blob on every
+// re-baseline.
+const BASELINE = join(ROOT, 'docs', 'tokens', 'snapshots', 'baseline.json.gz');
 const CURRENT = join(ROOT, 'docs', 'tokens', 'snapshots', 'current', 'snapshot.json');
 
 execFileSync('node', [join(ROOT, 'scripts', 'style-snapshot.mjs'), CURRENT], {
@@ -21,7 +25,7 @@ execFileSync('node', [join(ROOT, 'scripts', 'style-snapshot.mjs'), CURRENT], {
 });
 
 const diffs = diffSnapshots(
-  JSON.parse(readFileSync(BASELINE, 'utf8')),
+  JSON.parse(gunzipSync(readFileSync(BASELINE)).toString('utf8')),
   JSON.parse(readFileSync(CURRENT, 'utf8')),
 );
 
