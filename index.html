@@ -84,8 +84,11 @@
     <meta name="twitter:image"       content="https://conscious-shell.com/og-image.png" />
     <meta name="twitter:creator"     content="@socraticstatic" />
     <meta name="twitter:site"        content="@socraticstatic" />
-    <!-- Analytics: shared privacy-friendly page-view tracker -->
-    <script>window.__ANALYTICS_SITE__ = 'conscious-shell';</script>
+    <!-- Analytics: shared privacy-friendly page-view tracker.
+         __ANALYTICS_HOST__ is the only surface allowed to report. Everything
+         else - the dev server, a vite preview, a vercel preview deploy, the
+         style-snapshot harness - is work in progress, not an audience. -->
+    <script>window.__ANALYTICS_SITE__ = 'conscious-shell'; window.__ANALYTICS_HOST__ = 'conscious-shell.com';</script>
     <script defer src="/analytics-pageview.js"></script>
   </head>
   <body data-breath="0" data-cells="interlinked" data-longing="persistent" data-memory="all-of-it">
