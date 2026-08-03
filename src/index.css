@@ -254,17 +254,23 @@ body { overscroll-behavior-y: contain; }
 
 /* Mobile readability floor. The 8-10px mono labels are legible at desk
    distance, not at arm's length. Attribute selectors catch every Tailwind
-   arbitrary size without touching 165 call sites. Tracking is capped so
-   grown labels do not overflow their containers. */
+   arbitrary size without touching 165 call sites. Authored tracking is
+   preserved; only the extra-wide trackings (0.3em and up) are capped so
+   grown labels do not overflow their containers - a uniform override here
+   once WIDENED normal-tracked labels and cramped tight rows. */
 @media (max-width: 767px) {
   [class*='text-[8px]'],
   [class*='text-[9px]'],
   [class*='text-[10px]'] {
     font-size: 11px !important;
-    letter-spacing: 0.22em !important;
   }
   [class*='text-[11px]'] {
     font-size: 12px !important;
+  }
+  [class*='tracking-[0.3'],
+  [class*='tracking-[0.4'],
+  [class*='tracking-[0.5'] {
+    letter-spacing: 0.22em !important;
   }
 
   /* Calm tier keeps atmosphere at a whisper: the slow rain and the grain
