@@ -32,6 +32,10 @@ export function useShellTier(): ShellTier {
     const wide = window.matchMedia(WIDE_QUERY);
     const fine = window.matchMedia(FINE_QUERY);
     const update = () => setTier(resolveTier(wide.matches, fine.matches));
+    // Resync immediately: the viewport can change between the first render
+    // (readTier() as initial state) and this effect subscribing to the media
+    // queries, leaving the tier stale until the next change event fires.
+    update();
     wide.addEventListener('change', update);
     fine.addEventListener('change', update);
     return () => {

@@ -76,6 +76,15 @@ let reloadScheduled = false;
 function scheduleReloadWhenHidden(): void {
   if (reloadScheduled || typeof document === 'undefined') return;
   reloadScheduled = true;
+  // A tab that is already hidden (e.g. opened in the background on mobile)
+  // will never see a transition to hidden, so the visibilitychange listener
+  // below would never fire. It can reload right now, invisibly, instead.
+  if (document.hidden) {
+    markReloaded();
+    saveRecoveryScroll();
+    window.location.reload();
+    return;
+  }
   const onVisibility = () => {
     if (!document.hidden) return;
     document.removeEventListener('visibilitychange', onVisibility);

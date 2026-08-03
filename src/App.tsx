@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import { lazyWithRetry as lazy } from './lib/lazyWithRetry';
+import { lazyWithRetry as lazy, isChunkLoadError } from './lib/lazyWithRetry';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import Nav from './components/Nav';
 import Hero from './components/Hero';
@@ -234,7 +234,7 @@ export default function App() {
       {hydrated && (
         <ErrorBoundary
           label="lazy-tree"
-          fallback={(_err, reset) => <ChunkFallback onRetry={reset} />}
+          fallback={(err, reset) => <ChunkFallback error={err} onRetry={reset} />}
         >
         <Suspense fallback={null}>
           <DeadDropConsole poems={data?.poems ?? []} />
@@ -314,8 +314,11 @@ export default function App() {
 
 // Shown in place of the content sections when a critical chunk is gone
 // (stale deploy). A reload is already scheduled for the next time the tab
-// hides; this button is for the reader who wants it now.
-function ChunkFallback({ onRetry }: { onRetry: () => void }) {
+// hides; this button is for the reader who wants it now. The soft "try
+// again without reloading" retry only appears for transient render errors -
+// React.lazy caches a rejected chunk import, so retrying a stale-chunk
+// failure would just re-throw the same cached rejection instantly.
+function ChunkFallback({ error, onRetry }: { error: Error; onRetry: () => void }) {
   return (
     <div className="px-6 py-16 text-center font-mono">
       <p className="text-sm text-fg-muted">part of the shell failed to load.</p>
@@ -328,9 +331,11 @@ function ChunkFallback({ onRetry }: { onRetry: () => void }) {
       >
         tap to reload
       </button>
-      <button onClick={onRetry} className="mt-4 ml-3 text-sm text-fg-dim underline min-h-[44px]">
-        try again without reloading
-      </button>
+      {!isChunkLoadError(error) && (
+        <button onClick={onRetry} className="mt-4 ml-3 text-sm text-fg-dim underline min-h-[44px]">
+          try again without reloading
+        </button>
+      )}
     </div>
   );
 }
