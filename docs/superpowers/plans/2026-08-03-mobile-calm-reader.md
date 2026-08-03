@@ -31,7 +31,7 @@
 **Interfaces:**
 - Produces: `resolveTier(wide: boolean, finePointer: boolean): ShellTier`, `useShellTier(): ShellTier`, `type ShellTier = 'full' | 'calm'`. Task 3 imports `useShellTier` in App.tsx.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```ts
 // tests/shell-tier.test.ts
@@ -54,12 +54,12 @@ describe('resolveTier', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run tests/shell-tier.test.ts`
 Expected: FAIL - cannot resolve `../src/lib/shellTier`
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```ts
 // src/lib/shellTier.ts
@@ -109,12 +109,12 @@ export function useShellTier(): ShellTier {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npx vitest run tests/shell-tier.test.ts`
 Expected: PASS (4 tests)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/lib/shellTier.ts tests/shell-tier.test.ts
@@ -133,7 +133,7 @@ git commit -m "feat(mobile): add shell tier hook - full vs calm from viewport an
 - Consumes: `saveRecoveryScroll()` from `src/lib/recoveryScroll` (already exists, already imported).
 - Produces: `lazyWithRetry(factory, opts?: { critical?: boolean })` - default `critical: true`. `recoveryAction(input: { critical: boolean; chunkError: boolean; recentlyReloaded: boolean }): 'defer-reload' | 'throw'` (exported for tests). Task 3 passes `{ critical: false }` for every ambient component.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```ts
 // tests/lazy-recovery.test.ts
@@ -173,12 +173,12 @@ describe('isChunkLoadError', () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npx vitest run tests/lazy-recovery.test.ts`
 Expected: FAIL - `recoveryAction` is not exported. NOTE: importing `lazyWithRetry.ts` pulls in `react`; if the node environment chokes on the `react` import itself, that is still the expected failure state for this step.
 
-- [ ] **Step 3: Rework the implementation**
+- [x] **Step 3: Rework the implementation**
 
 Replace the catch block's recovery section (currently: `isChunkLoadError(...) && !recentlyReloaded()` then `markReloaded(); saveRecoveryScroll(); window.location.reload();` and a never-resolving promise) with the deferred model. Keep the retry loop, `isChunkLoadError`, `recentlyReloaded`, `markReloaded`, and the `RELOAD_*` constants exactly as they are. The full new shape:
 
@@ -254,17 +254,17 @@ export function lazyWithRetry<T extends ComponentType<any>>(
 
 Preserve the existing file-top comment block but update its numbered list to describe the deferred model (retry, then defer-reload-when-hidden for critical chunks, fail soft for ambient chunks).
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `npx vitest run tests/lazy-recovery.test.ts`
 Expected: PASS (6 tests)
 
-- [ ] **Step 5: Typecheck**
+- [x] **Step 5: Typecheck**
 
 Run: `npm run typecheck`
 Expected: clean (App.tsx still compiles - the second parameter is optional)
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/lib/lazyWithRetry.ts tests/lazy-recovery.test.ts
@@ -282,7 +282,7 @@ git commit -m "feat(mobile): defer stale-chunk reloads until the tab hides, fail
 - Consumes: `useShellTier` from `src/lib/shellTier` (Task 1), `lazyWithRetry(factory, { critical: false })` (Task 2), `ErrorBoundary` from `src/components/ErrorBoundary` (existing - props: `label`, `fallback?: (err, reset) => ReactNode` or a ReactNode, children; read the file to confirm the fallback signature before wiring `null` fallbacks).
 - Produces: the final component tree shape that Tasks 4-6 verify against.
 
-- [ ] **Step 1: Convert the four eager ambient imports to lazy non-critical**
+- [x] **Step 1: Convert the four eager ambient imports to lazy non-critical**
 
 `CRTOverlay`, `SessionHUD`, `SoulLayer`, `DevtoolsEasterEggs` are currently eager imports. Remove the static imports and add them to the lazy block:
 
@@ -295,11 +295,11 @@ const DevtoolsEasterEggs = lazy(() => import('./components/DevtoolsEasterEggs'),
 
 `BootOverlay`, `Nav`, `Hero`, `Work`, `AmbientAudio`, `MobileControlDock` stay eager (first paint or dock-critical).
 
-- [ ] **Step 2: Mark every desktop-only lazy component non-critical**
+- [x] **Step 2: Mark every desktop-only lazy component non-critical**
 
 Add `, { critical: false }` to the `lazy(...)` call of exactly this set (the spec's desktop-only list): `TearsInRain`, `SystemBreach`, `NoirSubtitles`, `NarratorOverlay`, `VisitorDossier`, `IntelligenceHUD`, `BlackLitany`, `SocraticStatic`, `OrigamiUnicorns`, `ConsoleHijack`, `LateNight`, `Heartbeat`, `TypingEchoes`, `OverrideMode`, `WitnessProtocol`, `FalseMemory`, `MemoryDecay`, `TimeSkip`, `GhostUnits`, `ExitIntent`, `SelfDestruct`, plus the four from Step 1. Content sections, `DeadDropConsole`, `LogViewer`, and `CommandPalette` keep the default (`critical: true`).
 
-- [ ] **Step 3: Split the render tree by tier**
+- [x] **Step 3: Split the render tree by tier**
 
 In `App()`: `const tier = useShellTier();`. Restructure the route element:
 
@@ -358,12 +358,12 @@ function ChunkFallback({ onRetry }: { onRetry: () => void }) {
 
 Import `saveRecoveryScroll` from `./lib/recoveryScroll` at the top of App.tsx. If `text-fg-muted` / `text-fg-dim` / `border-fg` token classes are not yet usable at this point of the branch, fall back to the literal hexes used elsewhere in App.tsx (`#a8a29e`, `#6b6660`, `#e8e4dc`).
 
-- [ ] **Step 4: Typecheck and unit tests**
+- [x] **Step 4: Typecheck and unit tests**
 
 Run: `npm run typecheck && npm test`
 Expected: both clean
 
-- [ ] **Step 5: Verify in the browser - calm tier**
+- [x] **Step 5: Verify in the browser - calm tier**
 
 Start the dev server via the launch config (preview_start), resize to the mobile preset (375px), reload, then confirm via read_page + the network log:
 
@@ -371,11 +371,11 @@ Start the dev server via the launch config (preview_start), resize to the mobile
 - Network shows NO fetches for ambient chunk files (spot-check: `SystemBreach`, `NarratorOverlay`, `SoulLayer`, `CRTOverlay` chunks absent; `About`, `Services`, `Contact` chunks present).
 - The dock renders; tapping `drop` opens the dead-drop console; the nav drawer's `/palette` button opens the command palette; the BaselineGate input accepts text.
 
-- [ ] **Step 6: Verify in the browser - full tier**
+- [x] **Step 6: Verify in the browser - full tier**
 
 Resize to desktop preset (1280px). Confirm the ambient layer returns (CRT scanlines, SessionHUD, marquee, both rain layers) with no console errors. Resize back down to 375px and confirm the overlays unmount live.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/App.tsx
@@ -393,7 +393,7 @@ git commit -m "feat(mobile): calm tier mounts content only - ambient layer is de
 - Consumes: nothing from other tasks (pure CSS, media-query gated).
 - Produces: the mobile readability floor Tasks 5-6 verify visually.
 
-- [ ] **Step 1: Add the mobile block**
+- [x] **Step 1: Add the mobile block**
 
 Append to `src/index.css` (after the existing `.site-grain` rules, before the `prefers-reduced-motion` block):
 
@@ -420,16 +420,16 @@ Append to `src/index.css` (after the existing `.site-grain` rules, before the `p
 }
 ```
 
-- [ ] **Step 2: Verify in the browser**
+- [x] **Step 2: Verify in the browser**
 
 Dev server at 375px: zoom into the Hero, dock, and Work cards. Confirm labels render at 11px+ (javascript_tool: `getComputedStyle(document.querySelector('[class*="text-[10px]"]')).fontSize` returns `"11px"`), no label overflows its container (screenshot pass over Hero, dock, footer), rain/grain visibly quieter. At 1280px confirm desktop is untouched (same query returns `"10px"`).
 
-- [ ] **Step 3: Run the style gate**
+- [x] **Step 3: Run the style gate**
 
 Run: `npm run gate:styles`
 Expected: either clean, or diffs ONLY in font-size/letter-spacing/opacity at mobile widths. Report anything else; do not re-baseline.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add src/index.css
@@ -447,7 +447,7 @@ git commit -m "feat(mobile): 11px label floor and quieter grain and rain under 7
 - Consumes: colour tokens already wired in `tailwind.config.js` (`text-fg-muted` = #a8a29e, `text-fg-dim` = #6b6660).
 - Produces: nothing consumed by later tasks; Task 6 verifies visually.
 
-- [ ] **Step 1: Audit reading copy**
+- [x] **Step 1: Audit reading copy**
 
 Run both audits and classify each hit as READING (full sentences a visitor is meant to read) or LABEL (decorative meta text):
 
@@ -458,7 +458,7 @@ grep -rn 'text-\[#6b6660\]' src/components/{About,Services,Manifesto,Contact,Imp
 
 Rules: READING copy at `text-sm` becomes `text-base` (or `text-base md:text-sm` where desktop should keep the tighter size). READING copy in `text-[#6b6660]` becomes `text-[#a8a29e]`. LABELs are left alone (Task 4's floor already covers their size).
 
-- [ ] **Step 2: Apply the three known edits plus audit findings**
+- [x] **Step 2: Apply the three known edits plus audit findings**
 
 Known from the spec work:
 
@@ -468,17 +468,17 @@ Known from the spec work:
 
 Apply the same two rules to every READING hit from Step 1. Line numbers above are as of commit cf62e33; re-locate by content if they have drifted.
 
-- [ ] **Step 3: Dock tap targets**
+- [x] **Step 3: Dock tap targets**
 
 In `MobileControlDock.tsx` (line ~55), add `min-h-[44px]` to the button className string:
 
 `... inline-flex items-center justify-center gap-1.5 min-h-[44px] border bg-[#0b0a08]/85 ...`
 
-- [ ] **Step 4: Verify in the browser**
+- [x] **Step 4: Verify in the browser**
 
 Dev server at 375px: read the Services, Manifesto, and About sections end to end via screenshot; body copy renders at 16px, no clipped or overflowing text, dock buttons measure at least 44px tall (javascript_tool: `document.querySelectorAll('[class*="min-h-[44px]"]')[0].getBoundingClientRect().height >= 44`). At 1280px: no visible desktop regression in the same sections.
 
-- [ ] **Step 5: Typecheck, test, commit**
+- [x] **Step 5: Typecheck, test, commit**
 
 ```bash
 npm run typecheck && npm test
@@ -498,12 +498,12 @@ git commit -m "feat(mobile): reading copy at 16px and fg-muted contrast, 44px do
 **Interfaces:**
 - Consumes: everything above.
 
-- [ ] **Step 1: Full check suite**
+- [x] **Step 1: Full check suite**
 
 Run: `npm run typecheck && npm test && npm run lint`
 Expected: typecheck and tests clean; lint no worse than the pre-existing baseline (compare against `git stash` free main-tree run only if in doubt; the constraint is no NEW errors).
 
-- [ ] **Step 2: Production build and stale-chunk drill - ambient**
+- [x] **Step 2: Production build and stale-chunk drill - ambient**
 
 ```bash
 npm run build
@@ -519,7 +519,7 @@ npm run preview
 
 In the browser at DESKTOP width (ambient mounts only on full tier): load the site, wait for hydration, confirm the page renders fully, no reload occurs while watching (page `performance.getEntriesByType('navigation')` still shows one navigation after 60s), and the console shows the failed import handled without a blank screen.
 
-- [ ] **Step 3: Stale-chunk drill - critical**
+- [x] **Step 3: Stale-chunk drill - critical**
 
 Rebuild cleanly, then break a content chunk instead:
 
@@ -530,7 +530,7 @@ mv dist/assets/About-*.js dist/assets/About.gone.js
 
 Reload at 375px: the content area shows the "part of the shell failed to load / tap to reload" fallback instead of a blank page, and NO automatic reload happens while the tab is visible. Then background the tab (switch tabs); on return the page has reloaded once and renders (still broken chunk = ErrorBoundary again, which is correct; rebuild cleanly afterwards to confirm the healthy path).
 
-- [ ] **Step 4: Mobile walkthrough as a user**
+- [x] **Step 4: Mobile walkthrough as a user**
 
 Clean `npm run build && npm run preview`, browser at 375px, dark scheme:
 
@@ -540,13 +540,13 @@ Clean `npm run build && npm run preview`, browser at 375px, dark scheme:
 - Nav drawer opens, `/palette` opens the command palette, a project opens its case study, back returns to position.
 - BaselineGate: pass the four prompts by touch keyboard; HumanLayer + HaikuDeck reveal.
 
-- [ ] **Step 5: Update the plan checkboxes and commit any doc changes**
+- [x] **Step 5: Update the plan checkboxes and commit any doc changes**
 
 ```bash
 git add docs/superpowers/plans/2026-08-03-mobile-calm-reader.md
 git commit -m "docs(plan): mark mobile calm reader verification complete"
 ```
 
-- [ ] **Step 6: Post-deploy follow-up (note for after merge)**
+- [x] **Step 6: Post-deploy follow-up (note for after merge)**
 
 After the branch ships to production, re-run the `app_logs` query from `docs/superpowers/specs/2026-08-03-mobile-calm-reader-design.md` section 5 a few days later: mobile `Failed to load <link>` bursts should no longer coincide with reload navigations. This step is observational; it cannot be completed inside this branch.
