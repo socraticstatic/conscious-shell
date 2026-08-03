@@ -252,6 +252,27 @@ body { overscroll-behavior-y: contain; }
   100% { transform: translate(0, 0); }
 }
 
+/* Mobile readability floor. The 8-10px mono labels are legible at desk
+   distance, not at arm's length. Attribute selectors catch every Tailwind
+   arbitrary size without touching 165 call sites. Tracking is capped so
+   grown labels do not overflow their containers. */
+@media (max-width: 767px) {
+  [class*='text-[8px]'],
+  [class*='text-[9px]'],
+  [class*='text-[10px]'] {
+    font-size: 11px !important;
+    letter-spacing: 0.22em !important;
+  }
+  [class*='text-[11px]'] {
+    font-size: 12px !important;
+  }
+
+  /* Calm tier keeps atmosphere at a whisper: the slow rain and the grain
+     stay, dialed down from 0.06 / 0.04. */
+  .site-rain.slow { opacity: 0.04; }
+  .site-grain { opacity: 0.03; }
+}
+
 /* --- OVERRIDE MODE ---------------------------------------------------------
    Triggered by the konami code. Flips the whole site into a red/black
    replicant-override palette and adds a slow glitch jitter.
