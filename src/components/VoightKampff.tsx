@@ -5,6 +5,9 @@ import type { VkQuestion } from '../lib/supabase';
 
 export default function VoightKampff({ questions }: { questions: VkQuestion[] }) {
   const [i, setI] = useState(0);
+  // Two-phase per question: respond first (the machine records a reading),
+  // then next becomes available. One button, two distinct meanings.
+  const [answered, setAnswered] = useState(false);
   const [baseline, setBaseline] = useState({ iris: 68, pulse: 72, resp: 16, gsr: 1.3 });
 
   const q = questions[i];
@@ -23,11 +26,18 @@ export default function VoightKampff({ questions }: { questions: VkQuestion[] })
 
   if (!questions.length) return null;
 
-  const next = () => {
-    setI((v) => (v + 1) % questions.length);
+  const respond = () => {
+    setAnswered(true);
     window.dispatchEvent(new CustomEvent('intel:vk_answer'));
   };
-  const prev = () => setI((v) => (v - 1 + questions.length) % questions.length);
+  const next = () => {
+    setI((v) => (v + 1) % questions.length);
+    setAnswered(false);
+  };
+  const prev = () => {
+    setI((v) => (v - 1 + questions.length) % questions.length);
+    setAnswered(false);
+  };
 
   return (
     <section id="empathy" className="relative py-20 md:py-28 border-b border-[#1f1c17]">
@@ -74,14 +84,24 @@ export default function VoightKampff({ questions }: { questions: VkQuestion[] })
                   ← prev
                 </button>
                 <button
-                  onClick={next}
+                  onClick={answered ? next : respond}
                   data-cursor="hover"
-                  className="px-3 py-1.5 text-xs border border-[#e040fb] text-[#e040fb] hover:bg-[#e040fb] hover:text-[#0b0a08] transition-colors"
+                  className={`px-3 py-1.5 text-xs border transition-colors ${
+                    answered
+                      ? 'border-[#00d4ff] text-[#00d4ff] hover:bg-[#00d4ff] hover:text-[#0b0a08]'
+                      : 'border-[#e040fb] text-[#e040fb] hover:bg-[#e040fb] hover:text-[#0b0a08]'
+                  }`}
                 >
-                  respond / next →
+                  {answered ? 'next →' : 'respond'}
                 </button>
               </div>
-              <div className="text-[10px] text-[#6b6660]">enter = next · esc = dismiss</div>
+              <div className="text-[10px] text-[#6b6660]">
+                {answered ? (
+                  <span className="text-[#00d4ff]">response recorded · 記録済</span>
+                ) : (
+                  'subject may respond'
+                )}
+              </div>
             </div>
 
             <PulseTrack />
