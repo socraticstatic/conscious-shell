@@ -97,7 +97,7 @@ export default function GitArchaeology() {
                 </div>
 
                 {/* Message */}
-                <p className="text-[#e8e4dc] text-sm font-mono leading-relaxed">
+                <p className="text-[#e8e4dc] text-base md:text-sm font-mono leading-relaxed">
                   {d.redacted ? (
                     displayMsg.split('').map((ch, ci) => (
                       ch === '\u2588' ? (

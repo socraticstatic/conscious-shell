@@ -52,7 +52,7 @@ export default function MobileControlDock() {
           onClick={fire(ev)}
           aria-pressed={on}
           aria-label={label}
-          className={`flex-1 lg:flex-none lg:pointer-events-auto min-w-0 inline-flex items-center justify-center gap-1.5 border bg-[#0b0a08]/85 backdrop-blur-sm px-1.5 lg:px-4 py-2.5 text-[10px] tracking-[0.15em] uppercase transition-colors active:bg-[#0b0a08] ${
+          className={`flex-1 lg:flex-none lg:pointer-events-auto min-w-0 inline-flex items-center justify-center gap-1.5 min-h-[44px] border bg-[#0b0a08]/85 backdrop-blur-sm px-1.5 lg:px-4 py-2.5 text-[10px] tracking-[0.15em] uppercase transition-colors active:bg-[#0b0a08] ${
             on ? '' : 'border-[#1f1c17] text-[#6b6660] lg:hover:text-[#a8a29e] lg:hover:border-[#2a2620]'
           }`}
           style={on ? { borderColor: accent, color: accent } : undefined}

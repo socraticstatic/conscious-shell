@@ -53,7 +53,7 @@ export default function Manifesto({ articles = [] }: { articles?: LinkedInArticl
             >
               <div className="col-span-1 text-xs text-[#4a453e]">0{i + 1}</div>
               <div className="col-span-11 md:col-span-4 text-2xl sm:text-3xl md:text-5xl text-[#e040fb]">{big}</div>
-              <div className="col-span-12 md:col-span-7 text-[#a8a29e] text-sm md:text-base md:pl-6">
+              <div className="col-span-12 md:col-span-7 text-[#a8a29e] text-base md:pl-6">
                 <span className="text-[#4a453e]">// </span>
                 {small}
               </div>

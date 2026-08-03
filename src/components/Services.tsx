@@ -28,7 +28,7 @@ export default function Services({ services }: { services: Service[] }) {
                   {s.title.toLowerCase().replace(/\s+/g, '_')}
                 </div>
               </div>
-              <div className="col-span-12 md:col-span-7 text-[#a8a29e] text-sm md:text-base leading-relaxed">
+              <div className="col-span-12 md:col-span-7 text-[#a8a29e] text-base leading-relaxed">
                 <div className="text-[11px] text-[#6b6660] mb-1">DESCRIPTION</div>
                 {s.description}
               </div>
