@@ -77,7 +77,6 @@ const BaselineUnlocked = lazy(() =>
 );
 const ConsoleHijack = lazy(() => import('./components/ConsoleHijack'), { critical: false });
 const LateNight = lazy(() => import('./components/LateNight'), { critical: false });
-const SelfDestruct = lazy(() => import('./components/SelfDestruct'), { critical: false });
 const Heartbeat = lazy(() => import('./components/Heartbeat'), { critical: false });
 const TypingEchoes = lazy(() => import('./components/TypingEchoes'), { critical: false });
 const VKInterview = lazy(() => import('./components/VKInterview'));
@@ -220,7 +219,10 @@ export default function App() {
       <Route
         path="/*"
         element={
-    <div className="relative min-h-[100dvh] bg-[#07070a] text-[#e8e4dc] overflow-clip" data-pid={pid} data-witness="true" data-last-words="all-those-moments-will-be-lost-in-time">
+    // pb clears the fixed bottom band (marquee 0-22px, control dock 30-74px)
+    // so the last thing on the page - the footer, and the contact form's final
+    // fields - can always scroll above the chrome instead of resting under it.
+    <div className="relative min-h-[100dvh] bg-[#07070a] text-[#e8e4dc] overflow-clip pb-[calc(88px+env(safe-area-inset-bottom,0px))]" data-pid={pid} data-witness="true" data-last-words="all-those-moments-will-be-lost-in-time">
       <HomeMeta />
       <BootOverlay />
 
@@ -286,7 +288,6 @@ export default function App() {
           <OrigamiUnicorns />
           <ConsoleHijack />
           <LateNight />
-          <SelfDestruct />
           <Heartbeat />
           <TypingEchoes />
           <IntelligenceHUD />

@@ -39,7 +39,7 @@ const SITES: Site[] = [
   },
   {
     name: 'GP Sailing',
-    url: 'https://socraticstatic.github.io/GPSail/',
+    url: 'https://gpsail.net/',
     tagline: 'High-speed hydrofoil racing.',
     description:
       'Season 6 live tracker for the F50 foiling catamaran circuit — 13 global venues, race-by-race standings, team profiles, and performance data from the fastest sailing series on water. Tracks the road to the Abu Dhabi Grand Final.',
@@ -130,7 +130,7 @@ function SiteCard({ site, index }: { site: Site; index: number }) {
             href={site.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="shrink-0 mt-1 text-[#4a453e] hover:text-[#00d4ff] transition-colors"
+            className="shrink-0 mt-1 text-[#605a52] hover:text-[#00d4ff] transition-colors"
             aria-label={`Open ${site.name}`}
           >
             <ExternalLink className="w-4 h-4" />
@@ -165,7 +165,7 @@ function SiteCard({ site, index }: { site: Site; index: number }) {
               </span>
             ))}
           </div>
-          <div className="pt-3 border-t border-[#1f1c17] text-[10px] text-[#4a453e] font-mono truncate">
+          <div className="pt-3 border-t border-[#1f1c17] text-[10px] text-[#605a52] font-mono truncate">
             {site.url.replace('https://', '')}
           </div>
         </div>

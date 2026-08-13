@@ -335,14 +335,26 @@ function personSchema(d) {
     award: d.awards.map((a) => `${a.title} — ${a.organization}, ${a.year}`),
     // Grounded: index.html twitter:creator, src/components/LiveSites.tsx,
     // and web_dossier_facts source_url values.
+    // x.com/socraticstatic was a dead link — that slug is the GitHub handle,
+    // not the X one, and the URL 404s. The live account is @TheWizardof0dd.
+    //
+    // The three site URLs below close the entity loop. gpsail.net,
+    // penpaperandink.app and familyroots.center each name this node
+    // (`conscious-shell.com/#micah-boswell`) as their author; without a
+    // reciprocal link from here, a reconciler sees three unverified claims
+    // pointing at a hub that never acknowledges them. sameAs in both
+    // directions is what makes them one entity.
     sameAs: [
       'https://www.linkedin.com/in/micahboswell/',
       'https://github.com/socraticstatic',
-      'https://x.com/socraticstatic',
+      'https://x.com/TheWizardof0dd',
       'https://theorg.com/org/att/org-chart/micah-boswell',
       'https://www.crunchbase.com/person/micah-boswell',
       'https://www.imdb.com/name/nm5119038/',
       'https://unsplash.com/@micahboswell',
+      'https://gpsail.net',
+      'https://penpaperandink.app/about',
+      'https://familyroots.center',
     ],
   };
 }

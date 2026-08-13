@@ -27,11 +27,11 @@ export default function Footer() {
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 bg-[#e040fb]" />
             <span className="text-[#a8a29e]">conscious_shell</span>
-            <span className="text-[#4a453e]">—</span>
+            <span className="text-[#605a52]">—</span>
             <span>always in progress since 2000</span>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-[#4a453e]">build: vite · react · supabase · three · d3</span>
+            <span className="text-[#605a52]">build: vite · react · supabase · three · d3</span>
             <span>© {new Date().getFullYear()} micah boswell</span>
           </div>
         </div>

@@ -154,7 +154,7 @@ export default function TimeMachine() {
                       />
                       <span
                         className={`absolute top-full mt-1 left-1/2 -translate-x-1/2 text-[9px] tabular-nums transition-colors ${
-                          active ? 'text-[#e040fb]' : 'text-[#4a453e] group-hover:text-[#00d4ff]'
+                          active ? 'text-[#e040fb]' : 'text-[#605a52] group-hover:text-[#00d4ff]'
                         }`}
                       >
                         {String(c.year).slice(2)}
@@ -242,18 +242,18 @@ export default function TimeMachine() {
                     }`}
                   >
                     <span className="tabular-nums">{c.year}</span>
-                    <span className="text-[10px] text-[#4a453e] truncate">{c.era_label}</span>
+                    <span className="text-[10px] text-[#605a52] truncate">{c.era_label}</span>
                   </button>
                 </li>
               ))}
             </ul>
-            <div className="px-3 py-2 border-t border-[#1f1c17] text-[10px] text-[#4a453e]">
+            <div className="px-3 py-2 border-t border-[#1f1c17] text-[10px] text-[#605a52]">
               src: /archive · {sorted.length} frames
             </div>
           </div>
         </div>
 
-        <div className="mt-4 text-[11px] text-[#4a453e] leading-relaxed">
+        <div className="mt-4 text-[11px] text-[#605a52] leading-relaxed">
           # six snapshots from the personal archive — same domain, different decade.
           <br /># conscious-shell has been online since 1995; these are the surviving plates.
         </div>

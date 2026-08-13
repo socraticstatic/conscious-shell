@@ -127,7 +127,7 @@ export default function BaselineGate({ children }: { children: React.ReactNode }
                 <ShieldAlert className="w-4 h-4" />
                 initiate baseline test
               </button>
-              <div className="mt-4 text-[10px] text-[#4a453e]">
+              <div className="mt-4 text-[10px] text-[#605a52]">
                 # {PROMPTS.length} prompts · 3 attempts per prompt · no second chances
               </div>
             </motion.div>
@@ -189,7 +189,7 @@ export default function BaselineGate({ children }: { children: React.ReactNode }
                   />
                 </motion.div>
                 <div className="mt-4 flex items-center justify-between">
-                  <span className="text-[10px] text-[#4a453e]">
+                  <span className="text-[10px] text-[#605a52]">
                     attempts remaining: {3 - attempts}
                   </span>
                   <button

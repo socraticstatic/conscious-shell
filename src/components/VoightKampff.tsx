@@ -111,7 +111,7 @@ export default function VoightKampff({ questions }: { questions: VkQuestion[] })
                         picked
                           ? 'border-[#00d4ff] text-[#00d4ff] bg-[#00d4ff]/10'
                           : dimmed
-                            ? 'border-[#1f1c17] text-[#4a453e] opacity-50'
+                            ? 'border-[#1f1c17] text-[#605a52] opacity-50'
                             : 'border-[#2a2620] text-[#a8a29e] hover:border-[#e040fb] hover:text-[#e040fb]'
                       }`}
                     >

@@ -32,7 +32,7 @@ export default function IndexList({ projects }: { projects: Project[] }) {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="filter by title · client · tag"
-            className="flex-1 bg-transparent outline-none text-[#e8e4dc] placeholder:text-[#4a453e] text-sm"
+            className="flex-1 bg-transparent outline-none text-[#e8e4dc] placeholder:text-[#605a52] text-sm"
           />
           {q && (
             <button onClick={() => setQ('')} className="text-xs text-[#6b6660] hover:text-[#e040fb]">
@@ -41,7 +41,7 @@ export default function IndexList({ projects }: { projects: Project[] }) {
           )}
         </div>
 
-        <div className="mt-2 text-[11px] text-[#4a453e] grid grid-cols-12 gap-3 md:gap-6 px-1 py-2 border-b border-[#1f1c17] uppercase tracking-wider">
+        <div className="mt-2 text-[11px] text-[#605a52] grid grid-cols-12 gap-3 md:gap-6 px-1 py-2 border-b border-[#1f1c17] uppercase tracking-wider">
           <div className="col-span-2 md:col-span-1">no</div>
           <div className="col-span-10 md:col-span-6">title</div>
           <div className="hidden md:block md:col-span-3">role</div>
@@ -57,7 +57,7 @@ export default function IndexList({ projects }: { projects: Project[] }) {
           )}
         </ul>
 
-        <div className="mt-6 text-xs text-[#4a453e]">
+        <div className="mt-6 text-xs text-[#605a52]">
           # end of stream — {filtered.length} of {projects.length} displayed
         </div>
       </div>
@@ -74,7 +74,7 @@ function Row({ project, index }: { project: Project; index: number }) {
       className="group grid grid-cols-12 gap-3 md:gap-6 items-center py-3 border-b border-[#1f1c17] border-dashed hover:bg-[#141210] transition-colors"
       data-cursor="hover"
     >
-      <div className="col-span-2 md:col-span-1 text-[11px] tabular-nums text-[#4a453e] group-hover:text-[#e040fb]">
+      <div className="col-span-2 md:col-span-1 text-[11px] tabular-nums text-[#605a52] group-hover:text-[#e040fb]">
         {String(index + 1).padStart(3, '0')}
       </div>
       <Link

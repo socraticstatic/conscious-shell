@@ -99,7 +99,7 @@ export default function Contact() {
                 <div className="text-[#00d4ff]"># handshake CONFIRMED</div>
                 <div className="text-[#6b6660]"># message queued for human review</div>
                 <div className="text-[#6b6660]"># response time ~48h</div>
-                <div className="mt-3 text-[#4a453e]">— transmission complete.</div>
+                <div className="mt-3 text-[#605a52]">— transmission complete.</div>
               </motion.div>
             ) : (
               <form onSubmit={submit} noValidate className="mt-10 space-y-5">
@@ -119,7 +119,7 @@ export default function Contact() {
                       onChange={set(key)}
                       onBlur={blur(key)}
                       placeholder={placeholder}
-                      className="w-full bg-[#0b0a08] border border-[#2a2620] focus:border-[#00d4ff] outline-none px-4 py-3 text-[#e8e4dc] font-mono text-sm placeholder:text-[#4a453e] transition-colors"
+                      className="w-full bg-[#0b0a08] border border-[#2a2620] focus:border-[#00d4ff] outline-none px-4 py-3 text-[#e8e4dc] font-mono text-sm placeholder:text-[#605a52] transition-colors"
                     />
                     {touched[key] && errors[key] && (
                       <div className="mt-1 text-[10px] text-[#ff006e] font-mono">
@@ -139,7 +139,7 @@ export default function Contact() {
                     onChange={set('message')}
                     onBlur={blur('message')}
                     placeholder="what are you working on?"
-                    className="w-full bg-[#0b0a08] border border-[#2a2620] focus:border-[#00d4ff] outline-none px-4 py-3 text-[#e8e4dc] font-mono text-sm placeholder:text-[#4a453e] transition-colors resize-none"
+                    className="w-full bg-[#0b0a08] border border-[#2a2620] focus:border-[#00d4ff] outline-none px-4 py-3 text-[#e8e4dc] font-mono text-sm placeholder:text-[#605a52] transition-colors resize-none"
                   />
                   {touched.message && errors.message && (
                     <div className="mt-1 text-[10px] text-[#ff006e] font-mono">
@@ -164,7 +164,7 @@ export default function Contact() {
                   </button>
                   <a
                     href="mailto:Deckard@conscious-shell.com"
-                    className="text-[11px] text-[#4a453e] hover:text-[#a8a29e] font-mono transition-colors"
+                    className="text-[11px] text-[#605a52] hover:text-[#a8a29e] font-mono transition-colors"
                   >
                     or mail Deckard@conscious-shell.com
                   </a>
@@ -172,7 +172,7 @@ export default function Contact() {
               </form>
             )}
 
-            <div className="mt-10 text-[11px] text-[#4a453e] font-mono">
+            <div className="mt-10 text-[11px] text-[#605a52] font-mono">
               # session logged · response time ~48h · all tears, in rain
             </div>
           </div>
@@ -189,7 +189,7 @@ export default function Contact() {
               <p className="mt-3 font-jp text-[#00d4ff]/80 text-xs">
                 涙のように、雨に流されて。
               </p>
-              <div className="mt-4 text-[10px] text-[#4a453e]">
+              <div className="mt-4 text-[10px] text-[#605a52]">
                 — excerpt, hypothetical monologue.v4.7
               </div>
             </div>

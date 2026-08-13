@@ -19,7 +19,7 @@ export default function Services({ services }: { services: Service[] }) {
               className="grid grid-cols-12 gap-3 md:gap-6 p-6 md:p-8 border-b border-[#1f1c17] last:border-b-0 hover:bg-[#121008] transition-colors group"
               data-cursor="hover"
             >
-              <div className="col-span-2 md:col-span-1 text-xs text-[#4a453e] group-hover:text-[#e040fb]">
+              <div className="col-span-2 md:col-span-1 text-xs text-[#605a52] group-hover:text-[#e040fb]">
                 .{String(i + 1).padStart(2, '0')}
               </div>
               <div className="col-span-10 md:col-span-4">
@@ -36,7 +36,7 @@ export default function Services({ services }: { services: Service[] }) {
           ))}
         </div>
 
-        <div className="mt-6 text-xs text-[#4a453e]">
+        <div className="mt-6 text-xs text-[#605a52]">
           # pipe: intro_call → scope → engagement
         </div>
       </div>

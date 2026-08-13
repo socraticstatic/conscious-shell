@@ -217,14 +217,22 @@ const SKIP_OWN_SELECTORS = [DOSSIER_HEADER_ROW, DOSSIER_CARD_WRAPPER];
 // `readyText` is a second, tighter gate for the home-family routes only:
 // src/components/Hero.tsx types its terminal intro out character by
 // character and only reveals its three CTA buttons (one reads
-// "[ enter archive ]") once that finishes - around 4.5s with Math.random
-// pinned. <Footer/> mounts as soon as the lazy Suspense tree resolves,
-// which is well before that, so waiting on 'footer' alone captures the
-// page mid-type, and the boot/typewriter sequences are still adding and
-// removing DOM nodes at that point. Gating on readyText instead of a blind
-// fixed delay keeps every capture on the same side of that one-time
-// sequence without over- or under-waiting for it. (It does not, on its
-// own, fully stabilise #dossier - see the WebDossier paragraph above.)
+// "[ enter archive ]") once that finishes. How long that takes is NOT a
+// fixed number worth hard-coding here: with Math.random pinned each
+// character has a fixed 44.5ms delay, but total time to readyText also
+// includes however long the browser takes to fetch, compile, and mount the
+// lazy Suspense tree in the first place, which depends on the Vite dev
+// server's transform cache (cold after a restart or a cleared
+// node_modules/.vite, fast once warm) and machine load - measured 6.5-7.3s
+// on a freshly restarted, cache-cleared dev server, both cold-first-nav and
+// warm-repeat, across all three viewports. <Footer/> mounts as soon as the
+// lazy Suspense tree resolves, which is well before readyText, so waiting
+// on 'footer' alone captures the page mid-type, and the boot/typewriter
+// sequences are still adding and removing DOM nodes at that point. Gating
+// on readyText instead of a blind fixed delay keeps every capture on the
+// same side of that one-time sequence regardless of how long it actually
+// took, without over- or under-waiting for it. (It does not, on its own,
+// fully stabilise #dossier - see the WebDossier paragraph above.)
 const ROUTES = [
   { name: 'home', path: '/', modifier: null, wait: 'footer', readyText: '[ enter archive ]' },
   { name: 'home-late', path: '/', modifier: 'late-night', wait: 'footer', readyText: '[ enter archive ]' },
@@ -264,12 +272,28 @@ const collect = (props, skipSelectors, skipOwnSelectors) => {
 };
 
 // A last settle poll after the readiness gates above, for the trailing
-// framer-motion opacity transitions on things like the Hero CTA row. Kept
-// short and capped well under WebDossier's 7s rotation interval (see the
-// ROUTES comment and DETERMINISM NOTES) - by the time this runs, readyText
-// has already done the heavy lifting, so this only needs to catch the last
-// paint or two, not a whole mount sequence.
-async function waitForDomStable(page, { intervalMs = 150, stableReads = 3, maxWaitMs = 1200 } = {}) {
+// framer-motion opacity transitions on things like the Hero CTA row. By the
+// time this runs, readyText has already done the heavy lifting, so in the
+// healthy case this only needs to catch the last paint or two, not a whole
+// mount sequence - measured at 494-583ms across 12 samples (cold first
+// navigation and warm repeats, all three viewports, dev server both freshly
+// restarted with a cleared `node_modules/.vite` and warm) before landing on
+// this budget, so `maxWaitMs` below is roughly 8-10x a typical settle, not a
+// tight fit to it. That headroom costs nothing on the happy path - this
+// function returns as soon as it sees `stableReads` consecutive equal
+// counts, it does not sit out the full budget - so a generous ceiling only
+// changes how long a genuinely stuck capture waits before FATAL_ON_UNSTABLE
+// below turns it into a hard failure, never how long a healthy one takes.
+//
+// Returns whether the DOM actually reached quiet. The caller decides what
+// unstable means (see FATAL_ON_UNSTABLE); this function does not swallow
+// the outcome the way it used to - a previous version of this function
+// returned nothing at all, so the caller could not tell "stabilised" apart
+// from "gave up", and a capture proceeded identically either way. That was
+// the mechanism behind a flake in Task 4: nothing here ever raised, so a
+// capture that started mid-transition was written to disk indistinguishably
+// from one that had genuinely settled.
+async function waitForDomStable(page, { intervalMs = 150, stableReads = 3, maxWaitMs = 5000 } = {}) {
   const start = Date.now();
   let last = -1;
   let consecutive = 0;
@@ -277,13 +301,39 @@ async function waitForDomStable(page, { intervalMs = 150, stableReads = 3, maxWa
     const count = await page.evaluate(() => document.querySelectorAll('*').length);
     if (count === last) {
       consecutive += 1;
-      if (consecutive >= stableReads) return;
+      if (consecutive >= stableReads) {
+        return { stable: true, elapsedMs: Date.now() - start, finalCount: count };
+      }
     } else {
       consecutive = 0;
       last = count;
     }
     await new Promise((r) => setTimeout(r, intervalMs));
   }
+  return { stable: false, elapsedMs: Date.now() - start, finalCount: last };
+}
+
+// A page that never finished loading is worse than no page at all: a
+// snapshot captured from it looks exactly like a real one, so it either
+// masks a real regression (the unsettled colours happen to match) or
+// manufactures a phantom diff (they do not) - and either way every later
+// task inherits a baseline nobody can trust. FATAL_ON_UNSTABLE makes that
+// loud instead: name the scenario, name what did not happen, exit non-zero,
+// write nothing.
+async function FATAL_ON_UNSTABLE(page, browser, message) {
+  console.error(`\nFATAL: ${message}`);
+  console.error('Refusing to write a snapshot from a page that never finished settling.');
+  try {
+    await page.close();
+  } catch {
+    /* best-effort cleanup on the way out */
+  }
+  try {
+    await browser.disconnect();
+  } catch {
+    /* best-effort cleanup on the way out */
+  }
+  process.exit(1);
 }
 
 const browser = await puppeteer.connect({
@@ -292,6 +342,30 @@ const browser = await puppeteer.connect({
 });
 
 const snapshot = {};
+// A fresh page per scenario, not one reused across all twelve.
+//
+// Reusing a single page made Hero's broken-typing failure STICKY: once
+// `done` failed to flip on one navigation, every subsequent reload of that
+// same page failed the same way, all four retries included, while a later
+// run of the whole script would sail through. Vite's HMR client keeps module
+// state alive across in-page navigations, so a poisoned React module graph
+// survives goto(). A new page gets a clean JS context every time, which is
+// what "deterministic" has to mean here.
+async function newScenarioPage() {
+  const p = await browser.newPage();
+  await p.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
+  await p.evaluateOnNewDocument(() => {
+    try {
+      localStorage.clear();
+      sessionStorage.clear();
+    } catch {
+      /* storage blocked - nothing to clear */
+    }
+    Math.random = () => 0.5;
+  });
+  return p;
+}
+
 const page = await browser.newPage();
 
 // Freeze every animation. The stylesheet already collapses its own
@@ -322,45 +396,82 @@ await page.evaluateOnNewDocument(() => {
   Math.random = () => 0.5;
 });
 
+// Compressing timers here was tried and reverted. Scaling setTimeout to 2%
+// does make Hero's typing finish reliably, but it equally accelerates every
+// ambient egg that appends nodes (TypingEchoes, GhostUnits, NoirSubtitles,
+// SocraticStatic), so the DOM keeps growing past the settle window and the
+// element count drifts run to run: 2009, 2058, 2065, 2075 against a stable
+// 2001 at normal speed. Faster was less deterministic, which is the opposite
+// of the point. Do not reintroduce it.
+
+// Each scenario gets up to ATTEMPTS navigations. Hero's typing chain can be
+// cancelled by StrictMode's double-invoked effect and never restart, leaving
+// `done` false and the "[ enter archive ]" CTA row unrendered forever - the
+// readiness signal simply never arrives. That is a per-load race, not a
+// property of the page, so a fresh navigation usually resolves it. Retrying
+// is honest here in a way that "re-capture until green" was not: a retry
+// discards the bad load entirely and starts over, rather than accepting a
+// half-rendered page and writing it to the baseline.
+const ATTEMPTS = 3;
+
+async function prepare(pg, route, vp) {
+  await pg.setViewport({ width: vp.width, height: vp.height });
+  await pg.goto(BASE + route.path, { waitUntil: 'load' });
+  await pg.waitForSelector(route.wait, { timeout: 30000 });
+  if (route.readyText) {
+    await pg.waitForFunction(
+      (t) => document.body.innerText.includes(t),
+      { timeout: 20000 },
+      route.readyText,
+    );
+  }
+  if (route.modifier === 'late-night') {
+    await pg.evaluate(() => document.documentElement.classList.add('late-night'));
+  } else {
+    const stripped = await pg.evaluate(() => {
+      const had = document.documentElement.classList.contains('late-night');
+      document.documentElement.classList.remove('late-night');
+      return had;
+    });
+    if (stripped) console.warn(`  warn: stripped an ambient late-night class from ${route.name}@${vp.name}`);
+  }
+  if (route.modifier === 'override-mode') {
+    await pg.evaluate(() => document.body.classList.add('override-mode'));
+  }
+  const stability = await waitForDomStable(pg);
+  if (!stability.stable) {
+    throw new Error(
+      `DOM never stabilised: still changing after ${stability.elapsedMs}ms ` +
+        `(last element count seen: ${stability.finalCount})`,
+    );
+  }
+}
+
 for (const route of ROUTES) {
   for (const vp of VIEWPORTS) {
-    await page.setViewport({ width: vp.width, height: vp.height });
-    await page.goto(BASE + route.path, { waitUntil: 'load' });
-    // The lazy tree mounts inside requestIdleCallback with a 400ms timeout.
-    // Wait for a section that only exists after that flips.
-    await page.waitForSelector(route.wait, { timeout: 15000 }).catch(() => {
-      console.warn(`  warn: ${route.wait} never appeared on ${route.name}@${vp.name}`);
-    });
-    if (route.readyText) {
-      // See the ROUTES comment above: this is the real "finished mounting"
-      // signal for the home-family routes, tighter than `footer`.
-      await page
-        .waitForFunction((t) => document.body.innerText.includes(t), { timeout: 15000 }, route.readyText)
-        .catch(() => {
-          console.warn(`  warn: readyText "${route.readyText}" never appeared on ${route.name}@${vp.name}`);
-        });
-    }
-    if (route.modifier === 'late-night') {
-      await page.evaluate(() => document.documentElement.classList.add('late-night'));
-    } else {
-      // Strip a real-clock late-night class so a capture run between 23:00
-      // and 05:00 local time can't contaminate the default scenarios.
-      const stripped = await page.evaluate(() => {
-        const had = document.documentElement.classList.contains('late-night');
-        document.documentElement.classList.remove('late-night');
-        return had;
-      });
-      if (stripped) {
-        console.warn(`  warn: stripped an ambient late-night class from ${route.name}@${vp.name}`);
-      }
-    }
-    if (route.modifier === 'override-mode') {
-      await page.evaluate(() => document.body.classList.add('override-mode'));
-    }
-    await waitForDomStable(page);
     const key = `${route.name}@${vp.name}`;
-    snapshot[key] = await page.evaluate(collect, PROPS, SKIP_SELECTORS, SKIP_OWN_SELECTORS);
-    console.log(`  ${key}: ${Object.keys(snapshot[key]).length} elements`);
+    const t0 = Date.now();
+    let captured = null;
+    let lastErr = null;
+    for (let attempt = 1; attempt <= ATTEMPTS; attempt++) {
+      const pg = await newScenarioPage();
+      try {
+        await prepare(pg, route, vp);
+        captured = await pg.evaluate(collect, PROPS, SKIP_SELECTORS, SKIP_OWN_SELECTORS);
+        lastErr = null;
+      } catch (e) {
+        lastErr = e;
+        console.warn(`  retry ${attempt}/${ATTEMPTS} ${key}: ${String(e.message).split('\n')[0]}`);
+      } finally {
+        await pg.close().catch(() => {});
+      }
+      if (captured) break;
+    }
+    if (!captured) {
+      await FATAL_ON_UNSTABLE(page, browser, `${key} never became ready in ${ATTEMPTS} attempts. Last: ${lastErr && lastErr.message}`);
+    }
+    snapshot[key] = captured;
+    console.log(`  ${key}: ${Object.keys(captured).length} elements  (${Date.now() - t0}ms)`);
   }
 }
 

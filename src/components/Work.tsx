@@ -89,7 +89,7 @@ export default function Work({ projects }: { projects: Project[] }) {
             </div>
             {active?.summary && (
               <div className="mt-3 text-xs text-[#a8a29e] leading-relaxed">
-                <span className="text-[#4a453e]">// </span>
+                <span className="text-[#605a52]">// </span>
                 {active.summary}
               </div>
             )}
@@ -150,7 +150,7 @@ function ProjectRow({
       {/* Mobile: stacked card. Desktop: 12-col grid. */}
       <div className="md:hidden">
         <div className="flex items-baseline text-[11px] font-mono mb-2">
-          <span className={active ? 'text-[#e040fb]' : 'text-[#4a453e]'}>
+          <span className={active ? 'text-[#e040fb]' : 'text-[#605a52]'}>
             {String(index + 1).padStart(2, '0')}
           </span>
         </div>
@@ -162,10 +162,15 @@ function ProjectRow({
         <div className={`text-[22px] leading-tight font-light mb-1 break-words ${active ? 'text-[#e040fb]' : 'text-[#e8e4dc]'}`}>
           {project.title}
         </div>
+        {/*
+         * Stretched link: the visible affordance was 123x18px, well under the
+         * 44px touch minimum, and it was the only way into a case study on a
+         * phone. `after:inset-0` spreads the hit area over the whole card
+         * (the li is `relative`), so a tap anywhere on the project navigates.
+         */}
         <Link
           to={`/work/${slugify(project.title)}`}
-          onClick={(e) => e.stopPropagation()}
-          className="text-[11px] font-mono text-[#e040fb] mb-3 inline-block hover:underline"
+          className="text-[11px] font-mono text-[#e040fb] mb-1 inline-flex items-center min-h-[44px] hover:underline after:absolute after:inset-0 after:content-['']"
         >
           view case study →
         </Link>
@@ -184,13 +189,13 @@ function ProjectRow({
       </div>
 
       <div className="hidden md:grid md:grid-cols-12 md:gap-6 md:items-center">
-        <div className={`md:col-span-1 text-xs tabular-nums transition-colors pl-2 ${active ? 'text-[#e040fb]' : 'text-[#4a453e]'}`}>
+        <div className={`md:col-span-1 text-xs tabular-nums transition-colors pl-2 ${active ? 'text-[#e040fb]' : 'text-[#605a52]'}`}>
           {String(index + 1).padStart(2, '0')}
         </div>
         <div className="md:col-span-8 min-w-0">
           <div className="text-[11px] text-[#6b6660] mb-1 flex gap-2 flex-wrap">
             <span>./{project.role.toLowerCase().replace(/\s+/g, '_')}</span>
-            <span className="text-[#4a453e]">·</span>
+            <span className="text-[#605a52]">·</span>
             <span>{project.client}</span>
           </div>
           <div className={`text-xl md:text-3xl lg:text-4xl leading-tight transition-colors ${active ? 'text-[#e040fb]' : 'text-[#e8e4dc]'}`}>

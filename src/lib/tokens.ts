@@ -16,6 +16,16 @@
  * #7a6e62 happens to be the value :root currently calls --muted, which the
  * components ignored.
  *
+ * CONTRAST CORRECTION (2026-08-13): fg-ghost moved #4a453e -> #605a52, 72
+ * sites. Against the #07070a page it measured 2.12:1, the worst band on the
+ * site by a wide margin and carrying real structure - project index numbers,
+ * the `//` separators. #605a52 is 2.95:1.
+ *
+ * It does NOT reach the 4.5:1 AA floor, and cannot on its own: fg-ghost has to
+ * stay a visible step below fg-dim, and fg-dim is itself only 3.54:1. Clearing
+ * AA means lifting the whole tail of the ramp - fg-ghost to ~4.6:1 and fg-dim
+ * above that - across 132+ further sites. That call has not been made yet.
+ *
  * PAGE BACKGROUND DECISION (task 3, step 1): UNIFY on #07070a. It has 13
  * uses including the App wrapper. #08060a has 2 and is vestigial: the --bg
  * declaration itself plus AgentBattle.tsx:197. The Task 4 gate will report
@@ -51,7 +61,7 @@ export const TOKENS: Record<TokenName, string> = {
   'fg-warm': '201 184 166', // #c9b8a6
   'fg-muted': '168 162 158', // #a8a29e
   'fg-dim': '107 102 96',  // #6b6660, absorbs #7a6e62 per the step 1 ruling
-  'fg-ghost': '74 69 62',  // #4a453e
+  'fg-ghost': '96 90 82',  // #605a52
   accent: '224 64 251',    // #e040fb
   'accent-hot': '255 0 110', // #ff006e, absorbs #ff2d78 (see header note)
   signal: '0 212 255',     // #00d4ff
@@ -70,7 +80,7 @@ export const HEX_TO_ROLE: Record<string, TokenName> = {
   '#c9b8a6': 'fg-warm',
   '#a8a29e': 'fg-muted',
   '#6b6660': 'fg-dim',
-  '#4a453e': 'fg-ghost',
+  '#605a52': 'fg-ghost',
   '#e040fb': 'accent',
   '#ff006e': 'accent-hot',
   '#00d4ff': 'signal',

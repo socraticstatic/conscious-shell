@@ -38,7 +38,7 @@ export default function TransmissionPanel({
   const Body = (
     <>
       <div className="flex items-baseline justify-between border-b border-[#1f1c17] px-5 py-3 gap-3">
-        <div className="flex items-baseline gap-2 sm:gap-3 text-[10px] uppercase tracking-[0.18em] sm:tracking-[0.2em] text-[#4a453e] overflow-x-auto whitespace-nowrap scrollbar-none">
+        <div className="flex items-baseline gap-2 sm:gap-3 text-[10px] uppercase tracking-[0.18em] sm:tracking-[0.2em] text-[#605a52] overflow-x-auto whitespace-nowrap scrollbar-none">
           <span className="text-[#4fc3f7]">▸ transmission</span>
           <span>{article.published_date}</span>
           <span>· {article.reading_minutes}m</span>
@@ -81,7 +81,7 @@ export default function TransmissionPanel({
           />
         )}
 
-        <div className="mt-8 pt-4 border-t border-dashed border-[#1f1c17] text-[10px] uppercase tracking-[0.2em] text-[#4a453e]">
+        <div className="mt-8 pt-4 border-t border-dashed border-[#1f1c17] text-[10px] uppercase tracking-[0.2em] text-[#605a52]">
           // end transmission · signal source: micah.boswell · channel: linkedin.archive
         </div>
       </div>

@@ -86,7 +86,7 @@ export default function CaseStudy() {
                 {index >= 0 ? String(index + 1).padStart(2, '0') : '—'}
               </span>
               <span>./{project.role.toLowerCase().replace(/\s+/g, '_')}</span>
-              <span className="text-[#4a453e]">·</span>
+              <span className="text-[#605a52]">·</span>
               <span>{project.client}</span>
             </div>
 

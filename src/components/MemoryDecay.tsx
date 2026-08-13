@@ -140,7 +140,7 @@ export default function MemoryDecay() {
         <span className={integrity < 40 ? 'text-[#ff006e]' : 'text-[#6b6660]'}>
           {`// memory integrity: ${integrity}%`}
         </span>
-        <div className="text-[10px] text-[#4a453e] mt-0.5">type “remember” to restore</div>
+        <div className="text-[10px] text-[#605a52] mt-0.5">type “remember” to restore</div>
       </motion.div>
 
       <AnimatePresence>

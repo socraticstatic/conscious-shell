@@ -97,10 +97,10 @@ export default function HumanLayer({ trivia }: { trivia: Trivia[] }) {
                       }`}
                     >
                       <span className="text-sm">
-                        <span className="text-[#4a453e] mr-2">{isActive ? '▸' : '·'}</span>
+                        <span className="text-[#605a52] mr-2">{isActive ? '▸' : '·'}</span>
                         {file}
                       </span>
-                      <span className="text-[10px] tabular-nums text-[#4a453e]">
+                      <span className="text-[10px] tabular-nums text-[#605a52]">
                         {String(count).padStart(2, '0')}
                       </span>
                     </button>
@@ -109,7 +109,7 @@ export default function HumanLayer({ trivia }: { trivia: Trivia[] }) {
               })}
             </ul>
 
-            <div className="mt-5 text-[11px] text-[#4a453e] leading-5">
+            <div className="mt-5 text-[11px] text-[#605a52] leading-5">
               <div># signal vs noise</div>
               <div className="text-[#6b6660]">
                 human layer is a dossier — the things that do not fit on a
@@ -158,7 +158,7 @@ export default function HumanLayer({ trivia }: { trivia: Trivia[] }) {
                           </span>
                         </div>
                         <div className="col-span-12 md:col-span-9 text-[#e8e4dc] text-base md:text-lg leading-relaxed font-mono">
-                          <span className="text-[#4a453e] mr-2">&gt;</span>
+                          <span className="text-[#605a52] mr-2">&gt;</span>
                           <ScrambleText
                             text={row.value}
                             trigger={active}
@@ -177,7 +177,7 @@ export default function HumanLayer({ trivia }: { trivia: Trivia[] }) {
                 </motion.ul>
               </AnimatePresence>
 
-              <div className="px-4 py-2 border-t border-[#1f1c17] text-[10px] text-[#4a453e] flex items-center justify-between">
+              <div className="px-4 py-2 border-t border-[#1f1c17] text-[10px] text-[#605a52] flex items-center justify-between">
                 <span>end of view · press next category to continue</span>
                 <span className="tabular-nums">EOF</span>
               </div>

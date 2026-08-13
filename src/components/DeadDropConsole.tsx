@@ -408,7 +408,7 @@ export default function DeadDropConsole({ poems = [] }: { poems?: Poem[] }) {
                 autoCapitalize="off"
                 autoCorrect="off"
                 placeholder="type a command · try help"
-                className="flex-1 bg-transparent outline-none font-mono text-[12px] text-[#e8e4dc] placeholder-[#4a453e]"
+                className="flex-1 bg-transparent outline-none font-mono text-[12px] text-[#e8e4dc] placeholder-[#605a52]"
                 aria-label="console input"
               />
             </div>
