@@ -54,7 +54,7 @@ export default function Nav({ onOpenPalette }: { onOpenPalette: () => void }) {
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10 h-14 md:h-12 flex items-center justify-between text-[11px] sm:text-[12px]">
           <button
             onClick={() => go('top')}
-            className="flex items-center gap-2 text-[#e8e4dc] hover:text-[#e040fb] transition-colors"
+            className="flex items-center gap-2 min-h-[44px] -ml-1 pl-1 pr-2 text-[#e8e4dc] hover:text-[#e040fb] transition-colors"
           >
             <span className="w-1.5 h-1.5 bg-[#e040fb]" />
             <span className="font-mono">conscious_shell</span>

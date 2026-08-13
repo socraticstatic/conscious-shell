@@ -130,8 +130,8 @@ export default function HaikuDeck({ haiku }: { haiku: Haiku[] }) {
                 </p>
                 <div className="mt-8 flex items-center gap-4 text-[11px] uppercase tracking-[0.25em] text-[#6b6660] flex-wrap">
                   <span>— {current.source}</span>
-                  <span className="text-[#4a453e]">/</span>
-                  <span><span className="text-[#4a453e]">mood:</span> {current.mood || 'n/a'}</span>
+                  <span className="text-[#605a52]">/</span>
+                  <span><span className="text-[#605a52]">mood:</span> {current.mood || 'n/a'}</span>
                   <button
                     type="button"
                     onClick={speak}
@@ -166,7 +166,7 @@ export default function HaikuDeck({ haiku }: { haiku: Haiku[] }) {
                         : 'text-[#6b6660] hover:text-[#e8e4dc]'
                     }`}
                   >
-                    <span className="tabular-nums text-[10px] text-[#4a453e]">
+                    <span className="tabular-nums text-[10px] text-[#605a52]">
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <span className="truncate">{h.mood || h.line1}</span>
@@ -187,7 +187,7 @@ export default function HaikuDeck({ haiku }: { haiku: Haiku[] }) {
             transition={{ ease: 'linear' }}
           />
         </div>
-        <div className="mt-2 text-[10px] text-[#4a453e] flex justify-between tabular-nums items-center gap-4">
+        <div className="mt-2 text-[10px] text-[#605a52] flex justify-between tabular-nums items-center gap-4">
           <span>hover to pause · click a row to jump</span>
           <button
             type="button"

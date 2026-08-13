@@ -12,12 +12,14 @@ import { saveRecoveryScroll } from './recoveryScroll';
 //
 // This helper makes the import resilient:
 //   1. Retry the import a couple of times (handles transient network blips).
-//   2. If it still fails and looks like a stale-deploy chunk 404, do ONE
-//      hard reload to pull fresh HTML + correct chunk names — but only if we
-//      haven't just reloaded (a cooldown), or we'd recreate the very loop
-//      we're trying to kill.
-//   3. If even that fails, rethrow so the ErrorBoundary can degrade gracefully
-//      instead of taking the whole page down.
+//   2. For critical chunks: if it still fails and looks like a stale-deploy
+//      chunk 404, schedule a hard reload to pull fresh HTML + correct chunk
+//      names (but only when the tab hides, so the reader never watches the
+//      page restart). If we reloaded recently, skip to avoid looping.
+//   3. For ambient (non-critical) chunks: fail soft - let the ErrorBoundary
+//      show an inline tap-to-reload fallback in the section's place.
+//   4. If even retries fail, rethrow so the ErrorBoundary can degrade
+//      gracefully instead of taking the whole page down.
 
 const RELOAD_KEY = 'cs:chunk-reload-at';
 // After a recovery reload, suppress further reloads for this long. If a chunk
@@ -53,17 +55,58 @@ function markReloaded(): void {
   }
 }
 
+export type RecoveryInput = {
+  critical: boolean;
+  chunkError: boolean;
+  recentlyReloaded: boolean;
+};
+
+// Pure + testable. A stale-deploy 404 on a chunk the reader needs earns ONE
+// deferred reload. Ambient chunks never reload: the shell just goes without
+// that layer. Mid-read reloads used to register as a random auto-refresh -
+// the recovery was louder than the failure.
+export function recoveryAction(input: RecoveryInput): 'defer-reload' | 'throw' {
+  if (input.critical && input.chunkError && !input.recentlyReloaded) return 'defer-reload';
+  return 'throw';
+}
+
+// One listener per page, no matter how many chunks fail in the same burst.
+let reloadScheduled = false;
+
+function scheduleReloadWhenHidden(): void {
+  if (reloadScheduled || typeof document === 'undefined') return;
+  reloadScheduled = true;
+  // A tab that is already hidden (e.g. opened in the background on mobile)
+  // will never see a transition to hidden, so the visibilitychange listener
+  // below would never fire. It can reload right now, invisibly, instead.
+  if (document.hidden) {
+    markReloaded();
+    saveRecoveryScroll();
+    window.location.reload();
+    return;
+  }
+  const onVisibility = () => {
+    if (!document.hidden) return;
+    document.removeEventListener('visibilitychange', onVisibility);
+    markReloaded();
+    saveRecoveryScroll();
+    window.location.reload();
+  };
+  document.addEventListener('visibilitychange', onVisibility);
+}
+
 // Mirrors React.lazy's own signature (ComponentType<any>) so prop types on the
 // wrapped components are preserved through inference.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function lazyWithRetry<T extends ComponentType<any>>(
   factory: () => Promise<{ default: T }>,
+  opts: { critical?: boolean } = {},
 ): LazyExoticComponent<T> {
+  const { critical = true } = opts;
   return lazy(async () => {
     try {
       return await factory();
     } catch (firstError) {
-      // Transient? Give the network two more chances with a short backoff.
       for (let attempt = 1; attempt <= 2; attempt++) {
         await new Promise((resolve) => setTimeout(resolve, 350 * attempt));
         try {
@@ -73,21 +116,17 @@ export function lazyWithRetry<T extends ComponentType<any>>(
         }
       }
 
-      // Still failing. If the chunk is genuinely missing (stale deploy), a
-      // fresh page load fixes it — but only if we haven't reloaded recently,
-      // or we'd recreate the crash loop.
-      if (isChunkLoadError(firstError) && typeof window !== 'undefined' && !recentlyReloaded()) {
-        markReloaded();
-        // Carry the scroll position across, or the recovery reads as a random
-        // auto-refresh that throws the visitor back to the hero mid-scroll.
-        saveRecoveryScroll();
-        window.location.reload();
-        // Hang until the reload takes over so React never renders a
-        // half-broken state in the meantime.
-        return new Promise<{ default: T }>(() => {});
+      const action = recoveryAction({
+        critical,
+        chunkError: isChunkLoadError(firstError),
+        recentlyReloaded: recentlyReloaded(),
+      });
+      if (action === 'defer-reload' && typeof window !== 'undefined') {
+        // The reload happens the next time the tab is hidden, so the reader
+        // never watches the page restart. Until then the ErrorBoundary shows
+        // an inline tap-to-reload fallback in the section's place.
+        scheduleReloadWhenHidden();
       }
-
-      // Out of options: let the nearest ErrorBoundary handle it.
       throw firstError;
     }
   });

@@ -45,10 +45,10 @@ export default function Impact() {
             <pre className="text-[13px] leading-6 text-[#a8a29e]">
               {decades.map(([year, n], i) => (
                 <div key={year} className="flex gap-3">
-                  <span className="text-[#4a453e] w-8">{year}</span>
+                  <span className="text-[#605a52] w-8">{year}</span>
                   <span className="text-[#e040fb]">{bar(n, maxDec, 24)}</span>
                   <span className="text-[#e8e4dc] tabular-nums">{String(n).padStart(3, ' ')}</span>
-                  {i === decades.length - 1 && <span className="text-[#4a453e]">← current</span>}
+                  {i === decades.length - 1 && <span className="text-[#605a52]">← current</span>}
                 </div>
               ))}
             </pre>
@@ -64,7 +64,7 @@ export default function Impact() {
             <pre className="text-[13px] leading-6 text-[#a8a29e]">
               {disciplines.map(([name, n]) => (
                 <div key={name} className="flex gap-3">
-                  <span className="text-[#4a453e] w-36 truncate">{name}</span>
+                  <span className="text-[#605a52] w-36 truncate">{name}</span>
                   <span className="text-[#e040fb]">{bar(n, 100, 18)}</span>
                   <span className="text-[#e8e4dc] tabular-nums">{n}%</span>
                 </div>

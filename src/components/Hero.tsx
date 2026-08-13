@@ -31,6 +31,23 @@ export default function Hero() {
     let cancelled = false;
     setRendered([]);
     setDone(false);
+
+    // The typewriter costs ~3.3s before `done` renders the CTAs, and on a fresh
+    // session BootOverlay has already spent ~3s ahead of it. On a phone that put
+    // "30 years · 126 projects · 20+ clients · 3 books" and every call to action
+    // behind six seconds of animation, below a full screen of biometrics - the
+    // costume arriving before the credentials on the device with the least
+    // patience. Small screens and reduced-motion visitors get the finished
+    // block at first paint; desktop keeps the theater.
+    const instant =
+      window.matchMedia?.('(max-width: 767px)').matches ||
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    if (instant) {
+      setRendered(lines.map((l) => ({ ...l, typed: l.cmd, outShown: l.out?.length ?? 0 })));
+      setDone(true);
+      return;
+    }
+
     const run = async () => {
       for (let i = 0; i < lines.length; i++) {
         const l = lines[i];
@@ -73,7 +90,9 @@ export default function Hero() {
     <section id="top" className="relative overflow-hidden border-b border-[#1f1c17]">
       <div className="absolute inset-0 bg-gradient-to-b from-[#07070a]/30 via-transparent to-[#07070a] pointer-events-none" />
 
-      <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10 pt-[150px] sm:pt-24 md:pt-28 pb-20 sm:pb-24">
+      {/* pt was 150px on mobile against a 48px header - ~100px of dead black
+          above the fold on the smallest screen. 80px leaves the header clear. */}
+      <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 md:px-10 pt-20 sm:pt-24 md:pt-28 pb-20 sm:pb-24">
         {/* Classification strip */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -105,7 +124,7 @@ export default function Hero() {
 
             <div className="mt-3 sm:mt-4 flex items-baseline gap-2 sm:gap-3 flex-wrap">
               <span className="font-jp text-base sm:text-xl md:text-2xl text-[#00d4ff]">ミカ・ボズウェル</span>
-              <span className="text-[#4a453e]">//</span>
+              <span className="text-[#605a52]">//</span>
               <span className="text-xs uppercase tracking-widest text-[#a8a29e]">
                 design_leader · unit 1996 · active
               </span>
@@ -149,21 +168,21 @@ export default function Hero() {
                   <button
                     onClick={() => scrollTo('work')}
                     data-cursor="hover"
-                    className="px-3 sm:px-4 py-2 border border-[#e040fb] text-[#e040fb] hover:bg-[#e040fb] hover:text-[#0b0a08] active:bg-[#e040fb] active:text-[#0b0a08] transition-colors text-xs sm:text-sm"
+                    className="inline-flex items-center min-h-[44px] px-3 sm:px-4 py-2 border border-[#e040fb] text-[#e040fb] hover:bg-[#e040fb] hover:text-[#0b0a08] active:bg-[#e040fb] active:text-[#0b0a08] transition-colors text-xs sm:text-sm"
                   >
                     [ enter archive ]
                   </button>
                   <button
                     onClick={() => scrollTo('empathy')}
                     data-cursor="hover"
-                    className="px-3 sm:px-4 py-2 border border-[#00d4ff] text-[#00d4ff] hover:bg-[#00d4ff] hover:text-[#0b0a08] active:bg-[#00d4ff] active:text-[#0b0a08] transition-colors text-xs sm:text-sm"
+                    className="inline-flex items-center min-h-[44px] px-3 sm:px-4 py-2 border border-[#00d4ff] text-[#00d4ff] hover:bg-[#00d4ff] hover:text-[#0b0a08] active:bg-[#00d4ff] active:text-[#0b0a08] transition-colors text-xs sm:text-sm"
                   >
                     [ begin v-k test ]
                   </button>
                   <button
                     onClick={() => scrollTo('contact')}
                     data-cursor="hover"
-                    className="px-3 sm:px-4 py-2 border border-[#2a2620] text-[#a8a29e] hover:border-[#ff006e] hover:text-[#ff006e] active:border-[#ff006e] active:text-[#ff006e] transition-colors text-xs sm:text-sm"
+                    className="inline-flex items-center min-h-[44px] px-3 sm:px-4 py-2 border border-[#2a2620] text-[#a8a29e] hover:border-[#ff006e] hover:text-[#ff006e] active:border-[#ff006e] active:text-[#ff006e] transition-colors text-xs sm:text-sm"
                   >
                     [ transmit ]
                   </button>
@@ -235,7 +254,7 @@ function BiometricPanel() {
           </div>
         ))}
       </dl>
-      <div className="border-t border-[#1f1c17] px-3 py-2 text-[10px] text-[#4a453e] flex items-center justify-between">
+      <div className="border-t border-[#1f1c17] px-3 py-2 text-[10px] text-[#605a52] flex items-center justify-between">
         <span>// monitoring</span>
         <span className="text-[#00d4ff]">● live</span>
       </div>

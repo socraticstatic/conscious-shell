@@ -91,7 +91,7 @@ export default function Certifications({ certs }: { certs: Certification[] }) {
 
                   <motion.div
                     animate={{ rotate: isOpen ? 90 : 0 }}
-                    className="text-[#4a453e] mt-2 shrink-0"
+                    className="text-[#605a52] mt-2 shrink-0"
                   >
                     <ChevronRight className="w-4 h-4" />
                   </motion.div>
@@ -156,7 +156,7 @@ export default function Certifications({ certs }: { certs: Certification[] }) {
         </div>
 
         <div className="mt-8 border border-dashed border-[#1f1c17] px-5 py-4">
-          <div className="text-[9px] uppercase tracking-[0.3em] text-[#4a453e] mb-2">
+          <div className="text-[9px] uppercase tracking-[0.3em] text-[#605a52] mb-2">
             // system note
           </div>
           <p className="text-[11px] text-[#6b6660] leading-relaxed max-w-xl">

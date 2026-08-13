@@ -53,7 +53,7 @@ export default function BootOverlay() {
           className="fixed inset-0 z-[200] bg-[#0b0a08] flex items-center justify-center px-6"
         >
           <div className="w-full max-w-2xl text-xs md:text-sm text-[#e040fb] relative">
-            <div className="flex items-center gap-2 mb-5 text-[#4a453e] text-[10px] uppercase tracking-widest">
+            <div className="flex items-center gap-2 mb-5 text-[#605a52] text-[10px] uppercase tracking-widest">
               <span className="w-2 h-2 bg-[#e040fb]" />
               <span>conscious_shell — /boot</span>
             </div>

@@ -3,8 +3,26 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { SectionHeader } from './Work';
 import type { VkQuestion } from '../lib/supabase';
 
+// The machine reads the body, not the words. Three physiological reactions
+// work for any prompt, and each one moves the gauges deterministically -
+// the readings finally answer to the subject.
+type Reaction = 'flinch' | 'steady' | 'avert';
+
+const REACTIONS: { key: Reaction; label: string; jp: string }[] = [
+  { key: 'flinch', label: 'flinch', jp: '動揺' },
+  { key: 'steady', label: 'hold steady', jp: '平静' },
+  { key: 'avert', label: 'look away', jp: '回避' },
+];
+
+const REACTION_OFFSETS: Record<Reaction, { iris: number; pulse: number; resp: number; gsr: number }> = {
+  flinch: { iris: 10, pulse: 18, resp: 4, gsr: 0.9 },
+  steady: { iris: 2, pulse: 2, resp: 0, gsr: 0.1 },
+  avert: { iris: -6, pulse: 8, resp: 9, gsr: 0.5 },
+};
+
 export default function VoightKampff({ questions }: { questions: VkQuestion[] }) {
   const [i, setI] = useState(0);
+  const [reaction, setReaction] = useState<Reaction | null>(null);
   const [baseline, setBaseline] = useState({ iris: 68, pulse: 72, resp: 16, gsr: 1.3 });
 
   const q = questions[i];
@@ -23,11 +41,27 @@ export default function VoightKampff({ questions }: { questions: VkQuestion[] })
 
   if (!questions.length) return null;
 
-  const next = () => {
-    setI((v) => (v + 1) % questions.length);
+  // Displayed readings = ambient baseline + the subject's reaction.
+  const offset = reaction ? REACTION_OFFSETS[reaction] : { iris: 0, pulse: 0, resp: 0, gsr: 0 };
+  const reading = {
+    iris: Math.max(0, Math.min(100, baseline.iris + offset.iris)),
+    pulse: Math.min(120, baseline.pulse + offset.pulse),
+    resp: Math.min(30, baseline.resp + offset.resp),
+    gsr: Number(Math.min(3, baseline.gsr + offset.gsr).toFixed(1)),
+  };
+
+  const react = (r: Reaction) => {
+    setReaction(r);
     window.dispatchEvent(new CustomEvent('intel:vk_answer'));
   };
-  const prev = () => setI((v) => (v - 1 + questions.length) % questions.length);
+  const next = () => {
+    setI((v) => (v + 1) % questions.length);
+    setReaction(null);
+  };
+  const prev = () => {
+    setI((v) => (v - 1 + questions.length) % questions.length);
+    setReaction(null);
+  };
 
   return (
     <section id="empathy" className="relative py-20 md:py-28 border-b border-[#1f1c17]">
@@ -39,7 +73,8 @@ export default function VoightKampff({ questions }: { questions: VkQuestion[] })
             <div className="flex items-center justify-between px-4 py-2 border-b border-[#1f1c17] text-[10px]">
               <div className="flex items-center gap-2 text-[#e040fb]">
                 <span className="w-1.5 h-1.5 bg-[#ff006e] animate-pulse rounded-full" />
-                <span>RECORDING — NEXUS-6 SUBJECT PROFILE</span>
+                <span className="sm:hidden">REC · NEXUS-6</span>
+                <span className="hidden sm:inline">RECORDING · NEXUS-6 SUBJECT PROFILE</span>
               </div>
               <div className="text-[#00d4ff] font-jp">質問 {String(i + 1).padStart(2, '0')}</div>
             </div>
@@ -62,42 +97,75 @@ export default function VoightKampff({ questions }: { questions: VkQuestion[] })
                   </p>
                 </motion.div>
               </AnimatePresence>
+
+              <div className="mt-8 flex flex-col sm:flex-row gap-3">
+                {REACTIONS.map((r) => {
+                  const picked = reaction === r.key;
+                  const dimmed = reaction !== null && !picked;
+                  return (
+                    <button
+                      key={r.key}
+                      onClick={() => react(r.key)}
+                      data-cursor="hover"
+                      className={`flex-1 min-h-[44px] px-4 py-2.5 border text-xs transition-all duration-300 ${
+                        picked
+                          ? 'border-[#00d4ff] text-[#00d4ff] bg-[#00d4ff]/10'
+                          : dimmed
+                            ? 'border-[#1f1c17] text-[#605a52] opacity-50'
+                            : 'border-[#2a2620] text-[#a8a29e] hover:border-[#e040fb] hover:text-[#e040fb]'
+                      }`}
+                    >
+                      {r.label} <span className="font-jp ml-1 opacity-70">{r.jp}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
-            <div className="flex items-center justify-between border-t border-[#1f1c17] px-4 py-3">
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between border-t border-[#1f1c17] px-4 py-4">
+              <div className="flex items-center gap-3">
                 <button
                   onClick={prev}
                   data-cursor="hover"
-                  className="px-3 py-1.5 text-xs border border-[#2a2620] text-[#a8a29e] hover:border-[#e040fb] hover:text-[#e040fb] transition-colors"
+                  className="min-h-[44px] px-4 py-2 text-xs border border-[#2a2620] text-[#a8a29e] hover:border-[#e040fb] hover:text-[#e040fb] transition-colors"
                 >
                   ← prev
                 </button>
-                <button
-                  onClick={next}
-                  data-cursor="hover"
-                  className="px-3 py-1.5 text-xs border border-[#e040fb] text-[#e040fb] hover:bg-[#e040fb] hover:text-[#0b0a08] transition-colors"
-                >
-                  respond / next →
-                </button>
+                {reaction !== null && (
+                  <motion.button
+                    initial={{ opacity: 0, x: -6 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    onClick={next}
+                    data-cursor="hover"
+                    className="min-h-[44px] px-4 py-2 text-xs border border-[#00d4ff] text-[#00d4ff] hover:bg-[#00d4ff] hover:text-[#0b0a08] transition-colors"
+                  >
+                    next →
+                  </motion.button>
+                )}
               </div>
-              <div className="text-[10px] text-[#6b6660]">enter = next · esc = dismiss</div>
+              <div className="text-[10px] text-[#6b6660]">
+                {reaction !== null ? (
+                  <span className="text-[#00d4ff]">reaction recorded · 記録済</span>
+                ) : (
+                  'the machine is reading you'
+                )}
+              </div>
             </div>
 
             <PulseTrack />
           </div>
 
           <div className="col-span-12 lg:col-span-4 space-y-3">
-            <Gauge label="iris" jp="虹彩" value={baseline.iris} suffix="%" max={100} hue="amber" />
-            <Gauge label="pulse" jp="脈拍" value={baseline.pulse} suffix="bpm" max={120} hue="cyan" />
-            <Gauge label="respiration" jp="呼吸" value={baseline.resp} suffix="/min" max={30} hue="amber" />
-            <Gauge label="skin galvanic" jp="皮膚" value={baseline.gsr} suffix="μS" max={3} hue="pink" />
+            <Gauge label="iris" jp="虹彩" value={reading.iris} suffix="%" max={100} hue="amber" />
+            <Gauge label="pulse" jp="脈拍" value={reading.pulse} suffix="bpm" max={120} hue="cyan" />
+            <Gauge label="respiration" jp="呼吸" value={reading.resp} suffix="/min" max={30} hue="amber" />
+            <Gauge label="skin galvanic" jp="皮膚" value={reading.gsr} suffix="μS" max={3} hue="pink" />
             <div className="border border-[#1f1c17] p-3 text-[11px] text-[#6b6660] leading-relaxed">
               <span className="text-[#e040fb]">baseline:</span>{' '}
-              {baseline.pulse < 78 && baseline.resp < 20 ? 'stable' : 'elevated — retesting'}
+              {reading.pulse < 78 && reading.resp < 20 ? 'stable' : 'elevated · retesting'}
               <br />
               <span className="text-[#00d4ff]">deception:</span>{' '}
-              {Math.random() > 0.9 ? 'anomaly' : 'none detected'}
+              {reaction === 'avert' ? 'anomaly' : reaction ? 'none detected' : 'awaiting response'}
               <br />
               <span className="text-[#ff006e]">classification:</span>{' '}
               <span className="text-[#e8e4dc]">human / design-aligned</span>

@@ -420,7 +420,7 @@ export default function EsperScene({
                   aria-label={`Frame ${i + 1}: ${f.caption || f.photoId}`}
                   onClick={() => goToFrame(i)}
                   className={`h-1.5 transition-all ${
-                    i === frameIdx ? 'w-6 bg-[#e040fb]' : 'w-1.5 bg-[#4a453e] hover:bg-[#00d4ff]'
+                    i === frameIdx ? 'w-6 bg-[#e040fb]' : 'w-1.5 bg-[#605a52] hover:bg-[#00d4ff]'
                   }`}
                 />
               ))}
@@ -456,7 +456,7 @@ export default function EsperScene({
                 </motion.div>
               ))}
               {!typed.length && (
-                <div className="text-[#4a453e]">awaiting selection. click a node on the frame.</div>
+                <div className="text-[#605a52]">awaiting selection. click a node on the frame.</div>
               )}
               {phase !== 'idle' && phase !== 'resolve' && (
                 <span className="inline-block w-2 h-3 align-middle bg-[#00d4ff] animate-pulse" />

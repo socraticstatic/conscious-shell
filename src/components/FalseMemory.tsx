@@ -87,7 +87,7 @@ export default function FalseMemory() {
         >
           <div className="pointer-events-auto bg-[#0e0d0b] border border-[#2a2620] p-4 pb-8 max-w-sm shadow-[0_24px_70px_rgba(0,0,0,0.7)] rotate-[-1.5deg]">
             <div className="bg-[#070707] border border-[#1f1c17] aspect-[4/3] flex items-center justify-center overflow-hidden">
-              <span className="text-[10px] tracking-[0.3em] uppercase text-[#4a453e] animate-pulse">
+              <span className="text-[10px] tracking-[0.3em] uppercase text-[#605a52] animate-pulse">
                 recovering frame…
               </span>
             </div>

@@ -1,21 +1,19 @@
 import { Suspense, useEffect, useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import { lazyWithRetry as lazy } from './lib/lazyWithRetry';
+import { lazyWithRetry as lazy, isChunkLoadError } from './lib/lazyWithRetry';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import Nav from './components/Nav';
 import Hero from './components/Hero';
-import DevtoolsEasterEggs from './components/DevtoolsEasterEggs';
 import Work from './components/Work';
 import BootOverlay from './components/BootOverlay';
-import SessionHUD from './components/SessionHUD';
 import CaseStudy from './components/CaseStudy';
 import { useScrollToHash } from './lib/useScrollToHash';
 import { HomeMeta } from './lib/useDocumentMeta';
+import { useShellTier } from './lib/shellTier';
+import { saveRecoveryScroll } from './lib/recoveryScroll';
 
 import AmbientAudio from './components/AmbientAudio';
 import MobileControlDock from './components/MobileControlDock';
-import CRTOverlay from './components/CRTOverlay';
-import SoulLayer from './components/SoulLayer';
 import { NarratorProvider } from './lib/narrator';
 import { PersonalizationProvider } from './lib/personalization';
 import { fetchPortfolio } from './lib/portfolio';
@@ -59,41 +57,47 @@ const Services = lazy(() => import('./components/Services'));
 const Recognition = lazy(() => import('./components/Recognition'));
 const Contact = lazy(() => import('./components/Contact'));
 const Footer = lazy(() => import('./components/Footer'));
-const TearsInRain = lazy(() => import('./components/TearsInRain'));
-const BlackLitany = lazy(() => import('./components/BlackLitany'));
-const SystemBreach = lazy(() => import('./components/SystemBreach'));
-const NoirSubtitles = lazy(() => import('./components/NoirSubtitles'));
+const TearsInRain = lazy(() => import('./components/TearsInRain'), { critical: false });
+const BlackLitany = lazy(() => import('./components/BlackLitany'), { critical: false });
+const SystemBreach = lazy(() => import('./components/SystemBreach'), { critical: false });
+const NoirSubtitles = lazy(() => import('./components/NoirSubtitles'), { critical: false });
 const DeadDropConsole = lazy(() => import('./components/DeadDropConsole'));
 const EsperScene = lazy(() => import('./components/EsperScene'));
 const WebDossier = lazy(() => import('./components/WebDossier'));
-const OverrideMode = lazy(() => import('./components/OverrideMode'));
+const OverrideMode = lazy(() => import('./components/OverrideMode'), { critical: false });
 const CommandPalette = lazy(() => import('./components/CommandPalette'));
 const LogViewer = lazy(() => import('./components/LogViewer'));
-const IntelligenceHUD = lazy(() => import('./components/IntelligenceHUD'));
-const SocraticStatic = lazy(() => import('./components/SocraticStatic'));
-const OrigamiUnicorns = lazy(() => import('./components/OrigamiUnicorns'));
+const IntelligenceHUD = lazy(() => import('./components/IntelligenceHUD'), { critical: false });
+const SocraticStatic = lazy(() => import('./components/SocraticStatic'), { critical: false });
+const OrigamiUnicorns = lazy(() => import('./components/OrigamiUnicorns'), { critical: false });
 const GitArchaeology = lazy(() => import('./components/GitArchaeology'));
 const BaselineGate = lazy(() => import('./components/BaselineGate'));
 const BaselineUnlocked = lazy(() =>
   import('./components/BaselineGate').then((m) => ({ default: m.BaselineUnlocked })),
 );
-const ConsoleHijack = lazy(() => import('./components/ConsoleHijack'));
-const LateNight = lazy(() => import('./components/LateNight'));
-const SelfDestruct = lazy(() => import('./components/SelfDestruct'));
-const Heartbeat = lazy(() => import('./components/Heartbeat'));
-const TypingEchoes = lazy(() => import('./components/TypingEchoes'));
+const ConsoleHijack = lazy(() => import('./components/ConsoleHijack'), { critical: false });
+const LateNight = lazy(() => import('./components/LateNight'), { critical: false });
+const Heartbeat = lazy(() => import('./components/Heartbeat'), { critical: false });
+const TypingEchoes = lazy(() => import('./components/TypingEchoes'), { critical: false });
 const VKInterview = lazy(() => import('./components/VKInterview'));
 const Certifications = lazy(() => import('./components/Certifications'));
-const NarratorOverlay = lazy(() => import('./components/NarratorOverlay'));
-const VisitorDossier = lazy(() => import('./components/VisitorDossier'));
+const NarratorOverlay = lazy(() => import('./components/NarratorOverlay'), { critical: false });
+const VisitorDossier = lazy(() => import('./components/VisitorDossier'), { critical: false });
 // Behavioral eggs — the shell watches how you move. See
 // docs/superpowers/specs/2026-06-23-replicant-eggs-design.md
-const WitnessProtocol = lazy(() => import('./components/WitnessProtocol'));
-const FalseMemory = lazy(() => import('./components/FalseMemory'));
-const MemoryDecay = lazy(() => import('./components/MemoryDecay'));
-const TimeSkip = lazy(() => import('./components/TimeSkip'));
-const GhostUnits = lazy(() => import('./components/GhostUnits'));
-const ExitIntent = lazy(() => import('./components/ExitIntent'));
+const WitnessProtocol = lazy(() => import('./components/WitnessProtocol'), { critical: false });
+const FalseMemory = lazy(() => import('./components/FalseMemory'), { critical: false });
+const MemoryDecay = lazy(() => import('./components/MemoryDecay'), { critical: false });
+const TimeSkip = lazy(() => import('./components/TimeSkip'), { critical: false });
+const GhostUnits = lazy(() => import('./components/GhostUnits'), { critical: false });
+const ExitIntent = lazy(() => import('./components/ExitIntent'), { critical: false });
+
+// Ambient / desktop-only decoration - the "theater". Full tier only; the
+// calm reader never mounts these. See src/lib/shellTier.ts.
+const CRTOverlay = lazy(() => import('./components/CRTOverlay'), { critical: false });
+const SessionHUD = lazy(() => import('./components/SessionHUD'), { critical: false });
+const SoulLayer = lazy(() => import('./components/SoulLayer'), { critical: false });
+const DevtoolsEasterEggs = lazy(() => import('./components/DevtoolsEasterEggs'), { critical: false });
 
 // If you are reading this source, you are now part of the performance.
 // Your devtools are the fourth wall. Congratulations.
@@ -123,6 +127,7 @@ export default function App() {
   } | null>(null);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const tier = useShellTier();
   const { pathname } = useLocation();
   // Computed once. crypto.randomUUID() is unavailable on iOS Safari < 15.4 and
   // throws there — calling it raw in render would crash the whole app.
@@ -214,37 +219,27 @@ export default function App() {
       <Route
         path="/*"
         element={
-    <div className="relative min-h-[100dvh] bg-[#07070a] text-[#e8e4dc] overflow-clip" data-pid={pid} data-witness="true" data-last-words="all-those-moments-will-be-lost-in-time">
+    // pb clears the fixed bottom band (marquee 0-22px, control dock 30-74px)
+    // so the last thing on the page - the footer, and the contact form's final
+    // fields - can always scroll above the chrome instead of resting under it.
+    <div className="relative min-h-[100dvh] bg-[#07070a] text-[#e8e4dc] overflow-clip pb-[calc(88px+env(safe-area-inset-bottom,0px))]" data-pid={pid} data-witness="true" data-last-words="all-those-moments-will-be-lost-in-time">
       <HomeMeta />
-      <DevtoolsEasterEggs />
       <BootOverlay />
-      <CRTOverlay />
-      <SessionHUD />
 
       <AmbientAudio />
       <Nav onOpenPalette={() => setPaletteOpen(true)} />
       <Hero />
       <Work projects={data?.projects ?? []} />
-      <SoulLayer />
       <div className="site-rain slow" aria-hidden />
-      <div className="site-rain" aria-hidden />
       <div className="site-grain" aria-hidden />
 
       {hydrated && (
-        <ErrorBoundary label="lazy-tree">
+        <ErrorBoundary
+          label="lazy-tree"
+          fallback={(err, reset) => <ChunkFallback error={err} onRetry={reset} />}
+        >
         <Suspense fallback={null}>
-          <TearsInRain />
-          <SystemBreach />
-          <NoirSubtitles lines={data?.noir ?? []} />
           <DeadDropConsole poems={data?.poems ?? []} />
-          <OverrideMode />
-          <SocraticStatic />
-          <OrigamiUnicorns />
-          <ConsoleHijack />
-          <LateNight />
-          <SelfDestruct />
-          <Heartbeat />
-          <TypingEchoes />
           <TimeMachine />
           <VoightKampff questions={data?.vk ?? []} />
           <VKInterview recommendations={data?.recommendations ?? []} />
@@ -272,6 +267,29 @@ export default function App() {
             projects={data?.projects ?? []}
           />
           <LogViewer />
+          <MobileControlDock />
+        </Suspense>
+        </ErrorBoundary>
+      )}
+
+      {hydrated && tier === 'full' && (
+        <ErrorBoundary label="ambient" fallback={() => null}>
+        <Suspense fallback={null}>
+          <DevtoolsEasterEggs />
+          <CRTOverlay />
+          <SessionHUD />
+          <SoulLayer />
+          <div className="site-rain" aria-hidden />
+          <TearsInRain />
+          <SystemBreach />
+          <NoirSubtitles lines={data?.noir ?? []} />
+          <OverrideMode />
+          <SocraticStatic />
+          <OrigamiUnicorns />
+          <ConsoleHijack />
+          <LateNight />
+          <Heartbeat />
+          <TypingEchoes />
           <IntelligenceHUD />
           <BlackLitany />
           <NarratorOverlay />
@@ -282,7 +300,6 @@ export default function App() {
           <TimeSkip />
           <GhostUnits />
           <ExitIntent />
-          <MobileControlDock />
         </Suspense>
         </ErrorBoundary>
       )}
@@ -293,6 +310,34 @@ export default function App() {
     </PersonalizationProvider>
     </NarratorProvider>
     </ErrorBoundary>
+  );
+}
+
+// Shown in place of the content sections when a critical chunk is gone
+// (stale deploy). A reload is already scheduled for the next time the tab
+// hides; this button is for the reader who wants it now. The soft "try
+// again without reloading" retry only appears for transient render errors -
+// React.lazy caches a rejected chunk import, so retrying a stale-chunk
+// failure would just re-throw the same cached rejection instantly.
+function ChunkFallback({ error, onRetry }: { error: Error; onRetry: () => void }) {
+  return (
+    <div className="px-6 py-16 text-center font-mono">
+      <p className="text-sm text-fg-muted">part of the shell failed to load.</p>
+      <button
+        onClick={() => {
+          saveRecoveryScroll();
+          window.location.reload();
+        }}
+        className="mt-4 text-sm border border-fg/30 rounded px-4 py-3 min-h-[44px] hover:bg-fg/10"
+      >
+        tap to reload
+      </button>
+      {!isChunkLoadError(error) && (
+        <button onClick={onRetry} className="mt-4 ml-3 text-sm text-fg-dim underline min-h-[44px]">
+          try again without reloading
+        </button>
+      )}
+    </div>
   );
 }
 

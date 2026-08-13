@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
@@ -16,5 +17,9 @@ export default defineConfig({
   define: {
     __BUILD_TIMESTAMP__: JSON.stringify(new Date().toISOString()),
     __CONSCIOUSNESS_DISCLAIMER__: JSON.stringify('this bundle may contain traces of awareness'),
+  },
+  test: {
+    include: ['tests/**/*.test.mjs', 'tests/**/*.test.ts'],
+    environment: 'node',
   },
 });

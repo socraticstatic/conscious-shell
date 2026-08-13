@@ -21,10 +21,10 @@ export default function About({ testimonial }: { testimonial?: Testimonial }) {
               <span>identity.conf</span>
               <span className="text-[#e040fb]">●●●</span>
             </div>
-            <dl className="p-5 text-sm space-y-3">
+            <dl className="p-5 text-[15px] md:text-sm space-y-3">
               {bio.map(([k, v]) => (
                 <div key={k} className="flex items-baseline gap-3">
-                  <dt className="text-[#4a453e] w-32 shrink-0">{k.padEnd(16, ' ')}</dt>
+                  <dt className="text-[#605a52] w-32 shrink-0">{k.padEnd(16, ' ')}</dt>
                   <dd className="text-[#e8e4dc]">= "{v}"</dd>
                 </div>
               ))}
@@ -40,7 +40,7 @@ export default function About({ testimonial }: { testimonial?: Testimonial }) {
           >
             {paragraphs.map((p, i) => (
               <p key={i}>
-                <span className="text-[#4a453e]">// </span>
+                <span className="text-[#605a52]">// </span>
                 {p}
               </p>
             ))}
@@ -66,9 +66,9 @@ export default function About({ testimonial }: { testimonial?: Testimonial }) {
             <p className="text-[#e8e4dc] text-lg md:text-2xl leading-snug italic">
               "{testimonial.quote}"
             </p>
-            <div className="mt-3 text-sm text-[#6b6660]">
+            <div className="mt-3 text-base md:text-sm text-[#a8a29e]">
               — {testimonial.author}
-              {testimonial.role && <span className="text-[#4a453e]"> · {testimonial.role}</span>}
+              {testimonial.role && <span className="text-[#605a52]"> · {testimonial.role}</span>}
             </div>
           </motion.div>
         )}

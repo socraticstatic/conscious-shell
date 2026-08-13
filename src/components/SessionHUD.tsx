@@ -45,20 +45,27 @@ export default function SessionHUD() {
       <Reticle className="bottom-3 left-3 hidden sm:block" rotate={270} />
       <Reticle className="bottom-3 right-3 hidden sm:block" rotate={180} />
 
-      {/* Desktop: multi-line shell readout. Mobile: single quiet status pill so the bottom-left doesn't stack four lines of chrome on top of project content. */}
-      <div className="pointer-events-none hidden lg:block fixed left-4 md:left-6 z-40 text-[10px] md:text-[11px] tracking-widest space-y-1 select-none" style={{ bottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px))' }}>
-        <div className="text-[#e040fb]">◉ TYRELL.SHELL v4.7</div>
-        <div className="text-[#00d4ff]">T {time} UTC</div>
-        <div className="text-[#a8a29e]">P {coords}</div>
-        <div className="flex items-center gap-2 text-[#a8a29e]">
-          <span>S {String(scrollPct).padStart(3, '0')}%</span>
+      {/*
+       * One line, both tiers. This used to stack four transparent lines up to
+       * 102px off the bottom on desktop, which put it well outside the ~28-68px
+       * taskbar lane and straight through hero copy, project titles and article
+       * dates - transparent text landing on transparent text reads as a broken
+       * render, not as chrome. Collapsed to a single opaque pill so it stays in
+       * its lane and reads as an overlay when it does pass over content.
+       */}
+      <div className="pointer-events-none hidden lg:flex fixed left-4 md:left-6 z-40 text-[11px] tracking-widest select-none items-center gap-3 border border-[#1f1c17] bg-[#0a0908]/85 backdrop-blur-sm px-2.5 py-1.5" style={{ bottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px))' }}>
+        <span className="text-[#e040fb]">◉ TYRELL.SHELL v4.7</span>
+        <span className="text-[#00d4ff]">{time} UTC</span>
+        <span className="text-[#a8a29e]">P {coords}</span>
+        <span className="flex items-center gap-2 text-[#a8a29e]">
           <span className="inline-block w-16 h-[2px] bg-[#1a1712] relative overflow-hidden">
             <span
               className="absolute left-0 top-0 h-full bg-[#e040fb]"
               style={{ width: `${scrollPct}%`, boxShadow: '0 0 4px #e040fb' }}
             />
           </span>
-        </div>
+          <span>{String(scrollPct).padStart(3, '0')}%</span>
+        </span>
       </div>
 
       {/* Mobile: compact pill — timestamp + scroll meter, one line. */}

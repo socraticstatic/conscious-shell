@@ -108,7 +108,7 @@ export default function CommandPalette({
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 placeholder="type a command, project, or page…"
-                className="flex-1 bg-transparent outline-none text-[#e8e4dc] placeholder:text-[#4a453e] text-sm"
+                className="flex-1 bg-transparent outline-none text-[#e8e4dc] placeholder:text-[#605a52] text-sm"
               />
               <kbd className="text-[10px] text-[#6b6660] border border-[#2a2620] px-1.5 py-0.5">esc</kbd>
             </div>

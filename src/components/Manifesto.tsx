@@ -34,7 +34,7 @@ export default function Manifesto({ articles = [] }: { articles?: LinkedInArticl
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.4 }}
-          className="mt-10 text-[11px] text-[#4a453e] leading-4 whitespace-pre"
+          className="mt-10 text-[11px] text-[#605a52] leading-4 whitespace-pre"
         >
 {`+----+----------+-----------------------------------------------+
 | #  | directive | footnote                                      |
@@ -51,17 +51,17 @@ export default function Manifesto({ articles = [] }: { articles?: LinkedInArticl
               transition={{ duration: 0.35, delay: i * 0.07 }}
               className="group grid grid-cols-12 gap-3 py-5 border-b border-dashed border-[#1f1c17] items-baseline"
             >
-              <div className="col-span-1 text-xs text-[#4a453e]">0{i + 1}</div>
+              <div className="col-span-1 text-xs text-[#605a52]">0{i + 1}</div>
               <div className="col-span-11 md:col-span-4 text-2xl sm:text-3xl md:text-5xl text-[#e040fb]">{big}</div>
-              <div className="col-span-12 md:col-span-7 text-[#a8a29e] text-sm md:text-base md:pl-6">
-                <span className="text-[#4a453e]">// </span>
+              <div className="col-span-12 md:col-span-7 text-[#a8a29e] text-base md:pl-6">
+                <span className="text-[#605a52]">// </span>
                 {small}
               </div>
             </motion.li>
           ))}
         </ul>
 
-        <div className="mt-6 text-xs text-[#4a453e]"># EOF</div>
+        <div className="mt-6 text-xs text-[#605a52]"># EOF</div>
 
         {articles.length > 0 && (
           <div className="mt-20">
@@ -76,7 +76,7 @@ export default function Manifesto({ articles = [] }: { articles?: LinkedInArticl
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4 }}
-              className="mt-10 text-[11px] text-[#4a453e] leading-4 whitespace-pre overflow-x-auto"
+              className="mt-10 text-[11px] text-[#605a52] leading-4 whitespace-pre overflow-x-auto"
             >
 {`+----+--------------+--------+------------------------------------------------+
 | #  | intercepted  | length | signal                                         |
@@ -97,7 +97,7 @@ export default function Manifesto({ articles = [] }: { articles?: LinkedInArticl
                       className="w-full text-left grid grid-cols-12 gap-3 py-4 items-baseline hover:bg-[#0f0d0a]/60 transition-colors px-1"
                       aria-expanded={isOpen}
                     >
-                      <div className="col-span-1 text-xs text-[#4a453e] font-mono">
+                      <div className="col-span-1 text-xs text-[#605a52] font-mono">
                         {String(i + 1).padStart(2, '0')}
                       </div>
                       <div className="col-span-12 sm:col-span-3 md:col-span-2 text-[11px] font-mono text-[#4fc3f7] tracking-widest">
@@ -107,10 +107,10 @@ export default function Manifesto({ articles = [] }: { articles?: LinkedInArticl
                         {a.reading_minutes}m
                       </div>
                       <div className="col-span-12 sm:col-span-6 md:col-span-7 text-[#e040fb] text-[15px] md:text-base leading-snug">
-                        <span className="text-[#4a453e]">// </span>
+                        <span className="text-[#605a52]">// </span>
                         {a.title}
                       </div>
-                      <div className="col-span-1 text-right text-[11px] font-mono text-[#4a453e]">
+                      <div className="col-span-1 text-right text-[11px] font-mono text-[#605a52]">
                         {isOpen ? '[−]' : '[+]'}
                       </div>
                     </motion.button>
@@ -132,7 +132,7 @@ export default function Manifesto({ articles = [] }: { articles?: LinkedInArticl
               })}
             </ul>
 
-            <div className="mt-6 text-xs text-[#4a453e]"># end of log · click any row to open</div>
+            <div className="mt-6 text-xs text-[#605a52]"># end of log · click any row to open</div>
           </div>
         )}
       </div>

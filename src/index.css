@@ -15,17 +15,35 @@
   --void-4: "all those moments, lost in time";
   --void-5: "go gently";
 
-  --bg: #08060a;
-  --bg-2: #0b0a08;
-  --fg: #efe6d4;
-  --muted: #7a6e62;
-  --line: #1f1c17;
-  --accent: #e040fb;
-  --accent-hot: #ff2d78;
-  --cyan: #00d4ff;
-  --cyan-hot: #4fc3f7;
-  --pink: #ff006e;
-  --ember: #7c3aed;
+  /* Colour tokens. Space-separated RGB channels, no wrapper: the form is
+     load-bearing, because Tailwind's <alpha-value> placeholder only works
+     against it. See src/lib/tokens.ts. */
+  --bg: 7 7 10;
+  --surface: 11 10 8;
+  --raised: 26 23 18;
+  --rule: 31 28 23;
+  --rule-strong: 42 38 32;
+  --fg: 232 228 220;
+  --fg-warm: 201 184 166;
+  --fg-muted: 168 162 158;
+  --fg-dim: 107 102 96;
+  --fg-ghost: 96 90 82;
+  --accent: 224 64 251;
+  --accent-hot: 255 0 110;
+  --signal: 0 212 255;
+  --signal-hot: 79 195 247;
+  --alert: 255 59 59;
+  --ember: 124 58 237;
+
+  /* NOT part of the sixteen tokens. --cyan and --pink share --signal's and
+     --accent-hot's default value today, but body.override-mode gives each
+     pair its own distinct override (see below), so folding .neon-cyan /
+     .neon-pink onto --signal / --accent-hot would change their computed
+     colour under override-mode and late-night - a real diff, not a no-op.
+     Kept alive, in channel form, purely so those two classes keep the
+     override-context behaviour they already had. See Task 4 report. */
+  --cyan: 0 212 255;
+  --pink: 255 0 110;
   --persona-accent: #e040fb;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-top: env(safe-area-inset-top, 0px);
@@ -56,7 +74,7 @@ html[data-persona="off_world"] body::after {
 }
 
 html, body {
-  background-color: var(--bg);
+  background-color: rgb(var(--bg));
   overflow-x: clip;
 }
 
@@ -65,7 +83,7 @@ body {
   font-feature-settings: 'ss01', 'ss02', 'calt', 'liga';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: var(--fg);
+  color: rgb(var(--fg));
   font-variant-ligatures: contextual;
   position: relative;
 }
@@ -107,8 +125,8 @@ body::after {
 .font-jp { font-family: 'Noto Sans JP', 'JetBrains Mono', monospace; letter-spacing: 0.05em; }
 
 ::selection {
-  background: var(--accent);
-  color: var(--bg);
+  background: rgb(var(--accent));
+  color: rgb(var(--bg));
 }
 
 body { overscroll-behavior-y: contain; }
@@ -125,7 +143,7 @@ body { overscroll-behavior-y: contain; }
 .caret::after {
   content: '▌';
   margin-left: 2px;
-  color: var(--accent);
+  color: rgb(var(--accent));
   animation: blink 1s steps(2) infinite;
 }
 
@@ -158,9 +176,9 @@ body { overscroll-behavior-y: contain; }
     radial-gradient(ellipse at center, transparent 55%, rgba(10,4,0,0.45) 100%);
 }
 
-.neon-amber { color: var(--accent); text-shadow: 0 0 8px rgba(224,64,251,0.6), 0 0 22px rgba(224,64,251,0.3); }
-.neon-cyan  { color: var(--cyan);   text-shadow: 0 0 8px rgba(0,212,255,0.6), 0 0 22px rgba(0,212,255,0.25); }
-.neon-pink  { color: var(--pink);   text-shadow: 0 0 8px rgba(255,0,110,0.65), 0 0 22px rgba(255,0,110,0.3); }
+.neon-amber { color: rgb(var(--accent)); text-shadow: 0 0 8px rgba(224,64,251,0.6), 0 0 22px rgba(224,64,251,0.3); }
+.neon-cyan  { color: rgb(var(--cyan));   text-shadow: 0 0 8px rgba(0,212,255,0.6), 0 0 22px rgba(0,212,255,0.25); }
+.neon-pink  { color: rgb(var(--pink));   text-shadow: 0 0 8px rgba(255,0,110,0.65), 0 0 22px rgba(255,0,110,0.3); }
 
 .dashed-border {
   background-image: linear-gradient(90deg, #2a2620 50%, transparent 50%);
@@ -234,17 +252,48 @@ body { overscroll-behavior-y: contain; }
   100% { transform: translate(0, 0); }
 }
 
+/* Mobile readability floor. The 8-10px mono labels are legible at desk
+   distance, not at arm's length. Attribute selectors catch every Tailwind
+   arbitrary size without touching 165 call sites. Authored tracking is
+   preserved; only the extra-wide trackings (0.3em and up) are capped so
+   grown labels do not overflow their containers - a uniform override here
+   once WIDENED normal-tracked labels and cramped tight rows. */
+@media (max-width: 767px) {
+  [class*='text-[8px]'],
+  [class*='text-[9px]'],
+  [class*='text-[10px]'] {
+    font-size: 11px !important;
+  }
+  [class*='text-[11px]'] {
+    font-size: 12px !important;
+  }
+  [class*='tracking-[0.3'],
+  [class*='tracking-[0.4'],
+  [class*='tracking-[0.5'] {
+    letter-spacing: 0.22em !important;
+  }
+
+  /* Calm tier keeps atmosphere at a whisper: the slow rain and the grain
+     stay, dialed down from 0.06 / 0.04. */
+  .site-rain.slow { opacity: 0.04; }
+  .site-grain { opacity: 0.03; }
+}
+
 /* --- OVERRIDE MODE ---------------------------------------------------------
    Triggered by the konami code. Flips the whole site into a red/black
    replicant-override palette and adds a slow glitch jitter.
 */
 body.override-mode {
-  --accent: #ff3b3b;
-  --accent-hot: #ff6666;
-  --cyan: #ff3b3b;
-  --pink: #ff9090;
-  --fg: #ffd6d6;
-  --bg: #0a0303;
+  /* --accent, --accent-hot, --cyan, --pink, --fg, --bg all feed
+     rgb(var(--x)) call sites elsewhere in this file (see Task 4), so they
+     stay in channel form here too. --bg-2, --line have no remaining var()
+     consumer and are left as they were. */
+  --accent: 255 59 59;
+  --accent-hot: 255 102 102;
+  --cyan: 255 59 59;
+  --pink: 255 144 144;
+  --fg: 255 214 214;
+  --bg: 10 3 3;
   --bg-2: #140404;
   --line: #3a0f0f;
 }
@@ -371,9 +420,11 @@ html.late-night body::before {
 }
 
 html.late-night {
-  --accent: #c026d3;
-  --cyan: #0ea5e9;
-  --accent-hot: #a21caf;
+  /* --accent, --cyan and --accent-hot all feed rgb(var(--x)) call sites
+     elsewhere in this file (see Task 4), so they stay in channel form. */
+  --accent: 192 38 211;
+  --cyan: 14 165 233;
+  --accent-hot: 162 28 175;
 }
 
 html.late-night body {
