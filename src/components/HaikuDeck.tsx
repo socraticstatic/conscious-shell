@@ -63,6 +63,10 @@ export default function HaikuDeck({ haiku }: { haiku: Haiku[] }) {
   const speak = (e?: React.MouseEvent) => {
     e?.stopPropagation();
     if (!current) return;
+    // Reading aloud pauses the deck, full stop — and it STAYS paused after
+    // the whisper ends, until the reader taps the deck to resume. Nobody
+    // wants the poem to leave while its voice is still in the room.
+    setPaused(true);
     if (speaking) {
       audioRef.current?.pause();
       audioRef.current = null;
