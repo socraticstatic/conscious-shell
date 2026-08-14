@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useShellTier } from '../lib/shellTier';
+import EsperMobile from './EsperMobile';
 import { ChevronLeft, ChevronRight, ScanSearch, RotateCcw } from 'lucide-react';
 import type { EsperHotspot, EsperFrameRow } from '../lib/supabase';
 
@@ -116,16 +117,10 @@ export default function EsperScene({
 
   const [frameIdx, setFrameIdx] = useState(0);
 
-  // Calm tier (phones, coarse-pointer tablets): the hotspot hunt is a mouse
-  // behavior — invisible regions in a ~230px-tall photo can't be found by
-  // thumb. There the machine drives: one primary button walks the nodes in
-  // order, and because the buried line unlocks on an in-order sweep, calm
-  // readers actually reach it. The full tier keeps the hunt untouched.
+  // Calm tier renders EsperMobile (grid + full-screen story session) —
+  // this component is the desktop control panel only.
   const tier = useShellTier();
-  const guided = tier === 'calm';
-  const [guidedIdx, setGuidedIdx] = useState(0);
   const terminalRef = useRef<HTMLDivElement | null>(null);
-  const frameColRef = useRef<HTMLDivElement | null>(null);
 
   const clearAll = useCallback(() => {
     timers.current.forEach(clearTimeout);
@@ -155,7 +150,6 @@ export default function EsperScene({
     setTyped([]);
     setBuried(false);
     seqRef.current = 0;
-    setGuidedIdx(0);
   }, [frameIdx, clearAll]);
 
   // Left/right step frames when focus is inside the section. Scoped to the
@@ -202,7 +196,6 @@ export default function EsperScene({
     setTyped([]);
     setBuried(false);
     seqRef.current = 0;
-    setGuidedIdx(0);
   };
 
   /**
@@ -269,6 +262,28 @@ export default function EsperScene({
 
   if (!frames.length || !frame) return null;
 
+  // Phones and coarse-pointer tablets get the archive as a gallery with a
+  // full-screen tap-through session — not a shrunken control panel.
+  if (tier === 'calm') {
+    return (
+      <section id="esper" className="relative py-20 px-5 bg-[#05060a]">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-[10px] tracking-[0.5em] uppercase text-[#00d4ff]/80 mb-3">
+            — esper machine · photo archive
+          </div>
+          <h2 className="text-4xl font-mono font-light tracking-tight">
+            enhance. enhance. <span className="text-[#e040fb]">enhance.</span>
+          </h2>
+          <p className="mt-3 text-[#8a837a] text-[15px] max-w-xl leading-relaxed">
+            {frames.length} photographs and renders on file. open one and the
+            machine will run the session: track, enhance, reveal.
+          </p>
+          <EsperMobile frames={frames} frameLines={frameLines} />
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section ref={sectionRef} id="esper" className="relative py-24 px-6 md:px-10 bg-[#05060a]">
       <div className="max-w-7xl mx-auto">
@@ -284,9 +299,7 @@ export default function EsperScene({
               enhance. enhance. <span className="text-[#e040fb]">enhance.</span>
             </h2>
             <p className="mt-3 text-[#8a837a] text-[15px] md:text-sm max-w-xl leading-relaxed">
-              {guided
-                ? 'an interactive recreation of the esper session. tap enhance and the machine will track, isolate, and reveal what each photograph has been hiding.'
-                : 'an interactive recreation of the esper session. pick a target on the frame. the machine will track, enhance, and reveal what the photograph has been hiding.'}
+              an interactive recreation of the esper session. pick a target on the frame. the machine will track, enhance, and reveal what the photograph has been hiding.
             </p>
           </div>
 
@@ -302,7 +315,7 @@ export default function EsperScene({
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-6">
-          <div ref={frameColRef} className="flex flex-col scroll-mt-16 lg:col-start-1 lg:row-start-1">
+          <div className="flex flex-col scroll-mt-16 lg:col-start-1 lg:row-start-1">
           <div className="relative border border-[#1f1c17] bg-black overflow-hidden aspect-[16/10] select-none">
             <motion.div
               className="absolute inset-0"
@@ -356,7 +369,6 @@ export default function EsperScene({
                     key={h.id}
                     type="button"
                     onClick={() => run(h)}
-                    disabled={guided}
                     className={`absolute border transition-all duration-500 ${
                       isActive
                         ? 'border-[#e040fb]'
@@ -372,7 +384,7 @@ export default function EsperScene({
                     aria-label={`enhance region ${h.order_index}`}
                   >
                     <span
-                      className={`absolute left-0 text-[9px] tracking-[0.3em] uppercase whitespace-nowrap ${guided ? 'hidden' : ''} ${
+                      className={`absolute left-0 text-[9px] tracking-[0.3em] uppercase whitespace-nowrap ${
                         // A node near the frame's top edge would push its label
                         // into the corner captions — hang it below instead.
                         h.y < 0.14 ? 'top-full mt-1.5' : '-top-6'
@@ -418,34 +430,6 @@ export default function EsperScene({
             </AnimatePresence>
           </div>
 
-          {/* Calm tier: the machine drives. One button walks the nodes in order,
-              so the reveal — and the buried line — arrive without the hunt. */}
-          {guided && (
-            <button
-              type="button"
-              disabled={phase === 'track' || phase === 'enhance'}
-              onClick={() => {
-                if (guidedIdx >= orderedHotspots.length) {
-                  goToFrame(frameIdx + 1);
-                  return;
-                }
-                const h = orderedHotspots[guidedIdx];
-                setGuidedIdx(guidedIdx + 1);
-                run(h, true);
-                // Pin the frame to the top: the zoom plays up there, the type-out
-                // and reveal land in the space below — one screen, no hunting.
-                window.setTimeout(() => {
-                  frameColRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 120);
-              }}
-              className="mt-4 w-full min-h-[52px] border border-[#e040fb] text-[#e040fb] font-mono text-sm tracking-[0.2em] uppercase active:bg-[#e040fb] active:text-[#05060a] disabled:opacity-40 transition-colors"
-            >
-              {guidedIdx >= orderedHotspots.length
-                ? 'frame complete — next frame ▸'
-                : `▸ enhance node ${String(guidedIdx + 1).padStart(2, '0')} / ${String(orderedHotspots.length).padStart(2, '0')}`}
-            </button>
-          )}
-
           </div>
 
           <div ref={terminalRef} className="border border-[#1f1c17] bg-[#0a0a0d] p-5 flex flex-col min-h-[280px] md:min-h-[360px] scroll-mt-20 lg:col-start-2 lg:row-start-1 lg:row-span-2">
@@ -468,9 +452,7 @@ export default function EsperScene({
               ))}
               {!typed.length && (
                 <div className="text-[#605a52]">
-                  {guided
-                    ? 'awaiting instruction. tap enhance — the machine drives.'
-                    : 'awaiting selection. click a node on the frame.'}
+                  awaiting selection. click a node on the frame.
                 </div>
               )}
               {phase !== 'idle' && phase !== 'resolve' && (
@@ -523,7 +505,7 @@ export default function EsperScene({
               )}
             </AnimatePresence>
 
-            <div className={`mt-5 pt-4 border-t border-[#1f1c17] flex-wrap gap-2 ${guided ? 'hidden' : 'flex'}`}>
+            <div className="mt-5 pt-4 border-t border-[#1f1c17] flex flex-wrap gap-2">
               {activeHotspots.map((h) => (
                 <button
                   key={h.id}
