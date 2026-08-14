@@ -105,7 +105,7 @@ export default function BaselineGate({ children }: { children: React.ReactNode }
           <h2 className="text-3xl md:text-4xl font-mono font-light tracking-tight">
             constant k. <span className="text-[#ff006e]">prove it.</span>
           </h2>
-          <p className="mt-4 text-[#6b6660] text-sm max-w-lg mx-auto leading-relaxed">
+          <p className="mt-4 text-[#8a837a] text-[15px] md:text-sm max-w-lg mx-auto leading-relaxed">
             this section is locked. every answer is on this page or in the film.
             answer the call. stay within baseline.
           </p>
@@ -232,7 +232,7 @@ export default function BaselineGate({ children }: { children: React.ReactNode }
               setStatus('pass');
               sessionStorage.setItem(SESSION_KEY, '1');
             }}
-            className="text-[10px] text-[#8a8279] hover:text-[#e040fb] transition-colors"
+            className="min-h-[44px] inline-flex items-center px-2 text-[10px] text-[#8a8279] hover:text-[#e040fb] transition-colors"
           >
             [ skip — i am not him ]
           </button>

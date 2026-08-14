@@ -175,7 +175,7 @@ export default function VKInterview({ recommendations = [] }: { recommendations?
           <motion.div animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 3, repeat: Infinity }} className="font-mono text-xs tracking-widest text-[#6b6660] mb-4">
             VOIGHT-KAMPFF v3.1 — FULL INTERVIEW AVAILABLE
           </motion.div>
-          <button onClick={startIntro} className="px-6 py-2 border border-[#e040fb] text-[#e040fb] text-sm font-mono tracking-wider hover:bg-[#e040fb] hover:text-[#0b0a08] transition-colors">
+          <button onClick={startIntro} className="min-h-[44px] px-6 py-2 border border-[#e040fb] text-[#e040fb] text-sm font-mono tracking-wider hover:bg-[#e040fb] hover:text-[#0b0a08] transition-colors">
             BEGIN INTERVIEW
           </button>
         </div>

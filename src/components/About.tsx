@@ -63,7 +63,7 @@ export default function About({ testimonial }: { testimonial?: Testimonial }) {
             className="mt-16 max-w-4xl border-l-2 border-[#e040fb] pl-6"
           >
             <div className="text-xs text-[#6b6660] mb-2">&gt; curl /testimonials/random</div>
-            <p className="text-[#e8e4dc] text-lg md:text-2xl leading-snug italic">
+            <p className="text-[#e8e4dc] text-lg md:text-2xl leading-[1.55] md:leading-normal italic">
               "{testimonial.quote}"
             </p>
             <div className="mt-3 text-base md:text-sm text-[#a8a29e]">

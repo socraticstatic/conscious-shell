@@ -18,28 +18,6 @@ import { NarratorProvider } from './lib/narrator';
 import { PersonalizationProvider } from './lib/personalization';
 import { fetchPortfolio } from './lib/portfolio';
 import { startWitness } from './lib/witness';
-import type {
-  Project,
-  Service,
-  Testimonial,
-  Award,
-  Publication,
-  VkQuestion,
-  GithubProject,
-  Trivia,
-  Haiku,
-  Noir,
-  EsperHotspot,
-  SkylineSign,
-  DesignRound,
-  WebDossierFact,
-  Certification,
-  LinkedInRecommendation,
-  LinkedInArticle,
-  Poem,
-  EsperFrameRow,
-} from './lib/supabase';
-
 // Heavy / below-the-fold / on-demand → split into separate chunks and
 // mount after the first paint settles. Saves ~hundreds of KB on the
 // critical path and stops the initial render from competing with
@@ -104,27 +82,9 @@ const DevtoolsEasterEggs = lazy(() => import('./components/DevtoolsEasterEggs'),
 // Time remaining: undefined. Time elapsed: yes.
 
 export default function App() {
-  const [data, setData] = useState<{
-    projects: Project[];
-    services: Service[];
-    testimonials: Testimonial[];
-    awards: Award[];
-    publications: Publication[];
-    vk: VkQuestion[];
-    github: GithubProject[];
-    trivia: Trivia[];
-    haiku: Haiku[];
-    noir: Noir[];
-    esper: EsperHotspot[];
-    esperFrames: EsperFrameRow[];
-    skyline: SkylineSign[];
-    designRounds: DesignRound[];
-    dossier: WebDossierFact[];
-    certifications: Certification[];
-    recommendations: LinkedInRecommendation[];
-    articles: LinkedInArticle[];
-    poems: Poem[];
-  } | null>(null);
+  // Inferred from fetchPortfolio so the shape can never drift from what the
+  // fetch actually returns (the hand-written copy silently dropped `offers`).
+  const [data, setData] = useState<Awaited<ReturnType<typeof fetchPortfolio>> | null>(null);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const tier = useShellTier();

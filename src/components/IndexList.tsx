@@ -32,10 +32,10 @@ export default function IndexList({ projects }: { projects: Project[] }) {
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="filter by title · client · tag"
-            className="flex-1 bg-transparent outline-none text-[#e8e4dc] placeholder:text-[#605a52] text-sm"
+            className="flex-1 bg-transparent outline-none text-[#e8e4dc] placeholder:text-[#605a52] text-base md:text-sm min-h-[44px]"
           />
           {q && (
-            <button onClick={() => setQ('')} className="text-xs text-[#6b6660] hover:text-[#e040fb]">
+            <button onClick={() => setQ('')} className="min-h-[44px] px-2 text-xs text-[#6b6660] hover:text-[#e040fb]">
               clear
             </button>
           )}
@@ -79,7 +79,7 @@ function Row({ project, index }: { project: Project; index: number }) {
       </div>
       <Link
         to={`/work/${slugify(project.title)}`}
-        className="col-span-10 md:col-span-6 min-w-0 text-sm md:text-base text-[#e8e4dc] group-hover:text-[#e040fb] transition-colors truncate"
+        className="col-span-10 md:col-span-6 min-w-0 min-h-[44px] flex items-center text-[15px] md:text-base text-[#e8e4dc] group-hover:text-[#e040fb] transition-colors"
       >
         {project.featured && <span className="mr-1 text-[10px] text-[#e040fb]">◉</span>}
         {project.title}

@@ -54,7 +54,7 @@ export default function GitArchaeology() {
       <h2 className="text-[#e8e4dc] text-lg font-mono uppercase tracking-wider mb-2">
         Intercepted Dispatches <span className="text-[#6b6660]">//</span> git archaeology
       </h2>
-      <p className="text-[#6b6660] text-xs font-mono mb-12 italic">
+      <p className="text-[#8a837a] text-[13px] md:text-xs font-mono mb-12 italic">
         # transmissions recovered from .git/objects — origin unknown, timestamps verified
       </p>
 
@@ -117,7 +117,7 @@ export default function GitArchaeology() {
       {shown < DISPATCHES.length && (
         <motion.button
           onClick={() => setShown(DISPATCHES.length)}
-          className="mt-10 ml-10 text-xs font-mono uppercase tracking-widest text-[#00d4ff] border border-[#00d4ff]/30 px-4 py-2 rounded hover:bg-[#00d4ff]/10 transition-colors"
+          className="mt-10 ml-10 min-h-[44px] text-xs font-mono uppercase tracking-widest text-[#00d4ff] border border-[#00d4ff]/30 px-4 py-2 rounded hover:bg-[#00d4ff]/10 transition-colors"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >

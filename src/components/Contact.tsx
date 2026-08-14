@@ -164,7 +164,7 @@ export default function Contact() {
                   </button>
                   <a
                     href="mailto:Deckard@conscious-shell.com"
-                    className="text-[11px] text-[#605a52] hover:text-[#a8a29e] font-mono transition-colors"
+                    className="min-h-[44px] inline-flex items-center text-xs text-[#8a8279] hover:text-[#a8a29e] font-mono transition-colors"
                   >
                     or mail Deckard@conscious-shell.com
                   </a>
@@ -182,7 +182,7 @@ export default function Contact() {
               <div className="text-[10px] uppercase tracking-widest text-[#6b6660] mb-2">
                 INCEPT — TRANSMISSION FRAGMENT
               </div>
-              <p className="text-[#e8e4dc] text-sm leading-relaxed italic">
+              <p className="text-[#e8e4dc] text-[15px] md:text-sm leading-relaxed italic">
                 "I've seen things you people wouldn't believe … dashboards shipped in the rain,
                 research decks lost at the gates of the Tannhäuser Quarterly Review."
               </p>

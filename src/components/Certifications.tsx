@@ -39,7 +39,7 @@ export default function Certifications({ certs }: { certs: Certification[] }) {
         />
 
         <div className="mt-4 mb-10 max-w-2xl">
-          <p className="text-[13px] text-[#6b6660] leading-relaxed">
+          <p className="text-[15px] md:text-sm text-[#8a837a] leading-relaxed">
             Cornell University executive certifications in AI strategy, machine learning,
             and digital transformation. Not badges on a wall — applied frameworks
             that shaped how I build, ship, and lead.
@@ -159,7 +159,7 @@ export default function Certifications({ certs }: { certs: Certification[] }) {
           <div className="text-[9px] uppercase tracking-[0.3em] text-[#605a52] mb-2">
             // system note
           </div>
-          <p className="text-[11px] text-[#6b6660] leading-relaxed max-w-xl">
+          <p className="text-sm md:text-[13px] text-[#8a837a] leading-relaxed max-w-xl">
             Four Cornell certificates. Not because the credential matters — because the curriculum
             forced me to articulate what I already knew, find the gaps in what I thought I knew,
             and build frameworks for the parts nobody teaches you.

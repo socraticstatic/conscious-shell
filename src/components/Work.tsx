@@ -96,7 +96,7 @@ export default function Work({ projects }: { projects: Project[] }) {
             {active && (
               <Link
                 to={`/work/${slugify(active.title)}`}
-                className="mt-3 inline-flex items-center gap-1 text-[11px] font-mono text-[#e040fb] hover:underline"
+                className="mt-1 min-h-[44px] inline-flex items-center gap-1 text-xs font-mono text-[#e040fb] hover:underline"
               >
                 view full case study →
               </Link>

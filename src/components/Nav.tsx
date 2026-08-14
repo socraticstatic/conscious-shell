@@ -40,7 +40,12 @@ export default function Nav({ onOpenPalette }: { onOpenPalette: () => void }) {
   const go = (id: string) => {
     setDrawerOpen(false);
     setTimeout(() => {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const el = document.getElementById(id);
+      if (!el) return;
+      // Same guard as the services CTA: lazy sections mounting mid-scroll kill
+      // long smooth scrolls, so long hauls jump instantly.
+      const dist = Math.abs(el.getBoundingClientRect().top);
+      el.scrollIntoView({ behavior: dist > 2500 ? 'auto' : 'smooth', block: 'start' });
     }, 80);
   };
 
@@ -61,13 +66,16 @@ export default function Nav({ onOpenPalette }: { onOpenPalette: () => void }) {
             <span className="text-[#6b6660]">v4.7</span>
           </button>
 
-          <nav className="hidden md:flex items-center gap-5 text-[#a8a29e]">
+          {/* 11 links need ~1100px of row; below xl they overflow the
+              viewport edge and stack over content, so the drawer serves
+              everything under 1280px. */}
+          <nav className="hidden xl:flex items-center gap-5 text-[#a8a29e]">
             {links.map((l) => (
               <button
                 key={l.id}
                 onClick={() => go(l.id)}
                 data-cursor="hover"
-                className="hover:text-[#e040fb] transition-colors"
+                className="hover:text-[#e040fb] transition-colors min-h-[44px]"
               >
                 ./{l.label}
               </button>
@@ -78,17 +86,17 @@ export default function Nav({ onOpenPalette }: { onOpenPalette: () => void }) {
             <button
               data-cursor="hover"
               onClick={onOpenPalette}
-              className="hidden sm:flex text-[#a8a29e] hover:text-[#e040fb] transition-colors items-center gap-2"
+              className="hidden xl:flex text-[#a8a29e] hover:text-[#e040fb] transition-colors items-center gap-2 min-h-[44px]"
               aria-label="open palette"
             >
-              <span className="hidden md:inline">⌘K</span>
+              <span>⌘K</span>
               <span>/palette</span>
             </button>
 
-            {/* Mobile hamburger */}
+            {/* Hamburger — every viewport below xl */}
             <button
               onClick={() => setDrawerOpen(true)}
-              className="md:hidden inline-flex items-center justify-center w-11 h-11 -mr-2 text-[#e040fb] hover:bg-[#1a1712] active:bg-[#1a1712] transition-colors"
+              className="xl:hidden inline-flex items-center justify-center w-11 h-11 -mr-2 text-[#e040fb] hover:bg-[#1a1712] active:bg-[#1a1712] transition-colors"
               aria-label="open navigation"
               aria-expanded={drawerOpen}
             >
@@ -100,7 +108,7 @@ export default function Nav({ onOpenPalette }: { onOpenPalette: () => void }) {
 
       {/* Mobile drawer */}
       <div
-        className={`md:hidden fixed inset-0 z-[60] overflow-hidden transition-opacity duration-200 ${
+        className={`xl:hidden fixed inset-0 z-[60] overflow-hidden transition-opacity duration-200 ${
           drawerOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         aria-hidden={!drawerOpen}

@@ -269,7 +269,7 @@ export default function EsperScene({
             <h2 className="text-4xl md:text-5xl font-mono font-light tracking-tight">
               enhance. enhance. <span className="text-[#e040fb]">enhance.</span>
             </h2>
-            <p className="mt-3 text-[#8a837a] text-sm max-w-xl leading-relaxed">
+            <p className="mt-3 text-[#8a837a] text-[15px] md:text-sm max-w-xl leading-relaxed">
               an interactive recreation of the esper session. pick a target on the frame. the machine will track, enhance, and reveal what the photograph has been hiding.
             </p>
           </div>
@@ -277,7 +277,7 @@ export default function EsperScene({
           <button
             type="button"
             onClick={reset}
-            className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#a8a29e] hover:text-[#00d4ff] border border-[#1f1c17] hover:border-[#00d4ff]/50 px-3 py-2 transition-colors"
+            className="min-h-[44px] inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase text-[#a8a29e] hover:text-[#00d4ff] border border-[#1f1c17] hover:border-[#00d4ff]/50 px-3 py-2 transition-colors"
             aria-label="reset esper"
           >
             <RotateCcw className="w-3.5 h-3.5" />
@@ -355,9 +355,11 @@ export default function EsperScene({
                     aria-label={`enhance region ${h.order_index}`}
                   >
                     <span
-                      className={`absolute -top-6 left-0 text-[9px] tracking-[0.3em] uppercase whitespace-nowrap ${
-                        isActive ? 'text-[#e040fb]' : 'text-[#00d4ff]'
-                      }`}
+                      className={`absolute left-0 text-[9px] tracking-[0.3em] uppercase whitespace-nowrap ${
+                        // A node near the frame's top edge would push its label
+                        // into the corner captions — hang it below instead.
+                        h.y < 0.14 ? 'top-full mt-1.5' : '-top-6'
+                      } ${isActive ? 'text-[#e040fb]' : 'text-[#00d4ff]'}`}
                     >
                       node·{String(h.order_index).padStart(2, '0')}
                     </span>
@@ -405,7 +407,7 @@ export default function EsperScene({
               type="button"
               onClick={() => goToFrame(frameIdx - 1)}
               aria-label="Previous frame"
-              className="flex items-center gap-2 px-3 py-2 border border-[#1f1c17] text-[#00d4ff] hover:border-[#00d4ff] transition-colors"
+              className="min-h-[44px] flex items-center gap-2 px-4 py-2 border border-[#1f1c17] text-[#00d4ff] hover:border-[#00d4ff] transition-colors"
             >
               <ChevronLeft size={14} /> prev
             </button>
@@ -419,10 +421,16 @@ export default function EsperScene({
                   aria-selected={i === frameIdx}
                   aria-label={`Frame ${i + 1}: ${f.caption || f.photoId}`}
                   onClick={() => goToFrame(i)}
-                  className={`h-1.5 transition-all ${
-                    i === frameIdx ? 'w-6 bg-[#e040fb]' : 'w-1.5 bg-[#605a52] hover:bg-[#00d4ff]'
-                  }`}
-                />
+                  className="min-h-[44px] min-w-[24px] flex items-center justify-center group/dot"
+                >
+                  {/* visual bar stays slim; the button supplies the 44px hit area */}
+                  <span
+                    aria-hidden
+                    className={`h-1.5 transition-all ${
+                      i === frameIdx ? 'w-6 bg-[#e040fb]' : 'w-1.5 bg-[#605a52] group-hover/dot:bg-[#00d4ff]'
+                    }`}
+                  />
+                </button>
               ))}
             </div>
 
@@ -430,7 +438,7 @@ export default function EsperScene({
               type="button"
               onClick={() => goToFrame(frameIdx + 1)}
               aria-label="Next frame"
-              className="flex items-center gap-2 px-3 py-2 border border-[#1f1c17] text-[#00d4ff] hover:border-[#00d4ff] transition-colors"
+              className="min-h-[44px] flex items-center gap-2 px-4 py-2 border border-[#1f1c17] text-[#00d4ff] hover:border-[#00d4ff] transition-colors"
             >
               next <ChevronRight size={14} />
             </button>
@@ -514,7 +522,7 @@ export default function EsperScene({
                   key={h.id}
                   type="button"
                   onClick={() => run(h)}
-                  className={`text-[10px] tracking-[0.3em] uppercase border px-2.5 py-1.5 transition-colors ${
+                  className={`min-h-[44px] text-[10px] tracking-[0.3em] uppercase border px-3 py-1.5 transition-colors ${
                     active?.id === h.id
                       ? 'border-[#e040fb] text-[#e040fb]'
                       : 'border-[#1f1c17] text-[#a8a29e] hover:border-[#00d4ff]/50 hover:text-[#00d4ff]'

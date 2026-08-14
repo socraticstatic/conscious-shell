@@ -111,7 +111,7 @@ export default function TimeMachine() {
                   <button
                     onClick={() => step(-1)}
                     disabled={idx === 0}
-                    className="px-2 py-1 border border-[#2a2620] text-[#a8a29e] hover:border-[#e040fb] hover:text-[#e040fb] active:border-[#e040fb] active:text-[#e040fb] disabled:opacity-30 disabled:hover:border-[#2a2620] disabled:hover:text-[#a8a29e] transition-colors text-[10px] sm:text-xs"
+                    className="min-h-[44px] min-w-[44px] px-3 py-1 border border-[#2a2620] text-[#a8a29e] hover:border-[#e040fb] hover:text-[#e040fb] active:border-[#e040fb] active:text-[#e040fb] disabled:opacity-30 disabled:hover:border-[#2a2620] disabled:hover:text-[#a8a29e] transition-colors text-[10px] sm:text-xs"
                   >
                     <span className="hidden sm:inline">← rewind</span>
                     <span className="sm:hidden">←</span>
@@ -119,7 +119,7 @@ export default function TimeMachine() {
                   <button
                     onClick={() => step(1)}
                     disabled={idx === sorted.length - 1}
-                    className="px-2 py-1 border border-[#2a2620] text-[#a8a29e] hover:border-[#e040fb] hover:text-[#e040fb] active:border-[#e040fb] active:text-[#e040fb] disabled:opacity-30 disabled:hover:border-[#2a2620] disabled:hover:text-[#a8a29e] transition-colors text-[10px] sm:text-xs"
+                    className="min-h-[44px] min-w-[44px] px-3 py-1 border border-[#2a2620] text-[#a8a29e] hover:border-[#e040fb] hover:text-[#e040fb] active:border-[#e040fb] active:text-[#e040fb] disabled:opacity-30 disabled:hover:border-[#2a2620] disabled:hover:text-[#a8a29e] transition-colors text-[10px] sm:text-xs"
                   >
                     <span className="hidden sm:inline">forward →</span>
                     <span className="sm:hidden">→</span>
@@ -235,7 +235,7 @@ export default function TimeMachine() {
                 <li key={c.year}>
                   <button
                     onClick={() => setIdx(i)}
-                    className={`w-full text-left px-3 py-2 flex items-baseline justify-between gap-2 transition-colors ${
+                    className={`w-full text-left px-3 py-2 min-h-[44px] flex items-baseline justify-between gap-2 transition-colors ${
                       i === idx
                         ? 'bg-[#1a1712] text-[#e040fb]'
                         : 'text-[#a8a29e] hover:bg-[#121008] hover:text-[#e8e4dc]'

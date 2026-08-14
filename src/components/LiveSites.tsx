@@ -130,7 +130,7 @@ function SiteCard({ site, index }: { site: Site; index: number }) {
             href={site.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="shrink-0 mt-1 text-[#605a52] hover:text-[#00d4ff] transition-colors"
+            className="shrink-0 p-3.5 -m-2.5 text-[#605a52] hover:text-[#00d4ff] transition-colors"
             aria-label={`Open ${site.name}`}
           >
             <ExternalLink className="w-4 h-4" />
@@ -149,7 +149,7 @@ function SiteCard({ site, index }: { site: Site; index: number }) {
         </div>
 
         {/* Description — grows to fill remaining space */}
-        <p className="flex-1 text-[11px] text-[#a8a29e] leading-relaxed">
+        <p className="flex-1 text-sm md:text-xs text-[#a8a29e] leading-relaxed">
           {site.description}
         </p>
 

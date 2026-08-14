@@ -7,12 +7,12 @@ export default function Footer() {
   const openDeadDrop = () => window.dispatchEvent(new Event('dock:deaddrop'));
 
   return (
-    <footer className="py-6 px-6 md:px-10 text-[11px] text-[#6b6660]">
+    <footer className="pt-6 px-6 md:px-10 text-[11px] text-[#6b6660] pb-[calc(76px+env(safe-area-inset-bottom,0px))] lg:pb-6">
       <div className="max-w-[1400px] mx-auto">
         <div className="mb-5 text-center">
           <button
             onClick={openDeadDrop}
-            className="group inline-flex items-center gap-2 text-[11px] text-[#8a8279] hover:text-[#e8e4dc] transition-colors"
+            className="group min-h-[44px] inline-flex items-center gap-2 px-2 text-[11px] text-[#8a8279] hover:text-[#e8e4dc] transition-colors"
           >
             <span>there are poems here. press</span>
             <kbd className="px-1.5 py-0.5 border border-[#2a2620] group-hover:border-[#e040fb] text-[#e040fb] font-mono leading-none transition-colors">

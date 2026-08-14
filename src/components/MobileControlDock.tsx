@@ -40,10 +40,13 @@ export default function MobileControlDock() {
   ] as const;
 
   return (
+    /* Mobile: an opaque taskbar pinned to the viewport bottom — the bar
+       itself carries the background so content never bleeds through the
+       seams between buttons or below them. Desktop keeps the floating
+       centered cluster offset above the BlackLitany marquee. */
     <nav
       aria-label="system controls"
-      className="fixed inset-x-0 z-[45] flex items-stretch gap-1 px-2 lg:justify-center lg:pointer-events-none"
-      style={{ bottom: 'calc(30px + env(safe-area-inset-bottom, 0px))' }}
+      className="fixed inset-x-0 z-[45] flex items-stretch gap-1 px-2 pt-1.5 pb-[calc(8px+env(safe-area-inset-bottom,0px))] bg-[#0b0a08]/95 backdrop-blur-md border-t border-[#1f1c17] bottom-0 lg:bottom-[calc(30px+env(safe-area-inset-bottom,0px))] lg:bg-transparent lg:backdrop-blur-none lg:border-t-0 lg:pt-0 lg:pb-0 lg:justify-center lg:pointer-events-none"
     >
       {items.map(({ key, label, Icon, on, accent, ev }) => (
         <button

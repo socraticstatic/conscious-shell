@@ -92,7 +92,7 @@ export default function VoightKampff({ questions }: { questions: VkQuestion[] })
                   transition={{ duration: 0.35 }}
                 >
                   <div className="font-jp text-[#00d4ff] text-sm mb-3">{q?.prompt_jp}</div>
-                  <p className="text-xl md:text-2xl lg:text-3xl text-[#e8e4dc] leading-snug">
+                  <p className="text-xl md:text-2xl lg:text-3xl text-[#e8e4dc] leading-[1.5] md:leading-[1.4]">
                     {q?.prompt}
                   </p>
                 </motion.div>

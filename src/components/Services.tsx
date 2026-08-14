@@ -4,7 +4,13 @@ import type { Service, Offer } from '../lib/supabase';
 
 export default function Services({ services, offers }: { services: Service[]; offers: Offer[] }) {
   const goToContact = () => {
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const el = document.getElementById('contact');
+    if (!el) return;
+    // Long-haul smooth scrolls die partway when lazy sections mount and shift
+    // the layout mid-animation, stranding the visitor mid-page. Jump instantly
+    // beyond ~2500px; keep the smooth glide for short hops.
+    const dist = Math.abs(el.getBoundingClientRect().top);
+    el.scrollIntoView({ behavior: dist > 2500 ? 'auto' : 'smooth', block: 'start' });
   };
 
   return (
@@ -26,22 +32,22 @@ export default function Services({ services, offers }: { services: Service[]; of
                 data-cursor="hover"
               >
                 <div className="flex items-baseline justify-between gap-4">
-                  <div className="text-xs text-[#605a52] group-hover:text-[#e040fb]">
+                  <div className="text-xs text-[#605a52] group-hover:text-[#e040fb] shrink-0">
                     engagement.{String(i + 1).padStart(2, '0')}
                   </div>
-                  <div className="text-[11px] text-[#6b6660]">{o.duration}</div>
+                  <div className="text-[11px] text-[#6b6660] text-right">{o.duration}</div>
                 </div>
 
-                <h3 className="mt-3 text-2xl md:text-3xl text-[#e040fb] lowercase">
+                <h3 className="mt-3 text-2xl md:text-3xl text-[#e040fb] lowercase break-words">
                   {o.name.toLowerCase().replace(/\s+/g, '_')}
                 </h3>
                 <p className="mt-1 text-[#e8e4dc] text-base">{o.tagline}</p>
 
-                <p className="mt-4 text-[#a8a29e] text-sm leading-relaxed">{o.description}</p>
+                <p className="mt-4 text-[#a8a29e] text-[15px] md:text-sm leading-relaxed">{o.description}</p>
 
                 <ul className="mt-4 space-y-1.5">
                   {o.deliverables.map((d) => (
-                    <li key={d} className="flex gap-2 text-sm text-[#a8a29e]">
+                    <li key={d} className="flex gap-2 text-[15px] md:text-sm leading-relaxed text-[#a8a29e]">
                       <span className="text-[#e040fb] shrink-0">→</span>
                       <span>{d}</span>
                     </li>
@@ -83,7 +89,7 @@ export default function Services({ services, offers }: { services: Service[]; of
               </div>
               <div className="col-span-10 md:col-span-4">
                 <div className="text-[11px] text-[#6b6660] mb-1">NAME</div>
-                <div className="text-2xl md:text-3xl text-[#e040fb] lowercase">
+                <div className="text-xl sm:text-2xl md:text-3xl text-[#e040fb] lowercase break-words">
                   {s.title.toLowerCase().replace(/\s+/g, '_')}
                 </div>
               </div>

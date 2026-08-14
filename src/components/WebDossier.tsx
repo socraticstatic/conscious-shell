@@ -122,7 +122,7 @@ export default function WebDossier({
                       setSeed(Math.floor(Math.random() * 1e9));
                       setActive(0);
                     }}
-                    className="flex items-center gap-1 hover:text-white transition-colors"
+                    className="min-h-[44px] flex items-center gap-1 px-1 hover:text-white transition-colors"
                     aria-label="reshuffle dossier"
                   >
                     <RefreshCw className="w-3 h-3" />
@@ -130,7 +130,7 @@ export default function WebDossier({
                   </button>
                   <button
                     onClick={() => setIsPaused((p) => !p)}
-                    className="hover:text-white transition-colors"
+                    className="min-h-[44px] px-1 hover:text-white transition-colors"
                   >
                     {isPaused ? 'resume' : 'hold'}
                   </button>
@@ -154,11 +154,11 @@ export default function WebDossier({
                   </div>
 
                   {current.category === 'testimony' ? (
-                    <p className="text-xl md:text-2xl lg:text-[26px] leading-[1.4] text-[#efe6d4] font-light border-l-2 pl-5 italic" style={{ borderColor: `${meta.accent}aa` }}>
+                    <p className="text-xl md:text-2xl lg:text-[26px] leading-[1.55] text-[#efe6d4] font-light border-l-2 pl-5 italic" style={{ borderColor: `${meta.accent}aa` }}>
                       &ldquo;{current.text}&rdquo;
                     </p>
                   ) : (
-                    <p className="text-xl md:text-2xl lg:text-[28px] leading-[1.35] text-[#efe6d4] font-light">
+                    <p className="text-xl md:text-2xl lg:text-[28px] leading-[1.5] text-[#efe6d4] font-light">
                       {current.text}
                     </p>
                   )}
@@ -172,7 +172,7 @@ export default function WebDossier({
                         href={current.source_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 underline decoration-dotted underline-offset-4 hover:text-white transition-colors"
+                        className="min-h-[44px] flex items-center gap-1.5 underline decoration-dotted underline-offset-4 hover:text-white transition-colors"
                         style={{ color: meta.accent }}
                       >
                         {current.source_label}
