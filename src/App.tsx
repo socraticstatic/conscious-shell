@@ -210,10 +210,13 @@ export default function App() {
           <Certifications certs={data?.certifications ?? []} />
           <EsperScene hotspots={data?.esper ?? []} frameLines={data?.esperFrames ?? []} />
           <Manifesto articles={data?.articles ?? []} />
+          {/* The haiku are poetry, not treasure — the nav promises them, so
+              the door opens. The baseline gate keeps guarding what should be
+              earned: the human layer. */}
+          <HaikuDeck haiku={data?.haiku ?? []} />
           <BaselineGate>
             <BaselineUnlocked />
             <HumanLayer trivia={data?.trivia ?? []} />
-            <HaikuDeck haiku={data?.haiku ?? []} />
           </BaselineGate>
           <IndexList projects={data?.projects ?? []} />
           <Impact />
