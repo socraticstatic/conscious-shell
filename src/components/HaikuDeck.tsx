@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Volume2, VolumeX } from 'lucide-react';
 import { SectionHeader } from './Work';
 import ScrambleText from './ScrambleText';
 import type { Haiku } from '../lib/supabase';
@@ -12,7 +11,6 @@ export default function HaikuDeck({ haiku }: { haiku: Haiku[] }) {
   const [paused, setPaused] = useState(false);
   const startedAt = useRef<number>(performance.now());
   const [progress, setProgress] = useState(0);
-  const [speaking, setSpeaking] = useState(false);
 
   const current = useMemo(() => haiku[idx], [haiku, idx]);
 
@@ -23,7 +21,7 @@ export default function HaikuDeck({ haiku }: { haiku: Haiku[] }) {
 
     let raf = 0;
     const tick = (now: number) => {
-      if (paused || speaking) {
+      if (paused) {
         startedAt.current = now - progress * INTERVAL_MS;
         raf = requestAnimationFrame(tick);
         return;
@@ -38,51 +36,7 @@ export default function HaikuDeck({ haiku }: { haiku: Haiku[] }) {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [idx, haiku.length, paused, speaking]);
-
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  useEffect(() => {
-    return () => {
-      audioRef.current?.pause();
-      audioRef.current = null;
-    };
-  }, []);
-
-  // Stop playback on haiku change.
-  useEffect(() => {
-    audioRef.current?.pause();
-    audioRef.current = null;
-    setSpeaking(false);
-  }, [idx]);
-
-  // Audio regenerated 2026-08-14: the canon haiku, whispered (River via
-  // eleven_v3 with a [whispers] directive — see generate-haiku-audio.mjs).
-  const READ_ALOUD_READY = true;
-
-  const speak = (e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    if (!current) return;
-    // Reading aloud pauses the deck, full stop — and it STAYS paused after
-    // the whisper ends, until the reader taps the deck to resume. Nobody
-    // wants the poem to leave while its voice is still in the room.
-    setPaused(true);
-    if (speaking) {
-      audioRef.current?.pause();
-      audioRef.current = null;
-      setSpeaking(false);
-      return;
-    }
-    // Pre-rendered via ElevenLabs Adam voice. Base URL respects GH Pages subpath.
-    const src = `${import.meta.env.BASE_URL}audio/haiku/${current.id}.mp3`;
-    const audio = new Audio(src);
-    audio.preload = 'auto';
-    audio.onended = () => { setSpeaking(false); audioRef.current = null; };
-    audio.onerror = () => { setSpeaking(false); audioRef.current = null; };
-    audioRef.current = audio;
-    setSpeaking(true);
-    audio.play().catch(() => { setSpeaking(false); audioRef.current = null; });
-  };
+  }, [idx, haiku.length, paused]);
 
   if (!haiku.length || !current) return null;
 
@@ -140,21 +94,6 @@ export default function HaikuDeck({ haiku }: { haiku: Haiku[] }) {
                   <span>— {current.source}</span>
                   <span className="text-[#605a52]">/</span>
                   <span><span className="text-[#605a52]">mood:</span> {current.mood || 'n/a'}</span>
-                  {READ_ALOUD_READY && (
-                    <button
-                      type="button"
-                      onClick={(e) => speak(e)}
-                      className={`inline-flex items-center gap-2 px-2.5 py-1 border text-[10px] tracking-[0.2em] transition-colors ${
-                        speaking
-                          ? 'border-[#e040fb] text-[#e040fb]'
-                          : 'border-[#1f1c17] text-[#6b6660] hover:border-[#e040fb]/50 hover:text-[#e040fb]'
-                      }`}
-                      aria-label={speaking ? 'stop reading' : 'read haiku aloud'}
-                    >
-                      {speaking ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
-                      {speaking ? 'silence' : 'read aloud'}
-                    </button>
-                  )}
                 </div>
               </motion.blockquote>
             </AnimatePresence>
