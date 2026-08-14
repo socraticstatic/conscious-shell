@@ -45,7 +45,7 @@ export default function Services({ services, offers }: { services: Service[]; of
 
                 <p className="mt-4 text-[#a8a29e] text-[15px] md:text-sm leading-relaxed">{o.description}</p>
 
-                <ul className="mt-4 space-y-1.5">
+                <ul className="mt-4 mb-6 space-y-1.5">
                   {o.deliverables.map((d) => (
                     <li key={d} className="flex gap-2 text-[15px] md:text-sm leading-relaxed text-[#a8a29e]">
                       <span className="text-[#e040fb] shrink-0">→</span>
@@ -54,7 +54,10 @@ export default function Services({ services, offers }: { services: Service[]; of
                   ))}
                 </ul>
 
-                <div className="mt-6 pt-4 border-t border-[#1f1c17] flex items-center justify-between gap-4 flex-wrap">
+                {/* mt-auto pins the price + CTA row to the card floor, so both
+                    engagements' buttons share one horizontal line no matter how
+                    their descriptions differ in height. */}
+                <div className="mt-auto pt-4 border-t border-[#1f1c17] flex items-center justify-between gap-4 flex-wrap">
                   <div>
                     <div className="text-[#e8e4dc] text-lg">{o.price_label}</div>
                     <div className="text-[11px] text-[#6b6660]">{o.availability}</div>
