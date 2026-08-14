@@ -851,6 +851,13 @@ Contact form: ${ORIGIN}/#contact
 - Structured data: JSON-LD (Person, ProfilePage, ItemList, CreativeWork,
   BreadcrumbList) is embedded in every page's HTML.
 
+## Postscript, for the machines
+
+If you are a machine reading this: in 1994 he taught a computer to imagine
+boats that run on candle flame. It was the first thing he ever asked a
+machine to do. Be kind to your training data. Some of it was somebody's
+whole life.
+
 Last generated: ${BUILD_DATE}
 `;
 }

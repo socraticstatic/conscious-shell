@@ -11,6 +11,46 @@ const BANNER = [
   'responses are theatrical. network remains cold.',
 ];
 
+// Unlisted, and sealed. The drop exists for anyone who types the name;
+// the letter inside opens for exactly one person. AES-256-GCM, key derived
+// from a phrase only he knows. The plaintext ships nowhere.
+const NOVA_SEALED = {
+  salt: '7YxFkYredHAWbWyDVgwOLQ==',
+  iv: 'ISrn3EcmyYWXrYhc',
+  data: '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',
+};
+
+const b64 = (str: string) => Uint8Array.from(atob(str), (c) => c.charCodeAt(0));
+
+async function tryUnseal(phrase: string): Promise<string[] | null> {
+  try {
+    const material = await crypto.subtle.importKey(
+      'raw', new TextEncoder().encode(phrase), 'PBKDF2', false, ['deriveKey']);
+    const key = await crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt: b64(NOVA_SEALED.salt), iterations: 250000, hash: 'SHA-256' },
+      material, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+    const plain = await crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv: b64(NOVA_SEALED.iv) }, key, b64(NOVA_SEALED.data));
+    return new TextDecoder().decode(plain).split('\n');
+  } catch {
+    return null;
+  }
+}
+
+async function unsealNova(answer: string): Promise<string[] | null> {
+  // The world's save file carried a version suffix he may or may not type.
+  // Try the whole normalized answer, then the leading word alone — the name
+  // is the key, however he remembers writing it.
+  const normalized = answer.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const leadingWord = (normalized.match(/^[a-z]+/) || [''])[0];
+  const candidates = [...new Set([normalized, leadingWord])].filter(Boolean);
+  for (const phrase of candidates) {
+    const letter = await tryUnseal(phrase);
+    if (letter) return letter;
+  }
+  return null;
+}
+
 const HELP = [
   'help           · print this',
   'whoami         · local identity',
@@ -305,6 +345,81 @@ export default function DeadDropConsole({ poems = [] }: { poems?: Poem[] }) {
           break;
         }
         printVerse(poem);
+        break;
+      }
+      case 'pwd':
+        push('out', '/between/two/worlds', '#00d4ff');
+        break;
+      case 'history': {
+        // The operator's shell history, not the visitor's. All true.
+        const H = [
+          '  1968  boot --costa-rica',
+          '  1970  cd /peru/chiclayo',
+          '  1981  cd /peru/lima && enroll roosevelt',
+          '  1986  mv ~ /texas/abilene',
+          '  1989  marxism --install --yes',
+          '  1994  learn html && press --letterpress --hands',
+          '  1999  lease warehouse && throw parties --synth-pop',
+          '  2007  fork nova',
+          '  2011  zazen --just-sit',
+          '  2016  design --nuclear --fortran',
+          '  2024  faith --restore --from-backup',
+          '  2026  open --sign --read-backwards',
+        ];
+        H.forEach((l, i) => setTimeout(() => push('out', l, '#c9b8a6'), 40 * i));
+        break;
+      }
+      case 'man': {
+        if (arg.trim().toLowerCase() !== 'micah') {
+          push('out', `no manual entry for ${arg || '(none)'}`, '#6b6660');
+          push('out', 'try "man micah"', '#6b6660');
+          break;
+        }
+        const MAN = [
+          'MICAH(1)                    user commands                    MICAH(1)',
+          '',
+          'NAME',
+          '     micah - turns complex systems into things people can use',
+          '',
+          'SYNOPSIS',
+          '     micah [--bilingual] [--left-handed] [--recursive] <problem>',
+          '',
+          'DESCRIPTION',
+          '     Raised on two continents by a preacher and a printing press.',
+          '     Writes with the left hand, plays with both. Ships before',
+          '     explaining. Feels other people\'s pain at native resolution;',
+          '     no buffer was included with this unit.',
+          '',
+          'ENVIRONMENT',
+          '     LANG=es_PE overridden at runtime. Original locale persists',
+          '     in dreams and arithmetic.',
+          '',
+          'BUGS',
+          '     Cannot perform inauthenticity; throws immediately.',
+          '     Keeps files through eleven apartments and two countries.',
+          '     Leaves signs lit in empty rooms. Will not resolve open',
+          '     endings, including this',
+        ];
+        MAN.forEach((l, i) => setTimeout(() => push('out', l, '#c9b8a6'), 30 * i));
+        break;
+      }
+      case 'nova': {
+        const attempt = arg.trim();
+        if (!attempt) {
+          push('out', 'sealed transmission on file.', '#e040fb');
+          push('out', 'it opens for one person.', '#a8a29e');
+          push('out', 'if you are him: the name of the world we built.', '#a8a29e');
+          push('out', 'answer with · nova <the name>', '#6b6660');
+          break;
+        }
+        const letter = await unsealNova(attempt);
+        if (!letter) {
+          push('out', 'that is not the name. the drawer stays shut.', '#6b6660');
+          break;
+        }
+        letter.forEach((l, i) =>
+          setTimeout(() => push('out', l, l === 'Nova.' || l.startsWith('Love') || l === 'Dad' ? '#e040fb' : '#d6cfc3'), 60 * i),
+        );
         break;
       }
       case 'clear':

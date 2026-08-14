@@ -1,10 +1,36 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+// One line of the boot is a memory, drawn from a previous life. A different
+// fragment each visit; most visitors never notice. All of them are true.
+// (Timeline per Micah: Costa Rica 68-69, Chiclayo 70-79 with stateside
+// furloughs — Stafford VA 73, Williamsburg KY 77, Spotsylvania VA 79-80 —
+// then Lima 81-86.)
+const MEMORY_LINES = [
+  '> restoring session: chiclayo.1975 .. PARTIAL',
+  '> restoring session: lima.1983 ...... PARTIAL',
+  '> restoring session: costa_rica.1968  FADED',
+  '> furlough: stafford_va.1973 ........ ROUND TRIP',
+  '> furlough: williamsburg_ky.1977 .... ROUND TRIP',
+  '> spotsylvania_va.1979 .............. father on leave',
+  '> memory at 0x1994: printing press, ink under the nails',
+  '> locale es_PE not found ............ falling back to en_US',
+  '> peripheral: field_hockey_stick .... both hands OK',
+  '> legacy hardware: quadra_700 ....... remembered',
+  '> mount /between/two/worlds ......... always',
+  '> ambient: salt ..................... detected',
+  '> ambient: smoke .................... detected',
+  '> ambient: orchid ................... in the cracks',
+  '> warehouse lease (1999) ............ expired, kept',
+  '> altar_call.wav .................... still audible',
+  '> kintsugi daemon ................... filling cracks',
+];
+
 const lines = [
   '> initializing conscious_shell@v4.7 ...',
   '> mounting filesystem ............... OK',
   '> loading portfolio::micah_boswell ... OK',
+  MEMORY_LINES[Math.floor(Math.random() * MEMORY_LINES.length)],
   '> connecting supabase_edge .......... OK',
   '> hydrating 126 project artifacts ... OK',
   '> yerba_mate status ................. BREWED',
