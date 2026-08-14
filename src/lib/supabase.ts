@@ -38,6 +38,19 @@ export type Service = {
   order_index: number;
 };
 
+export type Offer = {
+  id: string;
+  slug: string;
+  name: string;
+  tagline: string;
+  description: string;
+  deliverables: string[];
+  duration: string;
+  price_label: string;
+  availability: string;
+  order_index: number;
+};
+
 export type Testimonial = {
   id: string;
   quote: string;

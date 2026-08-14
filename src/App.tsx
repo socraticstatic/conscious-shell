@@ -256,7 +256,7 @@ export default function App() {
           <Impact />
           <About testimonial={data?.testimonials[0]} />
           <WebDossier facts={data?.dossier ?? []} recommendations={data?.recommendations ?? []} />
-          <Services services={data?.services ?? []} />
+          <Services services={data?.services ?? []} offers={data?.offers ?? []} />
           <Recognition awards={data?.awards ?? []} publications={data?.publications ?? []} />
           <GitArchaeology />
           <Contact />
