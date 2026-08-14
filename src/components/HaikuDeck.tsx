@@ -23,7 +23,7 @@ export default function HaikuDeck({ haiku }: { haiku: Haiku[] }) {
 
     let raf = 0;
     const tick = (now: number) => {
-      if (paused) {
+      if (paused || speaking) {
         startedAt.current = now - progress * INTERVAL_MS;
         raf = requestAnimationFrame(tick);
         return;
@@ -38,7 +38,7 @@ export default function HaikuDeck({ haiku }: { haiku: Haiku[] }) {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [idx, haiku.length, paused]);
+  }, [idx, haiku.length, paused, speaking]);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -56,7 +56,13 @@ export default function HaikuDeck({ haiku }: { haiku: Haiku[] }) {
     setSpeaking(false);
   }, [idx]);
 
-  const speak = () => {
+  // 2026-08-14: haiku re-cut for ache; the pre-rendered Adam-voice MP3s
+  // still speak the OLD text. Hidden until regenerated with the new voice
+  // (whisper register). Flip on after scripts/generate-haiku-audio.mjs runs.
+  const READ_ALOUD_READY = false;
+
+  const speak = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
     if (!current) return;
     if (speaking) {
       audioRef.current?.pause();
@@ -72,7 +78,6 @@ export default function HaikuDeck({ haiku }: { haiku: Haiku[] }) {
     audio.onerror = () => { setSpeaking(false); audioRef.current = null; };
     audioRef.current = audio;
     setSpeaking(true);
-    setPaused(true);
     audio.play().catch(() => { setSpeaking(false); audioRef.current = null; });
   };
 
@@ -132,19 +137,21 @@ export default function HaikuDeck({ haiku }: { haiku: Haiku[] }) {
                   <span>— {current.source}</span>
                   <span className="text-[#605a52]">/</span>
                   <span><span className="text-[#605a52]">mood:</span> {current.mood || 'n/a'}</span>
-                  <button
-                    type="button"
-                    onClick={speak}
-                    className={`inline-flex items-center gap-2 px-2.5 py-1 border text-[10px] tracking-[0.2em] transition-colors ${
-                      speaking
-                        ? 'border-[#e040fb] text-[#e040fb]'
-                        : 'border-[#1f1c17] text-[#6b6660] hover:border-[#e040fb]/50 hover:text-[#e040fb]'
-                    }`}
-                    aria-label={speaking ? 'stop reading' : 'read haiku aloud'}
-                  >
-                    {speaking ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
-                    {speaking ? 'silence' : 'read aloud'}
-                  </button>
+                  {READ_ALOUD_READY && (
+                    <button
+                      type="button"
+                      onClick={(e) => speak(e)}
+                      className={`inline-flex items-center gap-2 px-2.5 py-1 border text-[10px] tracking-[0.2em] transition-colors ${
+                        speaking
+                          ? 'border-[#e040fb] text-[#e040fb]'
+                          : 'border-[#1f1c17] text-[#6b6660] hover:border-[#e040fb]/50 hover:text-[#e040fb]'
+                      }`}
+                      aria-label={speaking ? 'stop reading' : 'read haiku aloud'}
+                    >
+                      {speaking ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
+                      {speaking ? 'silence' : 'read aloud'}
+                    </button>
+                  )}
                 </div>
               </motion.blockquote>
             </AnimatePresence>
