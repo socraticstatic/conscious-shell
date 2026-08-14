@@ -106,7 +106,7 @@ export default function VisitorDossier() {
                   {rawOpen ? '[-]' : '[+]'} RAW DATA
                 </button>
                 {rawOpen && (
-                  <pre className="mt-1 p-2 rounded text-[9px] overflow-x-auto" style={{ background: '#1f1c17', color: '#6b6660' }}>
+                  <pre className="mt-1 p-2 rounded text-[9px] whitespace-pre-wrap break-all" style={{ background: '#1f1c17', color: '#6b6660' }}>
                     {JSON.stringify({ traits, answers: Object.keys(traits).length }, null, 2)}
                   </pre>
                 )}

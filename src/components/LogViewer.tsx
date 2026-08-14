@@ -138,7 +138,7 @@ export default function LogViewer() {
               </div>
             </div>
 
-            <div className="flex items-center gap-1.5 px-4 py-2 border-b border-gray-800 flex-shrink-0 overflow-x-auto">
+            <div className="flex items-center flex-wrap gap-1.5 px-4 py-2 border-b border-gray-800 flex-shrink-0">
               <Filter size={12} className="text-gray-500 flex-shrink-0" />
               {LEVELS.map((lvl) => {
                 const active = activeLevels.has(lvl);

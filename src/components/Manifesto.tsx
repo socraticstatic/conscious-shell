@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { SectionHeader } from './Work';
 import type { LinkedInArticle } from '../lib/supabase';
 import TransmissionPanel from './TransmissionPanel';
@@ -14,15 +14,9 @@ const lines: Array<[string, string]> = [
 export default function Manifesto({ articles = [] }: { articles?: LinkedInArticle[] }) {
   const [openId, setOpenId] = useState<string | null>(null);
   const openArticle = articles.find((a) => a.id === openId);
-  const panelRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (!openId) return;
-    const t = window.setTimeout(() => {
-      panelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 80);
-    return () => clearTimeout(t);
-  }, [openId]);
+  // The reader is a fixed overlay now — the page never moves when it opens
+  // or closes, so there is nothing to scroll back to. Your row is where you
+  // left it.
 
   return (
     <section id="manifesto" className="relative py-20 md:py-28 border-b border-[#1f1c17]">
@@ -34,7 +28,7 @@ export default function Manifesto({ articles = [] }: { articles?: LinkedInArticl
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.4 }}
-          className="mt-10 text-[11px] text-[#605a52] leading-4 whitespace-pre"
+          className="mt-10 hidden sm:block text-[11px] text-[#605a52] leading-4 whitespace-pre"
         >
 {`+----+----------+-----------------------------------------------+
 | #  | directive | footnote                                      |
@@ -76,7 +70,7 @@ export default function Manifesto({ articles = [] }: { articles?: LinkedInArticl
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4 }}
-              className="mt-10 text-[11px] text-[#605a52] leading-4 whitespace-pre overflow-x-auto"
+              className="mt-10 hidden sm:block text-[11px] text-[#605a52] leading-4 whitespace-pre"
             >
 {`+----+--------------+--------+------------------------------------------------+
 | #  | intercepted  | length | signal                                         |
@@ -97,36 +91,41 @@ export default function Manifesto({ articles = [] }: { articles?: LinkedInArticl
                       className="w-full text-left grid grid-cols-12 gap-3 py-4 items-baseline hover:bg-[#0f0d0a]/60 transition-colors px-1"
                       aria-expanded={isOpen}
                     >
-                      <div className="col-span-1 text-xs text-[#605a52] font-mono">
+                      <div className="hidden sm:block col-span-1 text-xs text-[#605a52] font-mono">
                         {String(i + 1).padStart(2, '0')}
                       </div>
-                      <div className="col-span-12 sm:col-span-3 md:col-span-2 text-[11px] font-mono text-[#4fc3f7] tracking-widest">
-                        {a.published_date}
-                      </div>
-                      <div className="col-span-3 sm:col-span-2 md:col-span-1 text-[11px] font-mono text-[#6b6660]">
-                        {a.reading_minutes}m
-                      </div>
-                      <div className="col-span-12 sm:col-span-6 md:col-span-7 text-[#e040fb] text-[15px] md:text-base leading-snug">
+                      {/* Phone rows lead with the title; the meta collapses to
+                          one quiet line beneath it instead of a grid of columns. */}
+                      <div className="col-span-11 sm:col-span-6 md:col-span-7 order-1 sm:order-none text-[#e040fb] text-[15px] md:text-base leading-snug">
                         <span className="text-[#605a52]">// </span>
                         {a.title}
+                        <span className="block sm:hidden mt-1 text-[11px] font-mono text-[#605a52] tracking-widest">
+                          {a.published_date} · {a.reading_minutes}m read
+                        </span>
                       </div>
-                      <div className="col-span-1 text-right text-[11px] font-mono text-[#605a52]">
+                      <div className="hidden sm:block sm:col-span-3 md:col-span-2 text-[11px] font-mono text-[#4fc3f7] tracking-widest">
+                        {a.published_date}
+                      </div>
+                      <div className="hidden sm:block sm:col-span-2 md:col-span-1 text-[11px] font-mono text-[#6b6660]">
+                        {a.reading_minutes}m
+                      </div>
+                      <div className="col-span-1 order-2 sm:order-none text-right text-[11px] font-mono text-[#605a52]">
                         {isOpen ? '[−]' : '[+]'}
                       </div>
                     </motion.button>
 
-                    <AnimatePresence>
-                      {isOpen && openArticle && (
-                        <div ref={panelRef} style={{ scrollMarginTop: '80px' }}>
-                          <TransmissionPanel
-                            article={openArticle}
-                            onClose={() => setOpenId(null)}
-                            siblings={articles}
-                            onSelectSibling={setOpenId}
-                          />
-                        </div>
-                      )}
-                    </AnimatePresence>
+                    {/* No AnimatePresence: the panel is a fragment (backdrop +
+                        sheet) and Presence never resolves a fragment's exit,
+                        which orphaned the dialog after close. Instant close is
+                        the right feel anyway — you're back where you were. */}
+                    {isOpen && openArticle && (
+                      <TransmissionPanel
+                        article={openArticle}
+                        onClose={() => setOpenId(null)}
+                        siblings={articles}
+                        onSelectSibling={setOpenId}
+                      />
+                    )}
                   </li>
                 );
               })}

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ExternalLink, Radar, RefreshCw } from 'lucide-react';
 import type { WebDossierFact, LinkedInRecommendation } from '../lib/supabase';
+import { useShellTier } from '../lib/shellTier';
 import { SectionHeader } from './Work';
 
 const CATEGORY_META: Record<string, { label: string; accent: string }> = {
@@ -55,6 +56,9 @@ export default function WebDossier({
   facts: WebDossierFact[];
   recommendations?: LinkedInRecommendation[];
 }) {
+  // Calm tier reads at its own pace — nothing rotates under a thumb that's
+  // mid-sentence. The 7s auto-advance is desktop-only ambience.
+  const tier = useShellTier();
   const [seed, setSeed] = useState(() => Math.floor(Math.random() * 1e9));
   const [active, setActive] = useState(0);
   const intervalRef = useRef<number | null>(null);
@@ -81,14 +85,14 @@ export default function WebDossier({
   }, [order, active, rng]);
 
   useEffect(() => {
-    if (!merged.length || isPaused) return;
+    if (!merged.length || isPaused || tier === 'calm') return;
     intervalRef.current = window.setInterval(() => {
       setActive((a) => (a + 1) % Math.max(1, order.length));
     }, 7000);
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [merged.length, isPaused, order.length]);
+  }, [merged.length, isPaused, order.length, tier]);
 
   if (!merged.length) return null;
 
@@ -128,12 +132,21 @@ export default function WebDossier({
                     <RefreshCw className="w-3 h-3" />
                     reshuffle
                   </button>
-                  <button
-                    onClick={() => setIsPaused((p) => !p)}
-                    className="min-h-[44px] px-1 hover:text-white transition-colors"
-                  >
-                    {isPaused ? 'resume' : 'hold'}
-                  </button>
+                  {tier === 'full' ? (
+                    <button
+                      onClick={() => setIsPaused((p) => !p)}
+                      className="min-h-[44px] px-1 hover:text-white transition-colors"
+                    >
+                      {isPaused ? 'resume' : 'hold'}
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => setActive((a) => (a + 1) % Math.max(1, order.length))}
+                      className="min-h-[44px] px-2 text-white/90 active:text-white transition-colors"
+                    >
+                      next file ▸
+                    </button>
+                  )}
                 </div>
               </div>
 

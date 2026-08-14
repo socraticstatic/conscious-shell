@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useShellTier } from '../lib/shellTier';
 import { ChevronLeft, ChevronRight, ScanSearch, RotateCcw } from 'lucide-react';
 import type { EsperHotspot, EsperFrameRow } from '../lib/supabase';
 
@@ -115,6 +116,16 @@ export default function EsperScene({
 
   const [frameIdx, setFrameIdx] = useState(0);
 
+  // Calm tier (phones, coarse-pointer tablets): the hotspot hunt is a mouse
+  // behavior — invisible regions in a ~230px-tall photo can't be found by
+  // thumb. There the machine drives: one primary button walks the nodes in
+  // order, and because the buried line unlocks on an in-order sweep, calm
+  // readers actually reach it. The full tier keeps the hunt untouched.
+  const tier = useShellTier();
+  const guided = tier === 'calm';
+  const [guidedIdx, setGuidedIdx] = useState(0);
+  const terminalRef = useRef<HTMLDivElement | null>(null);
+
   const clearAll = useCallback(() => {
     timers.current.forEach(clearTimeout);
     timers.current = [];
@@ -143,6 +154,7 @@ export default function EsperScene({
     setTyped([]);
     setBuried(false);
     seqRef.current = 0;
+    setGuidedIdx(0);
   }, [frameIdx, clearAll]);
 
   // Left/right step frames when focus is inside the section. Scoped to the
@@ -189,6 +201,7 @@ export default function EsperScene({
     setTyped([]);
     setBuried(false);
     seqRef.current = 0;
+    setGuidedIdx(0);
   };
 
   /**
@@ -270,7 +283,9 @@ export default function EsperScene({
               enhance. enhance. <span className="text-[#e040fb]">enhance.</span>
             </h2>
             <p className="mt-3 text-[#8a837a] text-[15px] md:text-sm max-w-xl leading-relaxed">
-              an interactive recreation of the esper session. pick a target on the frame. the machine will track, enhance, and reveal what the photograph has been hiding.
+              {guided
+                ? 'an interactive recreation of the esper session. tap enhance and the machine will track, isolate, and reveal what each photograph has been hiding.'
+                : 'an interactive recreation of the esper session. pick a target on the frame. the machine will track, enhance, and reveal what the photograph has been hiding.'}
             </p>
           </div>
 
@@ -340,6 +355,7 @@ export default function EsperScene({
                     key={h.id}
                     type="button"
                     onClick={() => run(h)}
+                    disabled={guided}
                     className={`absolute border transition-all duration-500 ${
                       isActive
                         ? 'border-[#e040fb]'
@@ -355,7 +371,7 @@ export default function EsperScene({
                     aria-label={`enhance region ${h.order_index}`}
                   >
                     <span
-                      className={`absolute left-0 text-[9px] tracking-[0.3em] uppercase whitespace-nowrap ${
+                      className={`absolute left-0 text-[9px] tracking-[0.3em] uppercase whitespace-nowrap ${guided ? 'hidden' : ''} ${
                         // A node near the frame's top edge would push its label
                         // into the corner captions — hang it below instead.
                         h.y < 0.14 ? 'top-full mt-1.5' : '-top-6'
@@ -401,6 +417,32 @@ export default function EsperScene({
             </AnimatePresence>
           </div>
 
+          {/* Calm tier: the machine drives. One button walks the nodes in order,
+              so the reveal — and the buried line — arrive without the hunt. */}
+          {guided && (
+            <button
+              type="button"
+              disabled={phase === 'track' || phase === 'enhance'}
+              onClick={() => {
+                if (guidedIdx >= orderedHotspots.length) {
+                  goToFrame(frameIdx + 1);
+                  return;
+                }
+                const h = orderedHotspots[guidedIdx];
+                setGuidedIdx(guidedIdx + 1);
+                run(h, true);
+                window.setTimeout(() => {
+                  terminalRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 450);
+              }}
+              className="mt-4 w-full min-h-[52px] border border-[#e040fb] text-[#e040fb] font-mono text-sm tracking-[0.2em] uppercase active:bg-[#e040fb] active:text-[#05060a] disabled:opacity-40 transition-colors"
+            >
+              {guidedIdx >= orderedHotspots.length
+                ? 'frame complete — next frame ▸'
+                : `▸ enhance node ${String(guidedIdx + 1).padStart(2, '0')} / ${String(orderedHotspots.length).padStart(2, '0')}`}
+            </button>
+          )}
+
           {/* Manual only. Cyan is what you can reach, magenta is where you are. */}
           <div className="mt-4 flex items-center justify-between gap-4 font-mono text-[10px] tracking-[0.3em] uppercase">
             <button
@@ -445,13 +487,13 @@ export default function EsperScene({
           </div>
           </div>
 
-          <div className="border border-[#1f1c17] bg-[#0a0a0d] p-5 flex flex-col min-h-[360px]">
+          <div ref={terminalRef} className="border border-[#1f1c17] bg-[#0a0a0d] p-5 flex flex-col min-h-[280px] md:min-h-[360px] scroll-mt-20">
             <div className="flex items-center gap-2 text-[10px] tracking-[0.4em] uppercase text-[#00d4ff] mb-4">
               <ScanSearch className="w-3.5 h-3.5" />
               operator terminal
             </div>
 
-            <div className="flex-1 font-mono text-[11.5px] leading-relaxed text-[#c9b8a6] space-y-0.5 min-h-[180px]">
+            <div className="flex-1 font-mono text-[13px] md:text-[11.5px] leading-relaxed text-[#c9b8a6] space-y-0.5 min-h-[120px] md:min-h-[180px]">
               {typed.map((l, i) => (
                 <motion.div
                   key={i}
@@ -464,7 +506,11 @@ export default function EsperScene({
                 </motion.div>
               ))}
               {!typed.length && (
-                <div className="text-[#605a52]">awaiting selection. click a node on the frame.</div>
+                <div className="text-[#605a52]">
+                  {guided
+                    ? 'awaiting instruction. tap enhance — the machine drives.'
+                    : 'awaiting selection. click a node on the frame.'}
+                </div>
               )}
               {phase !== 'idle' && phase !== 'resolve' && (
                 <span className="inline-block w-2 h-3 align-middle bg-[#00d4ff] animate-pulse" />
@@ -484,7 +530,7 @@ export default function EsperScene({
                   <div className="text-[9px] tracking-[0.4em] uppercase text-[#e040fb] mb-2">
                     // reveal · node-{String(active.order_index).padStart(2, '0')}
                   </div>
-                  <p className="font-serif text-base md:text-lg text-[#e8e4dc] leading-snug">
+                  <p className="font-serif text-[17px] md:text-lg text-[#e8e4dc] leading-[1.65] md:leading-snug">
                     {active.reveal}
                   </p>
                 </motion.div>
@@ -498,7 +544,7 @@ export default function EsperScene({
                   animate={{ opacity: 0.92 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 1.2 }}
-                  className="mt-4 border-t border-[#e040fb]/20 pt-4 font-mono text-[10.5px] leading-relaxed text-[#6b6660] space-y-0.5"
+                  className="mt-4 border-t border-[#e040fb]/20 pt-4 font-mono text-[12.5px] md:text-[10.5px] leading-relaxed text-[#6b6660] space-y-0.5"
                   style={{ textShadow: '0 0 8px rgba(224,64,251,0.25)' }}
                 >
                   {buriedLines.map((l, i) => (
@@ -516,7 +562,7 @@ export default function EsperScene({
               )}
             </AnimatePresence>
 
-            <div className="mt-5 pt-4 border-t border-[#1f1c17] flex flex-wrap gap-2">
+            <div className={`mt-5 pt-4 border-t border-[#1f1c17] flex-wrap gap-2 ${guided ? 'hidden' : 'flex'}`}>
               {activeHotspots.map((h) => (
                 <button
                   key={h.id}

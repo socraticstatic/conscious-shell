@@ -232,7 +232,7 @@ export default function VKInterview({ recommendations = [] }: { recommendations?
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3">
               {currentQ.options.map((opt, i) => (
-                <motion.button key={i} whileTap={{ scale: 0.98 }} onClick={() => handleAnswer(i)} className="text-left p-3 sm:p-4 border border-[#1f1c17] bg-[#0d0c09] hover:border-[#e040fb]/50 active:border-[#e040fb]/50 hover:bg-[#0f0e0a] active:bg-[#0f0e0a] transition-colors text-xs sm:text-sm text-[#a8a29e] hover:text-[#e8e4dc] active:text-[#e8e4dc]">
+                <motion.button key={i} whileTap={{ scale: 0.98 }} onClick={() => handleAnswer(i)} className="text-left p-3 sm:p-4 min-h-[44px] border border-[#1f1c17] bg-[#0d0c09] hover:border-[#e040fb]/50 active:border-[#e040fb]/50 hover:bg-[#0f0e0a] active:bg-[#0f0e0a] transition-colors text-[15px] leading-relaxed sm:text-sm text-[#a8a29e] hover:text-[#e8e4dc] active:text-[#e8e4dc]">
                   <span className="text-[10px] text-[#6b6660] font-mono mr-2">{String.fromCharCode(65 + i)}.</span>
                   {opt.text}
                 </motion.button>
