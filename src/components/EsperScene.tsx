@@ -125,6 +125,7 @@ export default function EsperScene({
   const guided = tier === 'calm';
   const [guidedIdx, setGuidedIdx] = useState(0);
   const terminalRef = useRef<HTMLDivElement | null>(null);
+  const frameColRef = useRef<HTMLDivElement | null>(null);
 
   const clearAll = useCallback(() => {
     timers.current.forEach(clearTimeout);
@@ -301,7 +302,7 @@ export default function EsperScene({
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.6fr_1fr] gap-6">
-          <div className="flex flex-col">
+          <div ref={frameColRef} className="flex flex-col scroll-mt-16 lg:col-start-1 lg:row-start-1">
           <div className="relative border border-[#1f1c17] bg-black overflow-hidden aspect-[16/10] select-none">
             <motion.div
               className="absolute inset-0"
@@ -431,9 +432,11 @@ export default function EsperScene({
                 const h = orderedHotspots[guidedIdx];
                 setGuidedIdx(guidedIdx + 1);
                 run(h, true);
+                // Pin the frame to the top: the zoom plays up there, the type-out
+                // and reveal land in the space below — one screen, no hunting.
                 window.setTimeout(() => {
-                  terminalRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }, 450);
+                  frameColRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 120);
               }}
               className="mt-4 w-full min-h-[52px] border border-[#e040fb] text-[#e040fb] font-mono text-sm tracking-[0.2em] uppercase active:bg-[#e040fb] active:text-[#05060a] disabled:opacity-40 transition-colors"
             >
@@ -443,51 +446,9 @@ export default function EsperScene({
             </button>
           )}
 
-          {/* Manual only. Cyan is what you can reach, magenta is where you are. */}
-          <div className="mt-4 flex items-center justify-between gap-4 font-mono text-[10px] tracking-[0.3em] uppercase">
-            <button
-              type="button"
-              onClick={() => goToFrame(frameIdx - 1)}
-              aria-label="Previous frame"
-              className="min-h-[44px] flex items-center gap-2 px-4 py-2 border border-[#1f1c17] text-[#00d4ff] hover:border-[#00d4ff] transition-colors"
-            >
-              <ChevronLeft size={14} /> prev
-            </button>
-
-            <div className="flex items-center gap-2 flex-wrap justify-center" role="tablist" aria-label="Esper frames">
-              {frames.map((f, i) => (
-                <button
-                  key={f.photoId}
-                  type="button"
-                  role="tab"
-                  aria-selected={i === frameIdx}
-                  aria-label={`Frame ${i + 1}: ${f.caption || f.photoId}`}
-                  onClick={() => goToFrame(i)}
-                  className="min-h-[44px] min-w-[24px] flex items-center justify-center group/dot"
-                >
-                  {/* visual bar stays slim; the button supplies the 44px hit area */}
-                  <span
-                    aria-hidden
-                    className={`h-1.5 transition-all ${
-                      i === frameIdx ? 'w-6 bg-[#e040fb]' : 'w-1.5 bg-[#605a52] group-hover/dot:bg-[#00d4ff]'
-                    }`}
-                  />
-                </button>
-              ))}
-            </div>
-
-            <button
-              type="button"
-              onClick={() => goToFrame(frameIdx + 1)}
-              aria-label="Next frame"
-              className="min-h-[44px] flex items-center gap-2 px-4 py-2 border border-[#1f1c17] text-[#00d4ff] hover:border-[#00d4ff] transition-colors"
-            >
-              next <ChevronRight size={14} />
-            </button>
-          </div>
           </div>
 
-          <div ref={terminalRef} className="border border-[#1f1c17] bg-[#0a0a0d] p-5 flex flex-col min-h-[280px] md:min-h-[360px] scroll-mt-20">
+          <div ref={terminalRef} className="border border-[#1f1c17] bg-[#0a0a0d] p-5 flex flex-col min-h-[280px] md:min-h-[360px] scroll-mt-20 lg:col-start-2 lg:row-start-1 lg:row-span-2">
             <div className="flex items-center gap-2 text-[10px] tracking-[0.4em] uppercase text-[#00d4ff] mb-4">
               <ScanSearch className="w-3.5 h-3.5" />
               operator terminal
@@ -578,6 +539,50 @@ export default function EsperScene({
                 </button>
               ))}
             </div>
+          </div>
+
+          {/* Manual only. On phones the pager sits BELOW the output — frame, button,
+              reveal, then navigation. Reading beats steering. */}
+          <div className="flex items-center justify-between gap-4 font-mono text-[10px] tracking-[0.3em] uppercase lg:col-start-1 lg:row-start-2">
+            <button
+              type="button"
+              onClick={() => goToFrame(frameIdx - 1)}
+              aria-label="Previous frame"
+              className="min-h-[44px] flex items-center gap-2 px-4 py-2 border border-[#1f1c17] text-[#00d4ff] hover:border-[#00d4ff] transition-colors"
+            >
+              <ChevronLeft size={14} /> prev
+            </button>
+
+            <div className="flex items-center gap-2 flex-wrap justify-center" role="tablist" aria-label="Esper frames">
+              {frames.map((f, i) => (
+                <button
+                  key={f.photoId}
+                  type="button"
+                  role="tab"
+                  aria-selected={i === frameIdx}
+                  aria-label={`Frame ${i + 1}: ${f.caption || f.photoId}`}
+                  onClick={() => goToFrame(i)}
+                  className="min-h-[44px] min-w-[24px] flex items-center justify-center group/dot"
+                >
+                  {/* visual bar stays slim; the button supplies the 44px hit area */}
+                  <span
+                    aria-hidden
+                    className={`h-1.5 transition-all ${
+                      i === frameIdx ? 'w-6 bg-[#e040fb]' : 'w-1.5 bg-[#605a52] group-hover/dot:bg-[#00d4ff]'
+                    }`}
+                  />
+                </button>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => goToFrame(frameIdx + 1)}
+              aria-label="Next frame"
+              className="min-h-[44px] flex items-center gap-2 px-4 py-2 border border-[#1f1c17] text-[#00d4ff] hover:border-[#00d4ff] transition-colors"
+            >
+              next <ChevronRight size={14} />
+            </button>
           </div>
         </div>
       </div>
