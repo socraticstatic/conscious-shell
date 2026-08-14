@@ -200,10 +200,11 @@ export function dedupeAwards(awards) {
 }
 
 async function fetchAll() {
-  const [projects, services, testimonials, awards, publications, certifications, dossier] =
+  const [projects, services, offers, testimonials, awards, publications, certifications, dossier] =
     await Promise.all([
       table('portfolio_projects', 'select=*&order=order_index'),
       table('portfolio_services', 'select=*&order=order_index'),
+      table('portfolio_offers', 'select=*&order=order_index'),
       table('portfolio_testimonials', 'select=*&order=order_index'),
       table('portfolio_awards', 'select=*&order=order_index'),
       table('portfolio_publications', 'select=*&order=order_index'),
@@ -227,6 +228,7 @@ async function fetchAll() {
   return {
     projects,
     services,
+    offers,
     testimonials,
     awards: uniqueAwards,
     publications,
@@ -480,7 +482,7 @@ function projectBlock(p, slugify) {
 }
 
 function homeBlock(d, slugify) {
-  const { projects, services, awards, publications, certifications, testimonials, about } = d;
+  const { projects, services, offers, awards, publications, certifications, testimonials, about } = d;
   const t = testimonials[0];
 
   // Same strings the React About section renders — see src/lib/about-copy.ts.
@@ -503,6 +505,16 @@ ${aboutProse}
 <h2>Selected work</h2>
 <ul>
 ${projects.map((p) => projectBlock(p, slugify)).join('\n')}
+</ul>
+
+<h2>Engagements</h2>
+<ul>
+${offers
+  .map(
+    (o) =>
+      `<li><h3>${esc(o.name)}</h3><p>${esc(o.tagline)} ${esc(o.description)}</p><div class="meta">${esc(o.duration)} &middot; ${esc(o.price_label)} &middot; ${esc(o.availability)}</div></li>`,
+  )
+  .join('\n')}
 </ul>
 
 <h2>Services</h2>
@@ -777,6 +789,15 @@ Projects by decade: 18 in the 2000s, 54 in the 2010s, 54 in the 2020s.
 Discipline mix: product design 92%, design leadership 88%, UX research 85%,
 strategy 78%.
 
+## Engagements
+
+${d.offers
+  .map(
+    (o) =>
+      `- **${o.name}** — ${o.tagline} ${o.description} (${o.duration}; ${o.price_label}; ${o.availability}.)`,
+  )
+  .join('\n')}
+
 ## Services
 
 ${d.services.map((s) => `- **${s.title}** — ${s.description}`).join('\n')}
@@ -925,7 +946,7 @@ async function main() {
   const d = { ...(await fetchAll()), about };
   console.log(
     `[prerender] fetched: ${d.projects.length} projects, ${d.services.length} services, ` +
-      `${d.awards.length} awards, ${d.certifications.length} certifications`,
+      `${d.offers.length} offers, ${d.awards.length} awards, ${d.certifications.length} certifications`,
   );
 
   // --- homepage ---
