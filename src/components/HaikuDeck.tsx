@@ -56,10 +56,9 @@ export default function HaikuDeck({ haiku }: { haiku: Haiku[] }) {
     setSpeaking(false);
   }, [idx]);
 
-  // 2026-08-14: haiku re-cut for ache; the pre-rendered Adam-voice MP3s
-  // still speak the OLD text. Hidden until regenerated with the new voice
-  // (whisper register). Flip on after scripts/generate-haiku-audio.mjs runs.
-  const READ_ALOUD_READY = false;
+  // Audio regenerated 2026-08-14: the canon haiku, whispered (River via
+  // eleven_v3 with a [whispers] directive — see generate-haiku-audio.mjs).
+  const READ_ALOUD_READY = true;
 
   const speak = (e?: React.MouseEvent) => {
     e?.stopPropagation();

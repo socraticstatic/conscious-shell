@@ -17,7 +17,9 @@ const SUPA_KEY = ENV.match(/VITE_SUPABASE_ANON_KEY=(.+)/)?.[1]?.trim();
 if (!SUPA_URL || !SUPA_KEY) { console.error('Supabase env missing'); process.exit(1); }
 
 const VOICE_ID = process.env.ELEVENLABS_VOICE_ID || 'pNInz6obpgDQGcFmaJgB'; // Adam
-const MODEL_ID = 'eleven_multilingual_v2';
+const MODEL_ID = process.env.ELEVENLABS_MODEL_ID || 'eleven_multilingual_v2';
+// eleven_v3 honors performance directives like [whispers] prefixed to the text.
+const TEXT_PREFIX = process.env.ELEVENLABS_TEXT_PREFIX || '';
 
 const OUT_DIR = join(process.cwd(), 'public', 'audio', 'haiku');
 mkdirSync(OUT_DIR, { recursive: true });
@@ -39,7 +41,7 @@ for (let i = 0; i < haiku.length; i++) {
   if (existsSync(out)) { skipped++; continue; }
 
   // Add deliberate pauses between lines for breathing room.
-  const text = [h.line1, h.line2, h.line3]
+  const text = TEXT_PREFIX + [h.line1, h.line2, h.line3]
     .filter(Boolean)
     .join('. ')
     .replace(/\.\./g, '.');
