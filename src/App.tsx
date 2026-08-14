@@ -2,6 +2,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { lazyWithRetry as lazy, isChunkLoadError } from './lib/lazyWithRetry';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import NotFound from './components/NotFound';
 import Nav from './components/Nav';
 import Hero from './components/Hero';
 import Work from './components/Work';
@@ -162,7 +163,8 @@ export default function App() {
       label="root"
       fallback={(_err, reset) => (
         <div className="min-h-[100dvh] bg-[#07070a] text-[#e8e4dc] flex flex-col items-center justify-center gap-4 p-6 text-center">
-          <p className="font-mono text-sm opacity-70">the shell hit an error. it is still here.</p>
+          <p className="font-mono text-sm opacity-80">something broke here.</p>
+          <p className="font-mono text-sm" style={{ color: '#c9a227' }}>we filled the crack with gold.</p>
           <button
             onClick={reset}
             className="font-mono text-xs border border-[#e8e4dc]/30 rounded px-4 py-2 hover:bg-[#e8e4dc]/10"
@@ -176,8 +178,9 @@ export default function App() {
     <PersonalizationProvider>
     <Routes>
       <Route path="/work/:slug" element={<CaseStudy />} />
+      <Route path="*" element={<NotFound />} />
       <Route
-        path="/*"
+        path="/"
         element={
     // pb clears the fixed bottom band (marquee 0-22px, control dock 30-74px)
     // so the last thing on the page - the footer, and the contact form's final
@@ -282,7 +285,9 @@ export default function App() {
 function ChunkFallback({ error, onRetry }: { error: Error; onRetry: () => void }) {
   return (
     <div className="px-6 py-16 text-center font-mono">
-      <p className="text-sm text-fg-muted">part of the shell failed to load.</p>
+      <p className="text-sm text-fg-muted">
+        a piece broke off here. <span style={{ color: '#c9a227' }}>the crack is filled with gold.</span>
+      </p>
       <button
         onClick={() => {
           saveRecoveryScroll();

@@ -1,6 +1,23 @@
 import { useEffect, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 
+// The es_PE underneath: once per drawer-open, one item's subtitle renders in
+// Spanish for a moment, then corrects itself to Japanese. First language,
+// briefly visible through the second costume.
+const ES: Record<string, string> = {
+  work: 'obra',
+  time: 'archivo',
+  empathy: 'corazón',
+  lab: 'taller',
+  index: 'índice',
+  manifesto: 'manifiesto',
+  dossier: 'expediente',
+  haiku: 'verso',
+  about: 'quién soy',
+  services: 'oficio',
+  contact: 'escríbeme',
+};
+
 const links = [
   { id: 'work', label: 'work', jp: '作品' },
   { id: 'time', label: 'archive', jp: '記録庫' },
@@ -18,6 +35,15 @@ const links = [
 export default function Nav({ onOpenPalette }: { onOpenPalette: () => void }) {
   const [scrolled, setScrolled] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [esFlicker, setEsFlicker] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!drawerOpen) return;
+    const pick = links[Math.floor(Math.random() * links.length)].id;
+    setEsFlicker(pick);
+    const t = setTimeout(() => setEsFlicker(null), 1400);
+    return () => { clearTimeout(t); setEsFlicker(null); };
+  }, [drawerOpen]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -151,7 +177,9 @@ export default function Nav({ onOpenPalette }: { onOpenPalette: () => void }) {
                   <span className="text-[10px] font-mono text-[#5c544a] w-6 tabular-nums">{String(i + 1).padStart(2, '0')}</span>
                   <span className="text-[18px] text-[#e040fb] font-mono">./{l.label}</span>
                 </div>
-                <span className="font-jp text-xs text-[#00d4ff]/70">{l.jp}</span>
+                <span className="font-jp text-xs text-[#00d4ff]/70">
+                  {esFlicker === l.id ? ES[l.id] ?? l.jp : l.jp}
+                </span>
               </button>
             ))}
             <button

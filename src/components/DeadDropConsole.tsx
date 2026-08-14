@@ -271,6 +271,14 @@ export default function DeadDropConsole({ poems = [] }: { poems?: Poem[] }) {
             kp: 8 + Math.floor(Math.random() * 2),
           },
           {
+            name: 'ground relay · commerce street, dallas',
+            temp: 34 + Math.floor(Math.random() * 8),
+            wind: 8 + Math.floor(Math.random() * 14),
+            cond: 'salt on the wind · smoke over the district',
+            vis: 'one orchid in the crack of the runway',
+            kp: 1 + Math.floor(Math.random() * 2),
+          },
+          {
             name: 'tannhäuser gate · transit ring 3',
             temp: -269,
             wind: 12 + Math.floor(Math.random() * 40),

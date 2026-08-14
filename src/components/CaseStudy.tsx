@@ -5,6 +5,7 @@ import { fetchPortfolio } from '../lib/portfolio';
 import { slugify } from '../lib/slug';
 import { useDocumentMeta } from '../lib/useDocumentMeta';
 import type { Project } from '../lib/supabase';
+import { verseLine } from '../lib/verseLines';
 
 // Standalone, directly-linkable case-study page. Deep-linking here (or a
 // crawler landing here cold) must render real title/summary/role/client
@@ -70,10 +71,15 @@ export default function CaseStudy() {
         </button>
 
         {!project ? (
-          <div className="animate-pulse space-y-4">
-            <div className="h-3 w-24 bg-[#1f1c17]" />
-            <div className="h-10 w-2/3 bg-[#1f1c17]" />
-            <div className="h-24 w-full bg-[#1f1c17]" />
+          // While the archive fetches, a line of verse holds the space —
+          // structurally guaranteed to be replaced by the case file.
+          <div className="space-y-4">
+            <div className="text-[10px] font-mono tracking-[0.4em] uppercase text-[#00d4ff]/60">
+              retrieving case file ...
+            </div>
+            <p className="font-serif text-lg text-[#8a837a] italic max-w-md leading-relaxed">
+              {verseLine()}
+            </p>
           </div>
         ) : (
           <motion.article
