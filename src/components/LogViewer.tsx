@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Terminal, X, RefreshCw, Trash2, Filter, Circle } from 'lucide-react';
-import { supabase, type LogRow, type LogLevel } from '../lib/supabase';
-import { subscribeToFlush, getSessionId } from '../lib/logger';
+import { type LogRow, type LogLevel } from '../lib/supabase';
+import { subscribeToFlush, getLocalLogs, clearLocalLogs } from '../lib/logger';
 
 const LEVEL_STYLES: Record<LogLevel, { dot: string; text: string; bg: string }> = {
   error: { dot: 'bg-red-500', text: 'text-red-300', bg: 'bg-red-500/10' },
@@ -17,9 +17,7 @@ const LEVELS: LogLevel[] = ['error', 'warn', 'info', 'log', 'debug'];
 export default function LogViewer() {
   const [open, setOpen] = useState(false);
   const [rows, setRows] = useState<LogRow[]>([]);
-  const [loading, setLoading] = useState(false);
   const [activeLevels, setActiveLevels] = useState<Set<LogLevel>>(new Set(LEVELS));
-  const [sessionOnly, setSessionOnly] = useState(true);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
   useEffect(() => {
@@ -28,27 +26,17 @@ export default function LogViewer() {
     return () => window.removeEventListener('dock:logs', onDock);
   }, []);
 
-  const fetchLogs = useCallback(async () => {
-    setLoading(true);
-    let query = supabase
-      .from('app_logs')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(200);
-    if (sessionOnly) query = query.eq('session_id', getSessionId());
-    const { data, error } = await query;
-    if (error) {
-      console.error('[LogViewer] fetch failed', error.message);
-    } else if (data) {
-      setRows(data as LogRow[]);
-    }
-    setLoading(false);
-  }, [sessionOnly]);
+  // Reads the logger's in-memory session buffer. app_logs is no longer
+  // publicly readable (2026-08-16 hardening), and this session's rows are
+  // all the viewer ever showed by default anyway.
+  const fetchLogs = useCallback(() => {
+    setRows(getLocalLogs());
+  }, []);
 
   useEffect(() => {
     if (!open) return;
-    void fetchLogs();
-    const unsub = subscribeToFlush(() => void fetchLogs());
+    fetchLogs();
+    const unsub = subscribeToFlush(() => fetchLogs());
     return unsub;
   }, [open, fetchLogs]);
 
@@ -75,8 +63,9 @@ export default function LogViewer() {
     });
   };
 
-  const clearSession = async () => {
+  const clearSession = () => {
     if (!confirm('Clear logs for this session?')) return;
+    clearLocalLogs();
     setRows([]);
   };
 
@@ -104,25 +93,16 @@ export default function LogViewer() {
                 </span>
               </div>
               <div className="flex items-center gap-1">
-                <label className="flex items-center gap-1.5 text-xs text-gray-400 mr-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={sessionOnly}
-                    onChange={(e) => setSessionOnly(e.target.checked)}
-                    className="accent-sky-500"
-                  />
-                  This session
-                </label>
+                <span className="text-xs text-gray-500 mr-2">this session</span>
                 <button
-                  onClick={() => void fetchLogs()}
-                  disabled={loading}
-                  className="p-1.5 rounded-md hover:bg-gray-800 text-gray-400 hover:text-white transition-colors disabled:opacity-50"
+                  onClick={() => fetchLogs()}
+                  className="p-1.5 rounded-md hover:bg-gray-800 text-gray-400 hover:text-white transition-colors"
                   title="Refresh"
                 >
-                  <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
+                  <RefreshCw size={14} />
                 </button>
                 <button
-                  onClick={() => void clearSession()}
+                  onClick={() => clearSession()}
                   className="p-1.5 rounded-md hover:bg-gray-800 text-gray-400 hover:text-white transition-colors"
                   title="Clear view"
                 >
@@ -165,7 +145,7 @@ export default function LogViewer() {
             <div className="flex-1 overflow-y-auto font-mono text-xs">
               {filtered.length === 0 ? (
                 <div className="flex items-center justify-center h-full text-gray-600 text-sm">
-                  {loading ? 'Loading...' : 'No logs yet'}
+                  No logs yet
                 </div>
               ) : (
                 <ul className="divide-y divide-gray-900">

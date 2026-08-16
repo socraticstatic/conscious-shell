@@ -1,4 +1,4 @@
-import { supabase, type LogLevel } from './supabase';
+import { supabase, type LogLevel, type LogRow } from './supabase';
 
 // Every console.log is a message in a bottle.
 // The ocean is Supabase. The shore is a dashboard no one checks.
@@ -21,6 +21,22 @@ const queue: QueueItem[] = [];
 let flushing = false;
 let flushTimer: number | null = null;
 const listeners = new Set<() => void>();
+
+// Local session buffer. app_logs lost its public SELECT policy (2026-08-16
+// hardening: a world-readable, world-writable table was rendered on-site),
+// so the LogViewer reads this instead of the database. Capped ring buffer;
+// this session's rows only, which is all the viewer ever showed by default.
+const HISTORY_CAP = 300;
+const history: LogRow[] = [];
+let historySeq = 0;
+
+export function getLocalLogs(): LogRow[] {
+  return [...history].reverse();
+}
+
+export function clearLocalLogs() {
+  history.length = 0;
+}
 
 function safeStringify(value: unknown): string {
   if (value instanceof Error) return `${value.name}: ${value.message}`;
@@ -69,9 +85,9 @@ async function flush() {
     const { error } = await supabase.from('app_logs').insert(rows);
     if (error) {
       originalConsole.error('[logger] insert failed:', error.message);
-    } else {
-      listeners.forEach((fn) => fn());
     }
+    // Viewer reads the local buffer, so notify regardless of insert outcome.
+    listeners.forEach((fn) => fn());
   } catch (err) {
     originalConsole.error('[logger] insert threw:', err);
   } finally {
@@ -99,6 +115,18 @@ function scheduleFlush(immediate = false) {
 export function log(level: LogLevel, source: string, args: unknown[]) {
   const { message, details } = argsToMessage(args);
   queue.push({ level, message, details, source });
+  history.push({
+    id: `${SESSION_ID}-${++historySeq}`,
+    level,
+    message: message.slice(0, 4000),
+    details,
+    source,
+    url: typeof window !== 'undefined' ? window.location.href : '',
+    user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+    session_id: SESSION_ID,
+    created_at: new Date().toISOString(),
+  });
+  if (history.length > HISTORY_CAP) history.splice(0, history.length - HISTORY_CAP);
   scheduleFlush(level === 'error' || level === 'warn');
 }
 

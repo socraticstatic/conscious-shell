@@ -127,17 +127,16 @@ function scheduleSync() {
 async function syncNow() {
   if (!state) return;
   try {
-    await supabase.from('visitor_sessions').upsert(
-      {
-        visitor_id: state.vid,
-        persona: state.persona,
-        persona_confidence: Number(state.confidence.toFixed(3)),
-        signals: state.signals,
-        sessions_count: (state.signals.returnVisits ?? 0) + 1,
-        last_seen: new Date().toISOString(),
-      },
-      { onConflict: 'visitor_id' },
-    );
+    // RPC instead of a direct upsert: visitor_sessions RLS write policies
+    // were dropped (2026-08-16 hardening — USING (true) allowed unfiltered
+    // cross-row updates). The definer function scopes the write to this vid.
+    await supabase.rpc('sync_visitor_session', {
+      p_visitor_id: state.vid,
+      p_persona: state.persona,
+      p_confidence: Number(state.confidence.toFixed(3)),
+      p_signals: state.signals,
+      p_sessions_count: (state.signals.returnVisits ?? 0) + 1,
+    });
   } catch {
     // offline or rls rejection — silent
   }
