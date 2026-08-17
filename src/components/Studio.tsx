@@ -15,36 +15,43 @@ function AdoptionCurve() {
   const d = 'M0,140 L30,138 C60,10 80,8 120,14 C220,30 300,96 420,124 C500,140 560,142 700,142';
   return (
     <figure className="mt-12 select-none" aria-label="Typical pilot adoption: launch spike, six-week decay to 8% of seats">
-      <svg viewBox="0 0 700 160" className="w-full h-auto block">
-        {[0, 35, 70, 105, 140].map((y) => (
-          <line key={y} x1="0" x2="700" y1={y + 2} y2={y + 2} stroke="#1f1c17" strokeWidth="1" />
-        ))}
-        <path
-          d={d}
-          fill="none"
-          stroke="#e8e4dc"
-          strokeWidth="2"
-          strokeDasharray="900"
-          strokeDashoffset="900"
-          style={{ animation: 'studio-draw 2.2s cubic-bezier(0.22,1,0.36,1) 0.3s forwards' }}
-        />
-        <circle cx="700" cy="142" r="4" fill="#e040fb" style={{ animation: 'studio-fade 0.5s ease 2.4s forwards', opacity: 0 }} />
-        <text x="470" y="118" fill="#e040fb" fontSize="13" fontFamily="monospace" letterSpacing="2" style={{ animation: 'studio-fade 0.5s ease 2.4s forwards', opacity: 0 }}>
-          week 6 · 8% of seats
-        </text>
-        <text x="34" y="24" fill="#605a52" fontSize="12" fontFamily="monospace" letterSpacing="2">
+      <div className="relative">
+        <svg viewBox="0 0 700 160" className="w-full h-auto block">
+          {[0, 35, 70, 105, 140].map((y) => (
+            <line key={y} x1="0" x2="700" y1={y + 2} y2={y + 2} stroke="#1f1c17" strokeWidth="1" />
+          ))}
+          <path
+            d={d}
+            fill="none"
+            stroke="#e8e4dc"
+            strokeWidth="2"
+            strokeDasharray="900"
+            strokeDashoffset="900"
+            style={{ animation: 'studio-draw 2.2s cubic-bezier(0.22,1,0.36,1) 0.3s forwards' }}
+          />
+          <circle cx="700" cy="142" r="4" fill="#e040fb" style={{ animation: 'studio-fade 0.5s ease 2.4s forwards', opacity: 0 }} />
+        </svg>
+        {/* Annotations live in HTML, not viewBox units, so they hold a
+            readable size at every viewport instead of scaling with the SVG. */}
+        <span className="absolute left-[6%] top-[6%] font-mono text-[11px] sm:text-[12px] tracking-[0.15em] text-[#605a52]">
           launch demo · 90%
-        </text>
-      </svg>
+        </span>
+        <span
+          className="absolute right-[2%] bottom-[24%] font-mono text-[11px] sm:text-[12px] tracking-[0.15em] text-[#e040fb]"
+          style={{ animation: 'studio-fade 0.5s ease 2.4s forwards', opacity: 0 }}
+        >
+          week 6 · 8% of seats
+        </span>
+      </div>
       <style>{`
         @keyframes studio-draw { to { stroke-dashoffset: 0; } }
         @keyframes studio-fade { to { opacity: 1; } }
         @media (prefers-reduced-motion: reduce) {
           figure svg path { animation: none !important; stroke-dashoffset: 0 !important; }
-          figure svg circle, figure svg text { animation: none !important; opacity: 1 !important; }
+          figure svg circle, figure span { animation: none !important; opacity: 1 !important; }
         }
       `}</style>
-      <figcaption className="mt-2 font-mono text-[11px] tracking-[0.2em] text-[#605a52]">
+      <figcaption className="mt-2 font-mono text-[12px] tracking-[0.2em] text-[#605a52]">
         the curve nobody puts in the deck
       </figcaption>
     </figure>
@@ -57,9 +64,9 @@ function Ascii({ children, label }: { children: React.ReactNode; label?: string 
   return (
     <div className="my-6">
       {label && (
-        <div className="mb-2 font-mono text-[9px] tracking-[0.18em] uppercase text-[#605a52] whitespace-nowrap">{label}</div>
+        <div className="mb-2 font-mono text-[10px] sm:text-[11px] tracking-[0.18em] uppercase text-[#605a52] whitespace-nowrap">{label}</div>
       )}
-      <pre className="font-mono text-[11px] sm:text-[13px] leading-[1.5] whitespace-pre text-[#8a837a] overflow-hidden">
+      <pre className="font-mono text-[13px] sm:text-[14px] leading-[1.5] whitespace-pre text-[#8a837a] overflow-hidden">
         {children}
       </pre>
     </div>
@@ -231,7 +238,7 @@ export default function Studio() {
           <div className={label}>the engagement</div>
           <div className="mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-1">
             <h2 className="text-2xl sm:text-3xl font-mono text-[#e040fb]">AI Adoption Teardown</h2>
-            <span className="font-mono text-[13px] text-[#8a837a]">$18,000 fixed · two weeks · one per month</span>
+            <span className="font-mono text-[13px] sm:text-[14px] text-[#8a837a]">$18,000 fixed · two weeks · one per month</span>
           </div>
           <Ascii label="ten days, mapped">
 {`             week one    week two`}{'\n'}
@@ -249,7 +256,7 @@ export default function Studio() {
               ['build path', 'what your engineers ship, in order, with acceptance criteria.'],
             ].map(([k, v]) => (
               <li key={k} className="grid grid-cols-[104px_1fr] gap-x-3 py-1.5 items-baseline">
-                <span className="font-mono text-[12px] text-[#e040fb]">{k}</span>
+                <span className="font-mono text-[13px] text-[#e040fb]">{k}</span>
                 <span className="font-serif text-[15px] leading-[1.6] text-[#a8a29e]">{v}</span>
               </li>
             ))}
@@ -274,7 +281,7 @@ export default function Studio() {
         </section>
 
         {/* sample */}
-        <section id="sample" className="mt-16 border border-[#1f1c17] p-6 sm:p-8">
+        <section id="sample" className="mt-16 border border-[#1f1c17] p-4 sm:p-8">
           <div className={label}>case file · composite, drawn from real patterns · no client named</div>
           <h2 className="mt-3 text-2xl font-mono text-[#e8e4dc]">the assistant nobody asked twice</h2>
           <p className="mt-4 font-serif text-[16px] leading-[1.7] text-[#a8a29e]">
@@ -307,8 +314,8 @@ export default function Studio() {
               {FAILURES.map(([name, sev], i) => (
                 <li key={name} className="grid grid-cols-[26px_1fr_auto] items-baseline gap-x-3 py-1.5 border-b border-dashed border-[#16140f] last:border-b-0 font-mono text-[13px]">
                   <span className="text-[#605a52]">0{i + 1}</span>
-                  <span className="text-[12.5px] text-[#e040fb] whitespace-nowrap">{name}</span>
-                  <span className="text-[9px] tracking-[0.12em] uppercase text-[#605a52] whitespace-nowrap">{sev}</span>
+                  <span className="text-[14px] text-[#e040fb] whitespace-nowrap">{name}</span>
+                  <span className="text-[10px] tracking-[0.12em] uppercase text-[#605a52] whitespace-nowrap">{sev}</span>
                 </li>
               ))}
             </ol>
@@ -317,22 +324,22 @@ export default function Studio() {
           <div className="mt-12">
             <div className={label}>the redesign · two moves</div>
             <Ascii label="move one · citations or silence">
-{`before               after`}{'\n'}
-{`┌───────────────┐    ┌───────────────┐`}{'\n'}
-{`│ "the likely   │    │ `}<B>{`42ms · p95`}</B>{`    │`}{'\n'}
-{`│  cause may    │ →  │ `}<M>{`[source row]`}</M>{`  │`}{'\n'}
-{`│  be..."       │    │ `}<B>{`accept · edit`}</B>{` │`}{'\n'}
-{`└───────────────┘    └───────────────┘`}{'\n'}
-{`  fluent guess         refusable fact`}
+{`before              after`}{'\n'}
+{`┌───────────────┐   ┌───────────────┐`}{'\n'}
+{`│ "the likely   │   │ `}<B>{`42ms · p95`}</B>{`    │`}{'\n'}
+{`│  cause may    │ → │ `}<M>{`[source row]`}</M>{`  │`}{'\n'}
+{`│  be..."       │   │ `}<B>{`accept · edit`}</B>{` │`}{'\n'}
+{`└───────────────┘   └───────────────┘`}{'\n'}
+{`  fluent guess        refusable fact`}
             </Ascii>
             <Ascii label="move two · into the ticket">
-{`before               after`}{'\n'}
-{`┌───────────────┐    ┌───────────────┐`}{'\n'}
-{`│ ticket        │    │ ticket        │`}{'\n'}
-{`│      ↕ detour │    │  `}<M>{`└ suggestion`}</M>{` │`}{'\n'}
-{`│ [copilot tab] │    │   `}<B>{`accept·undo`}</B>{` │`}{'\n'}
-{`└───────────────┘    └───────────────┘`}{'\n'}
-{`   two places          one place`}
+{`before              after`}{'\n'}
+{`┌───────────────┐   ┌───────────────┐`}{'\n'}
+{`│ ticket        │   │ ticket        │`}{'\n'}
+{`│      ↕ detour │   │  `}<M>{`└ suggestion`}</M>{` │`}{'\n'}
+{`│ [copilot tab] │   │   `}<B>{`accept·undo`}</B>{` │`}{'\n'}
+{`└───────────────┘   └───────────────┘`}{'\n'}
+{`   two places         one place`}
             </Ascii>
           </div>
 
