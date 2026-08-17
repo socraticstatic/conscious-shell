@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useDocumentMeta } from '../lib/useDocumentMeta';
@@ -15,32 +15,27 @@ function AdoptionCurve() {
   const d = 'M0,140 L30,138 C60,10 80,8 120,14 C220,30 300,96 420,124 C500,140 560,142 700,142';
   return (
     <figure className="mt-12 select-none" aria-label="Typical pilot adoption: launch spike, six-week decay to 8% of seats">
-      <div className="relative">
-        <svg viewBox="0 0 700 160" className="w-full h-auto block">
-          {[0, 35, 70, 105, 140].map((y) => (
-            <line key={y} x1="0" x2="700" y1={y + 2} y2={y + 2} stroke="#1f1c17" strokeWidth="1" />
-          ))}
-          <path
-            d={d}
-            fill="none"
-            stroke="#e8e4dc"
-            strokeWidth="2"
-            strokeDasharray="900"
-            strokeDashoffset="900"
-            style={{ animation: 'studio-draw 2.2s cubic-bezier(0.22,1,0.36,1) 0.3s forwards' }}
-          />
-          <circle cx="700" cy="142" r="4" fill="#e040fb" style={{ animation: 'studio-fade 0.5s ease 2.4s forwards', opacity: 0 }} />
-        </svg>
-        {/* Annotations live in HTML, not viewBox units, so they hold a
-            readable size at every viewport instead of scaling with the SVG. */}
-        <span className="absolute left-[6%] top-[6%] font-mono text-[11px] sm:text-[12px] tracking-[0.15em] text-[#605a52]">
-          launch demo · 90%
-        </span>
-        <span
-          className="absolute right-[2%] bottom-[24%] font-mono text-[11px] sm:text-[12px] tracking-[0.15em] text-[#e040fb]"
-          style={{ animation: 'studio-fade 0.5s ease 2.4s forwards', opacity: 0 }}
-        >
-          week 6 · 8% of seats
+      <svg viewBox="0 0 700 160" className="w-full h-auto block">
+        {[0, 35, 70, 105, 140].map((y) => (
+          <line key={y} x1="0" x2="700" y1={y + 2} y2={y + 2} stroke="#1f1c17" strokeWidth="1" />
+        ))}
+        <path
+          d={d}
+          fill="none"
+          stroke="#e8e4dc"
+          strokeWidth="2"
+          strokeDasharray="900"
+          strokeDashoffset="900"
+          style={{ animation: 'studio-draw 2.2s cubic-bezier(0.22,1,0.36,1) 0.3s forwards' }}
+        />
+        <circle cx="700" cy="142" r="4" fill="#e040fb" style={{ animation: 'studio-fade 0.5s ease 2.4s forwards', opacity: 0 }} />
+      </svg>
+      {/* Annotations live BELOW the plot — an axis caption can't collide with
+          the line at any viewport, unlike percent-positioned overlays. */}
+      <div className="mt-2 flex items-baseline justify-between font-mono text-[11px] sm:text-[12px] tracking-[0.15em]">
+        <span className="text-[#605a52]">launch<span className="hidden sm:inline"> demo</span> · 90%</span>
+        <span className="text-[#e040fb]" style={{ animation: 'studio-fade 0.5s ease 2.4s forwards', opacity: 0 }}>
+          week 6 · 8%<span className="hidden sm:inline"> of seats</span>
         </span>
       </div>
       <style>{`
@@ -66,7 +61,7 @@ function Ascii({ children, label }: { children: React.ReactNode; label?: string 
       {label && (
         <div className="mb-2 font-mono text-[10px] sm:text-[11px] tracking-[0.18em] uppercase text-[#605a52] whitespace-nowrap">{label}</div>
       )}
-      <pre className="font-mono text-[13px] sm:text-[14px] leading-[1.5] whitespace-pre text-[#8a837a] overflow-hidden">
+      <pre className="text-[13px] sm:text-[14px] leading-[1.45] whitespace-pre text-[#8a837a] overflow-hidden" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, 'Cascadia Mono', monospace" }}>
         {children}
       </pre>
     </div>
@@ -240,14 +235,30 @@ export default function Studio() {
             <h2 className="text-2xl sm:text-3xl font-mono text-[#e040fb]">AI Adoption Teardown</h2>
             <span className="font-mono text-[13px] sm:text-[14px] text-[#8a837a]">$18,000 fixed · two weeks · one per month</span>
           </div>
-          <Ascii label="ten days, mapped">
-{`             week one    week two`}{'\n'}
-{`shadow       `}<M>{`████`}</M>{`░░░░░░  ░░░░░░░░░░`}{'\n'}
-{`failure map  `}{`░░░░`}<M>{`███`}</M>{`░░░  ░░░░░░░░░░`}{'\n'}
-{`redesign     `}{`░░░░░░░░░░  `}<M>{`█████`}</M>{`░░░░░`}{'\n'}
-{`build path   `}{`░░░░░░░░░░  ░░░░░`}<M>{`████`}</M>{`░`}{'\n'}
-{`readout      `}{`░░░░░░░░░░  ░░░░░░░░░`}<M>{`█`}</M>
-          </Ascii>
+          <div className="mt-8">
+            <div className="mb-2 font-mono text-[10px] sm:text-[11px] tracking-[0.18em] uppercase text-[#605a52]">ten days, mapped</div>
+            <div className="grid grid-cols-[104px_1fr] gap-x-3 gap-y-0 font-mono text-[12px]">
+              <span />
+              <div className="grid grid-cols-2 gap-x-2 pb-1 text-[10px] tracking-[0.15em] uppercase text-[#605a52]">
+                <span>week one</span><span>week two</span>
+              </div>
+              {[
+                ['shadow', 0, 30],
+                ['failure map', 30, 20],
+                ['redesign', 50, 30],
+                ['build path', 80, 15],
+                ['readout', 95, 5],
+              ].map(([k, start, len]) => (
+                <React.Fragment key={k as string}>
+                  <span className="py-[5px] text-[12px] sm:text-[13px] text-[#e040fb]">{k}</span>
+                  <div className="relative my-[7px] h-[10px] bg-[#16140f]">
+                    <div className="absolute inset-y-0 bg-[#e040fb]" style={{ left: `${start}%`, width: `${len}%` }} />
+                    <div className="absolute inset-y-0 left-1/2 w-px bg-[#0b0a08]" />
+                  </div>
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
           <ul className="mt-4">
             {[
               ['shadow', 'the real users inside the real workflow. Not interviews. The work itself.'],
@@ -291,25 +302,31 @@ export default function Studio() {
 
           <div className="mt-8">
             <div className={label}>failure map · where the seats went</div>
-            <Ascii>
-{`seats  `}<B>{`██████████████████████`}</B>{`  `}<M>{`100%`}</M>{'\n'}
-{`         │ first wrong answer,`}{'\n'}
-{`         │ no source shown`}{'\n'}
-{`         ▼`}{'\n'}
-{`       `}<B>{`█████████`}</B>{`                `}<M>{` 40%`}</M>{'\n'}
-{`         │ paragraphs where a`}{'\n'}
-{`         │ value would do`}{'\n'}
-{`         ▼`}{'\n'}
-{`       `}<B>{`█████`}</B>{`                    `}<M>{` 23%`}</M>{'\n'}
-{`         │ wrong tab · truth`}{'\n'}
-{`         │ lives in the ticket`}{'\n'}
-{`         ▼`}{'\n'}
-{`       `}<B>{`███`}</B>{`                      `}<M>{` 15%`}</M>{'\n'}
-{`         │ no undo, no draft`}{'\n'}
-{`         ▼`}{'\n'}
-{`       `}<B>{`██`}</B>{`                       `}<M>{`  8%`}</M>{'\n'}
-{`       week six · the flatline`}
-            </Ascii>
+            <div className="mt-5 font-mono">
+              {[
+                ['100%', 100, 'seats at launch', null],
+                [' 40%', 40, null, 'first wrong answer, no source shown'],
+                [' 23%', 23, null, 'paragraphs where a value would do'],
+                [' 15%', 15, null, 'wrong tab · truth lives in the ticket'],
+                ['  8%', 8, null, 'no undo, no draft state'],
+              ].map(([pct, w, note, reason], i) => (
+                <div key={pct as string}>
+                  {reason && (
+                    <div className="ml-[3px] border-l border-[#2a2620] pl-4 py-2 text-[12px] sm:text-[13px] text-[#605a52]">
+                      {reason}
+                    </div>
+                  )}
+                  <div className="grid grid-cols-[1fr_52px] items-center gap-3">
+                    <div className="h-[16px] bg-[#e8e4dc]" style={{ width: `${w}%`, opacity: i === 0 ? 1 : 0.92 }} />
+                    <span className="text-[13px] sm:text-[14px] text-[#e040fb] text-right tabular-nums whitespace-pre">{pct}</span>
+                  </div>
+                  {note && (
+                    <div className="mt-1 text-[11px] tracking-[0.15em] uppercase text-[#605a52]">{note}</div>
+                  )}
+                </div>
+              ))}
+              <div className="mt-3 text-[12px] sm:text-[13px] text-[#8a837a]">week six · the flatline</div>
+            </div>
             <ol className="mt-4">
               {FAILURES.map(([name, sev], i) => (
                 <li key={name} className="grid grid-cols-[26px_1fr_auto] items-baseline gap-x-3 py-1.5 border-b border-dashed border-[#16140f] last:border-b-0 font-mono text-[13px]">
