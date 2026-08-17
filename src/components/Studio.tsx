@@ -61,7 +61,7 @@ function Ascii({ children, label }: { children: React.ReactNode; label?: string 
       {label && (
         <div className="mb-2 font-mono text-[10px] sm:text-[11px] tracking-[0.18em] uppercase text-[#605a52] whitespace-nowrap">{label}</div>
       )}
-      <pre className="text-[13px] sm:text-[14px] leading-[1.45] whitespace-pre text-[#8a837a] overflow-hidden" style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, Consolas, 'Cascadia Mono', monospace" }}>
+      <pre className="font-mono text-[13px] sm:text-[14px] leading-[1.45] whitespace-pre text-[#8a837a] overflow-hidden">
         {children}
       </pre>
     </div>
@@ -130,7 +130,7 @@ function StudioIntake() {
 
   if (status === 'success') {
     return (
-      <p className="font-serif text-[17px] leading-[1.7] text-[#e8e4dc]">
+      <p className="font-mono text-[15px] leading-[1.8] text-[#e8e4dc]">
         Got it. You&rsquo;ll hear from me within 48 hours, with an honest read on
         whether I can help.
       </p>
@@ -211,7 +211,7 @@ export default function Studio() {
           <span className="inline-block w-[0.5em] h-[0.9em] ml-2 align-baseline bg-[#e040fb] [animation:studio-blink_1.1s_steps(2)_infinite]" aria-hidden />
         </h1>
         <style>{`@keyframes studio-blink { 50% { opacity: 0; } }`}</style>
-        <p className="mt-8 font-serif text-[18px] sm:text-[19px] leading-[1.7] text-[#c8c2b7]">
+        <p className="mt-8 font-mono text-[15px] sm:text-[16px] leading-[1.8] text-[#c8c2b7]">
           I&rsquo;m Micah Boswell. Thirty years of enterprise UX, currently
           Experience Lead, DNI at AT&amp;T. I take one outside engagement a
           month: a two-week teardown that finds out why the humans won&rsquo;t
@@ -219,7 +219,7 @@ export default function Studio() {
         </p>
 
         {/* problem */}
-        <p className="mt-10 font-serif text-[17px] sm:text-[18px] leading-[1.7] text-[#a8a29e]">
+        <p className="mt-10 font-mono text-[15px] sm:text-[16px] leading-[1.8] text-[#a8a29e]">
           Most enterprise AI pilots don&rsquo;t fail on the model. They fail at
           the moment a person has to trust the output, change a habit, or
           explain the answer to someone else. That moment is a design problem,
@@ -276,7 +276,7 @@ export default function Studio() {
             ].map(([k, v]) => (
               <li key={k} className="grid grid-cols-[104px_1fr] gap-x-3 py-1.5 items-baseline">
                 <span className="font-mono text-[13px] text-[#e040fb]">{k}</span>
-                <span className="font-serif text-[15px] leading-[1.6] text-[#a8a29e]">{v}</span>
+                <span className="font-mono text-[13px] sm:text-[14px] leading-[1.7] text-[#a8a29e]">{v}</span>
               </li>
             ))}
           </ul>
@@ -293,7 +293,7 @@ export default function Studio() {
               <Link key={href} to={href} className="group bg-[#0b0a08] p-5 hover:bg-[#121008] transition-colors">
                 <div className="text-[52px] sm:text-[56px] leading-none tabular-nums font-mono text-[#e8e4dc] group-hover:text-[#e040fb] transition-colors">{num}</div>
                 <div className="mt-1 font-mono text-[11px] tracking-[0.15em] uppercase text-[#8a837a]">{what}</div>
-                <div className="mt-3 font-serif text-[13px] leading-[1.55] text-[#6b6660]">{ctx}</div>
+                <div className="mt-3 font-mono text-[12px] leading-[1.6] text-[#6b6660]">{ctx}</div>
               </Link>
             ))}
           </div>
@@ -303,7 +303,7 @@ export default function Studio() {
         <section id="sample" className="mt-24 border border-[#2a2620] bg-[#100e0b] p-4 sm:p-9">
           <div className={label}>case file · composite, drawn from real patterns · no client named</div>
           <h2 className="mt-4 text-[26px] sm:text-3xl font-mono text-[#e8e4dc]">the assistant nobody asked twice</h2>
-          <p className="mt-4 font-serif text-[16px] leading-[1.7] text-[#a8a29e]">
+          <p className="mt-4 font-mono text-[14px] sm:text-[15px] leading-[1.8] text-[#a8a29e]">
             An ops copilot. The demo dazzled leadership. Six weeks later, 8% of
             seats. The model was fine. Here is where the humans left.
           </p>
@@ -392,13 +392,13 @@ export default function Studio() {
         </section>
 
         {/* retainer */}
-        <p className="mt-14 font-serif text-[15px] leading-[1.7] text-[#8a837a]">
+        <p className="mt-14 font-mono text-[13px] sm:text-[14px] leading-[1.8] text-[#8a837a]">
           After the teardown, some teams keep me. Advisory retainer:
           $6,000/month, 4-6 hrs/week, two seats, selective.
         </p>
 
         {/* about */}
-        <p className="mt-14 pt-8 border-t border-[#1f1c17] font-serif text-[15px] leading-[1.7] text-[#8a837a]">
+        <p className="mt-14 pt-8 border-t border-[#1f1c17] font-mono text-[13px] sm:text-[14px] leading-[1.8] text-[#8a837a]">
           Thirty years shipping enterprise software: GE Nuclear, Citi, Wells
           Fargo, the U.S. Mint, Dell, AT&amp;T. I write TypeScript and run
           production agents at home. The rest of me lives at{' '}
