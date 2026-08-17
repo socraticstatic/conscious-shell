@@ -16,14 +16,14 @@ function AdoptionCurve() {
   return (
     <figure className="mt-12 select-none" aria-label="Typical pilot adoption: launch spike, six-week decay to 8% of seats">
       <svg viewBox="0 0 700 160" className="w-full h-auto block">
-        {[0, 35, 70, 105, 140].map((y) => (
-          <line key={y} x1="0" x2="700" y1={y + 2} y2={y + 2} stroke="#1f1c17" strokeWidth="1" />
+        {[2, 72, 142].map((y) => (
+          <line key={y} x1="0" x2="700" y1={y} y2={y} stroke="#1f1c17" strokeWidth="1" />
         ))}
         <path
           d={d}
           fill="none"
           stroke="#e8e4dc"
-          strokeWidth="2"
+          strokeWidth="2.5"
           strokeDasharray="900"
           strokeDashoffset="900"
           style={{ animation: 'studio-draw 2.2s cubic-bezier(0.22,1,0.36,1) 0.3s forwards' }}
@@ -170,7 +170,7 @@ function StudioIntake() {
       <button
         type="submit"
         disabled={status === 'sending'}
-        className="min-h-[44px] px-6 border border-[#e040fb] text-[#e040fb] font-mono text-sm tracking-widest hover:bg-[#e040fb] hover:text-[#0b0a08] active:bg-[#e040fb] active:text-[#0b0a08] transition-colors disabled:opacity-40"
+        className="min-h-[52px] px-8 bg-[#e040fb] text-[#0b0a08] font-mono text-[15px] tracking-widest hover:bg-[#e8e4dc] active:bg-[#e8e4dc] transition-colors disabled:opacity-40"
       >
         {status === 'sending' ? '// sending...' : 'request the call'}
       </button>
@@ -178,7 +178,7 @@ function StudioIntake() {
   );
 }
 
-const label = 'text-[11px] font-mono tracking-[0.25em] uppercase text-[#6b6660]';
+const label = 'flex items-center gap-2 text-[12px] font-mono tracking-[0.25em] uppercase text-[#e8e4dc] before:content-[\'\'] before:w-2 before:h-2 before:bg-[#e040fb] before:inline-block';
 
 export default function Studio() {
   useDocumentMeta({
@@ -211,7 +211,7 @@ export default function Studio() {
           <span className="inline-block w-[0.5em] h-[0.9em] ml-2 align-baseline bg-[#e040fb] [animation:studio-blink_1.1s_steps(2)_infinite]" aria-hidden />
         </h1>
         <style>{`@keyframes studio-blink { 50% { opacity: 0; } }`}</style>
-        <p className="mt-7 font-serif text-[17px] sm:text-[18px] leading-[1.7] text-[#c8c2b7]">
+        <p className="mt-8 font-serif text-[18px] sm:text-[19px] leading-[1.7] text-[#c8c2b7]">
           I&rsquo;m Micah Boswell. Thirty years of enterprise UX, currently
           Experience Lead, DNI at AT&amp;T. I take one outside engagement a
           month: a two-week teardown that finds out why the humans won&rsquo;t
@@ -229,7 +229,7 @@ export default function Studio() {
         <AdoptionCurve />
 
         {/* SKU */}
-        <section id="offer" className="mt-16">
+        <section id="offer" className="mt-24">
           <div className={label}>the engagement</div>
           <div className="mt-3 flex flex-wrap items-baseline gap-x-4 gap-y-1">
             <h2 className="text-2xl sm:text-3xl font-mono text-[#e040fb]">AI Adoption Teardown</h2>
@@ -250,8 +250,8 @@ export default function Studio() {
                 ['readout', 95, 5],
               ].map(([k, start, len]) => (
                 <React.Fragment key={k as string}>
-                  <span className="py-[5px] text-[12px] sm:text-[13px] text-[#e040fb]">{k}</span>
-                  <div className="relative my-[7px] h-[10px] bg-[#16140f]">
+                  <span className="py-[6px] text-[13px] sm:text-[14px] text-[#e040fb]">{k}</span>
+                  <div className="relative my-[6px] h-6 bg-[#16140f]">
                     <div className="absolute inset-y-0 bg-[#e040fb]" style={{ left: `${start}%`, width: `${len}%` }} />
                     <div className="absolute inset-y-0 left-1/2 w-px bg-[#0b0a08]" />
                   </div>
@@ -278,12 +278,12 @@ export default function Studio() {
         </section>
 
         {/* proof */}
-        <section className="mt-16">
+        <section className="mt-24">
           <div className={label}>measured, not promised</div>
           <div className="mt-5 grid sm:grid-cols-3 gap-px bg-[#1f1c17] border border-[#1f1c17]">
             {PROOF.map(([num, what, href, ctx]) => (
               <Link key={href} to={href} className="group bg-[#0b0a08] p-5 hover:bg-[#121008] transition-colors">
-                <div className="text-[44px] leading-none tabular-nums font-mono text-[#e8e4dc] group-hover:text-[#e040fb] transition-colors">{num}</div>
+                <div className="text-[52px] sm:text-[56px] leading-none tabular-nums font-mono text-[#e8e4dc] group-hover:text-[#e040fb] transition-colors">{num}</div>
                 <div className="mt-1 font-mono text-[11px] tracking-[0.15em] uppercase text-[#8a837a]">{what}</div>
                 <div className="mt-3 font-serif text-[13px] leading-[1.55] text-[#6b6660]">{ctx}</div>
               </Link>
@@ -292,9 +292,9 @@ export default function Studio() {
         </section>
 
         {/* sample */}
-        <section id="sample" className="mt-16 border border-[#1f1c17] p-4 sm:p-8">
+        <section id="sample" className="mt-24 border border-[#2a2620] bg-[#100e0b] p-4 sm:p-9">
           <div className={label}>case file · composite, drawn from real patterns · no client named</div>
-          <h2 className="mt-3 text-2xl font-mono text-[#e8e4dc]">the assistant nobody asked twice</h2>
+          <h2 className="mt-4 text-[26px] sm:text-3xl font-mono text-[#e8e4dc]">the assistant nobody asked twice</h2>
           <p className="mt-4 font-serif text-[16px] leading-[1.7] text-[#a8a29e]">
             An ops copilot. The demo dazzled leadership. Six weeks later, 8% of
             seats. The model was fine. Here is where the humans left.
@@ -312,13 +312,13 @@ export default function Studio() {
               ].map(([pct, w, note, reason], i) => (
                 <div key={pct as string}>
                   {reason && (
-                    <div className="ml-[3px] border-l border-[#2a2620] pl-4 py-2 text-[12px] sm:text-[13px] text-[#605a52]">
+                    <div className="ml-[3px] border-l border-[#2a2620] pl-4 py-2.5 font-mono text-[13px] sm:text-[14px] text-[#8a837a]">
                       {reason}
                     </div>
                   )}
-                  <div className="grid grid-cols-[1fr_52px] items-center gap-3">
-                    <div className="h-[16px] bg-[#e8e4dc]" style={{ width: `${w}%`, opacity: i === 0 ? 1 : 0.92 }} />
-                    <span className="text-[13px] sm:text-[14px] text-[#e040fb] text-right tabular-nums whitespace-pre">{pct}</span>
+                  <div className="grid grid-cols-[1fr_64px] items-center gap-4">
+                    <div className="h-8 bg-[#e8e4dc]" style={{ width: `${w}%`, opacity: i === 0 ? 1 : 0.92 }} />
+                    <span className="text-[22px] sm:text-[26px] leading-none text-[#e8e4dc] text-right tabular-nums whitespace-pre">{pct}</span>
                   </div>
                   {note && (
                     <div className="mt-1 text-[11px] tracking-[0.15em] uppercase text-[#605a52]">{note}</div>
@@ -369,8 +369,9 @@ export default function Studio() {
             </p>
           </div>
 
-          <p className="mt-8 font-serif text-[17px] leading-[1.6] text-[#e8e4dc]">
-            Adoption isn&rsquo;t the metric. Unforced return use in week four is.
+          <p className="mt-10 pt-6 border-t border-[#2a2620] font-serif italic text-[21px] sm:text-[24px] leading-[1.45] text-[#e8e4dc]">
+            Adoption isn&rsquo;t the metric.
+            <br />Unforced return use in week four is.
           </p>
         </section>
 
@@ -392,7 +393,7 @@ export default function Studio() {
         </p>
 
         {/* intake */}
-        <section id="intake" className="mt-14">
+        <section id="intake" className="mt-24">
           <div className={label}>start the intro call</div>
           <div className="mt-5">
             <StudioIntake />
