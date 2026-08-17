@@ -8,6 +8,56 @@ import { useDocumentMeta } from '../lib/useDocumentMeta';
 // on any tier. One column, first person, evidence over adjectives. This page
 // exists to be pasted into a warm message and read in ninety seconds.
 
+// The pilot story every buyer recognizes, drawn instead of described:
+// launch spike, six-week decay, 8% flatline. The line draws itself once.
+function AdoptionCurve() {
+  // path: ramp to 90% by week 1, decay to 8% by week 6, flatline.
+  const d = 'M0,140 L30,138 C60,10 80,8 120,14 C220,30 300,96 420,124 C500,140 560,142 700,142';
+  return (
+    <figure className="mt-12 select-none" aria-label="Typical pilot adoption: launch spike, six-week decay to 8% of seats">
+      <svg viewBox="0 0 700 160" className="w-full h-auto block">
+        {[0, 35, 70, 105, 140].map((y) => (
+          <line key={y} x1="0" x2="700" y1={y + 2} y2={y + 2} stroke="#1f1c17" strokeWidth="1" />
+        ))}
+        <path
+          d={d}
+          fill="none"
+          stroke="#e8e4dc"
+          strokeWidth="2"
+          strokeDasharray="900"
+          strokeDashoffset="900"
+          style={{ animation: 'studio-draw 2.2s cubic-bezier(0.22,1,0.36,1) 0.3s forwards' }}
+        />
+        <circle cx="700" cy="142" r="4" fill="#e040fb" style={{ animation: 'studio-fade 0.5s ease 2.4s forwards', opacity: 0 }} />
+        <text x="470" y="118" fill="#e040fb" fontSize="13" fontFamily="monospace" letterSpacing="2" style={{ animation: 'studio-fade 0.5s ease 2.4s forwards', opacity: 0 }}>
+          week 6 · 8% of seats
+        </text>
+        <text x="34" y="24" fill="#605a52" fontSize="12" fontFamily="monospace" letterSpacing="2">
+          launch demo · 90%
+        </text>
+      </svg>
+      <style>{`
+        @keyframes studio-draw { to { stroke-dashoffset: 0; } }
+        @keyframes studio-fade { to { opacity: 1; } }
+        @media (prefers-reduced-motion: reduce) {
+          figure svg path { animation: none !important; stroke-dashoffset: 0 !important; }
+          figure svg circle, figure svg text { animation: none !important; opacity: 1 !important; }
+        }
+      `}</style>
+      <figcaption className="mt-2 font-mono text-[11px] tracking-[0.2em] text-[#605a52]">
+        the curve nobody puts in the deck
+      </figcaption>
+    </figure>
+  );
+}
+
+const SEVERITY_W: Record<string, string> = {
+  'fatal · ~60% of drop-off': '92%',
+  high: '64%',
+  medium: '40%',
+  'medium · compounding': '46%',
+};
+
 const SKU_DAYS = [
   ['days 1-3', 'I shadow the real users inside the real workflow. Not interviews about the tool. The work itself.'],
   ['days 4-5', 'The failure map. Every point where a human drops out, ranked by what it costs you.'],
@@ -149,11 +199,13 @@ export default function Studio() {
         </div>
 
         {/* hero */}
-        <h1 className="text-[34px] sm:text-5xl leading-[1.08] tracking-tight font-mono font-light">
+        <h1 className="text-[44px] sm:text-6xl md:text-[68px] leading-[1.04] tracking-tight font-mono font-light">
           Your AI pilot works.
           <br />
           Nobody uses it<span className="text-[#e040fb]">.</span>
+          <span className="inline-block w-[0.5em] h-[0.9em] ml-2 align-baseline bg-[#e040fb] [animation:studio-blink_1.1s_steps(2)_infinite]" aria-hidden />
         </h1>
+        <style>{`@keyframes studio-blink { 50% { opacity: 0; } }`}</style>
         <p className="mt-7 font-serif text-[17px] sm:text-[18px] leading-[1.7] text-[#c8c2b7]">
           I&rsquo;m Micah Boswell. Thirty years of enterprise UX, currently
           Experience Lead, DNI at AT&amp;T. I take one outside engagement a
@@ -169,6 +221,8 @@ export default function Studio() {
           and it&rsquo;s usually the one nobody staffed.
         </p>
 
+        <AdoptionCurve />
+
         {/* SKU */}
         <section id="offer" className="mt-16">
           <div className={label}>the engagement</div>
@@ -176,11 +230,12 @@ export default function Studio() {
             <h2 className="text-2xl sm:text-3xl font-mono text-[#e040fb]">AI Adoption Teardown</h2>
             <span className="font-mono text-[13px] text-[#8a837a]">$18,000 fixed · two weeks · one per month</span>
           </div>
-          <ul className="mt-7 border-t border-[#1f1c17]">
+          <ul className="mt-8 relative pl-6 border-l border-[#2a2620]">
             {SKU_DAYS.map(([d, t]) => (
-              <li key={d} className="py-4 border-b border-[#1f1c17] grid grid-cols-[92px_1fr] gap-4 items-baseline">
-                <span className="font-mono text-[12px] text-[#e040fb] whitespace-nowrap">{d}</span>
-                <span className="font-serif text-[16px] leading-[1.65] text-[#c8c2b7]">{t}</span>
+              <li key={d} className="relative pb-7 last:pb-0">
+                <span className="absolute -left-6 top-[7px] -translate-x-1/2 w-2 h-2 bg-[#e040fb]" aria-hidden />
+                <div className="font-mono text-[12px] tracking-[0.15em] text-[#e040fb]">{d}</div>
+                <p className="mt-1 font-serif text-[16px] leading-[1.65] text-[#c8c2b7]">{t}</p>
               </li>
             ))}
           </ul>
@@ -195,7 +250,7 @@ export default function Studio() {
           <div className="mt-5 grid sm:grid-cols-3 gap-px bg-[#1f1c17] border border-[#1f1c17]">
             {PROOF.map(([num, what, href, ctx]) => (
               <Link key={href} to={href} className="group bg-[#0b0a08] p-5 hover:bg-[#121008] transition-colors">
-                <div className="text-3xl font-mono text-[#e8e4dc] group-hover:text-[#e040fb] transition-colors">{num}</div>
+                <div className="text-[44px] leading-none tabular-nums font-mono text-[#e8e4dc] group-hover:text-[#e040fb] transition-colors">{num}</div>
                 <div className="mt-1 font-mono text-[11px] tracking-[0.15em] uppercase text-[#8a837a]">{what}</div>
                 <div className="mt-3 font-serif text-[13px] leading-[1.55] text-[#6b6660]">{ctx}</div>
               </Link>
@@ -217,13 +272,16 @@ export default function Studio() {
             <div className={label}>failure map</div>
             <ol className="mt-3">
               {FAILURES.map(([name, sev, body], i) => (
-                <li key={name} className="py-4 border-t border-dashed border-[#1f1c17]">
+                <li key={name} className="py-5 border-t border-dashed border-[#1f1c17]">
                   <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                     <span className="font-mono text-[12px] text-[#605a52]">0{i + 1}</span>
                     <span className="font-mono text-[14px] text-[#e040fb]">{name}</span>
-                    <span className="font-mono text-[10px] tracking-[0.15em] uppercase text-[#8a837a]">{sev}</span>
+                    <span className="ml-auto font-mono text-[10px] tracking-[0.15em] uppercase text-[#8a837a]">{sev}</span>
                   </div>
-                  <p className="mt-2 font-serif text-[15px] leading-[1.65] text-[#a8a29e]">{body}</p>
+                  <div className="mt-2.5 h-[3px] bg-[#1a1712]" aria-hidden>
+                    <div className="h-full bg-[#e040fb]/70" style={{ width: SEVERITY_W[sev] ?? '30%' }} />
+                  </div>
+                  <p className="mt-3 font-serif text-[15px] leading-[1.65] text-[#a8a29e]">{body}</p>
                 </li>
               ))}
             </ol>
