@@ -401,9 +401,9 @@ export default function Studio() {
         <p className="mt-14 pt-8 border-t border-[#1f1c17] font-mono text-[13px] sm:text-[14px] leading-[1.8] text-[#8a837a]">
           Thirty years shipping enterprise software: GE Nuclear, Citi, Wells
           Fargo, the U.S. Mint, Dell, AT&amp;T. I write TypeScript and run
-          production agents at home. The rest of me lives at{' '}
+          production agents at home. The rest of me lives in{' '}
           <Link to="/" className="text-[#c8c2b7] underline decoration-dotted underline-offset-4 hover:text-[#e040fb]">
-            conscious-shell.com
+            the lab
           </Link>
           .
         </p>
