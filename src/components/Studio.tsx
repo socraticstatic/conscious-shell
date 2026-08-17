@@ -51,19 +51,27 @@ function AdoptionCurve() {
   );
 }
 
-const SEVERITY_W: Record<string, string> = {
-  'fatal · ~60% of drop-off': '92%',
-  high: '64%',
-  medium: '40%',
-  'medium · compounding': '46%',
-};
+// Monospace diagrams are the house language. Every diagram is designed at
+// 40 characters or fewer so it renders on a 375px phone without scrolling.
+function Ascii({ children, label }: { children: React.ReactNode; label?: string }) {
+  return (
+    <div className="my-6">
+      {label && (
+        <div className="mb-2 font-mono text-[10px] tracking-[0.25em] uppercase text-[#605a52]">{label}</div>
+      )}
+      <pre className="font-mono text-[11px] sm:text-[13px] leading-[1.5] whitespace-pre text-[#8a837a] overflow-hidden">
+        {children}
+      </pre>
+    </div>
+  );
+}
 
-const SKU_DAYS = [
-  ['days 1-3', 'I shadow the real users inside the real workflow. Not interviews about the tool. The work itself.'],
-  ['days 4-5', 'The failure map. Every point where a human drops out, ranked by what it costs you.'],
-  ['days 6-8', 'The redesigned interaction model, walked through with your users.'],
-  ['days 9-10', 'The build path. What your engineers ship, in what order, with acceptance criteria. One readout with your team.'],
-] as const;
+const M = ({ children }: { children: React.ReactNode }) => (
+  <span className="text-[#e040fb]">{children}</span>
+);
+const B = ({ children }: { children: React.ReactNode }) => (
+  <span className="text-[#e8e4dc]">{children}</span>
+);
 
 const PROOF = [
   ['48%', 'error reduction', '/work/ge-nuclear-fortran-unification', 'GE Nuclear. Hundreds of legacy apps unified into role-based dashboards.'],
@@ -77,11 +85,6 @@ const FAILURES = [
   ['outside the system of record', 'high', 'The copilot lives in its own tab. Ground truth lives in the ticket. Every use is a detour.'],
   ['no draft state', 'medium', 'Output lands in customer-visible fields with no undo, so users pre-edit in a notepad. The tool added a step.'],
   ['expertise inversion', 'medium · compounding', "Seniors get no value; they already know. Juniors can't validate. Adoption pools with exactly the people least able to catch an error. That's risk, not productivity."],
-] as const;
-
-const MOVES = [
-  ['citations or silence', "Every claim links its source row, or the machine says it can't verify. Trust rebuilds on refusability, not fluency."],
-  ['move into the ticket', 'Inline suggestions with accept, edit, undo. Draft state by default. The copilot stops being a destination.'],
 ] as const;
 
 type Fields = { name: string; email: string; company: string; message: string };
@@ -230,14 +233,19 @@ export default function Studio() {
             <h2 className="text-2xl sm:text-3xl font-mono text-[#e040fb]">AI Adoption Teardown</h2>
             <span className="font-mono text-[13px] text-[#8a837a]">$18,000 fixed · two weeks · one per month</span>
           </div>
-          <ul className="mt-8 relative pl-6 border-l border-[#2a2620]">
-            {SKU_DAYS.map(([d, t]) => (
-              <li key={d} className="relative pb-7 last:pb-0">
-                <span className="absolute -left-6 top-[7px] -translate-x-1/2 w-2 h-2 bg-[#e040fb]" aria-hidden />
-                <div className="font-mono text-[12px] tracking-[0.15em] text-[#e040fb]">{d}</div>
-                <p className="mt-1 font-serif text-[16px] leading-[1.65] text-[#c8c2b7]">{t}</p>
-              </li>
-            ))}
+          <Ascii label="ten days, mapped">
+{`             week one    week two`}{'\n'}
+{`shadow       `}<M>{`████`}</M>{`░░░░░░  ░░░░░░░░░░`}{'\n'}
+{`failure map  `}{`░░░░`}<M>{`███`}</M>{`░░░  ░░░░░░░░░░`}{'\n'}
+{`redesign     `}{`░░░░░░░░░░  `}<M>{`█████`}</M>{`░░░░░`}{'\n'}
+{`build path   `}{`░░░░░░░░░░  ░░░░░`}<M>{`████`}</M>{`░`}{'\n'}
+{`readout      `}{`░░░░░░░░░░  ░░░░░░░░░`}<M>{`█`}</M>
+          </Ascii>
+          <ul className="mt-2 space-y-1.5 font-serif text-[15px] leading-[1.6] text-[#a8a29e]">
+            <li><span className="font-mono text-[12px] text-[#e040fb]">shadow</span> · the real users inside the real workflow. Not interviews. The work itself.</li>
+            <li><span className="font-mono text-[12px] text-[#e040fb]">failure map</span> · every human drop-out point, ranked by cost.</li>
+            <li><span className="font-mono text-[12px] text-[#e040fb]">redesign</span> · the new interaction model, tested with your users.</li>
+            <li><span className="font-mono text-[12px] text-[#e040fb]">build path</span> · what your engineers ship, in order, with acceptance criteria.</li>
           </ul>
           <p className="mt-4 font-mono text-[12px] leading-relaxed text-[#8a837a]">
             You keep: the failure map, the redesign, the build path, and the recording of the readout.
@@ -263,38 +271,68 @@ export default function Studio() {
           <div className={label}>case file · composite, drawn from real patterns · no client named</div>
           <h2 className="mt-3 text-2xl font-mono text-[#e8e4dc]">the assistant nobody asked twice</h2>
           <p className="mt-4 font-serif text-[16px] leading-[1.7] text-[#a8a29e]">
-            An ops copilot for a network operations team. The demo dazzled
-            leadership. Six weeks after rollout, daily actives sat under 8% of
-            licensed seats. The model was fine. Here is where the humans left.
+            An ops copilot. The demo dazzled leadership. Six weeks later, 8% of
+            seats. The model was fine. Here is where the humans left.
           </p>
 
-          <div className="mt-7">
-            <div className={label}>failure map</div>
-            <ol className="mt-3">
-              {FAILURES.map(([name, sev, body], i) => (
-                <li key={name} className="py-5 border-t border-dashed border-[#1f1c17]">
-                  <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                    <span className="font-mono text-[12px] text-[#605a52]">0{i + 1}</span>
-                    <span className="font-mono text-[14px] text-[#e040fb]">{name}</span>
-                    <span className="ml-auto font-mono text-[10px] tracking-[0.15em] uppercase text-[#8a837a]">{sev}</span>
-                  </div>
-                  <div className="mt-2.5 h-[3px] bg-[#1a1712]" aria-hidden>
-                    <div className="h-full bg-[#e040fb]/70" style={{ width: SEVERITY_W[sev] ?? '30%' }} />
-                  </div>
-                  <p className="mt-3 font-serif text-[15px] leading-[1.65] text-[#a8a29e]">{body}</p>
+          <div className="mt-8">
+            <div className={label}>failure map · where the seats went</div>
+            <Ascii>
+{`seats  `}<B>{`██████████████████████`}</B>{`  100%`}{'\n'}
+{`         │ first wrong answer,`}{'\n'}
+{`         │ no source shown`}{'\n'}
+{`         ▼`}{'\n'}
+{`       `}<B>{`█████████`}</B>{`               `}<M>{`40%`}</M>{'\n'}
+{`         │ paragraphs where a`}{'\n'}
+{`         │ value would do`}{'\n'}
+{`         ▼`}{'\n'}
+{`       `}<B>{`█████`}</B>{`                   `}<M>{`23%`}</M>{'\n'}
+{`         │ wrong tab · truth`}{'\n'}
+{`         │ lives in the ticket`}{'\n'}
+{`         ▼`}{'\n'}
+{`       `}<B>{`███`}</B>{`                     `}<M>{`15%`}</M>{'\n'}
+{`         │ no undo, no draft`}{'\n'}
+{`         ▼`}{'\n'}
+{`       `}<B>{`██`}</B>{`                       `}<M>{`8%`}</M>{'\n'}
+{`       week six · the flatline`}
+            </Ascii>
+            <ol className="mt-3 space-y-1.5">
+              {FAILURES.map(([name, sev], i) => (
+                <li key={name} className="flex flex-wrap items-baseline gap-x-3 font-mono text-[13px]">
+                  <span className="text-[#605a52]">0{i + 1}</span>
+                  <span className="text-[#e040fb]">{name}</span>
+                  <span className="ml-auto text-[10px] tracking-[0.15em] uppercase text-[#605a52]">{sev}</span>
                 </li>
               ))}
             </ol>
           </div>
 
-          <div className="mt-6">
+          <div className="mt-10">
             <div className={label}>the redesign · two moves</div>
-            {MOVES.map(([name, body]) => (
-              <div key={name} className="mt-4">
-                <div className="font-mono text-[14px] text-[#e8e4dc]">{name}</div>
-                <p className="mt-1.5 font-serif text-[15px] leading-[1.65] text-[#a8a29e]">{body}</p>
-              </div>
-            ))}
+            <Ascii>
+{`before               after`}{'\n'}
+{`┌───────────────┐    ┌───────────────┐`}{'\n'}
+{`│ "the likely   │    │ `}<B>{`42ms · p95`}</B>{`    │`}{'\n'}
+{`│  cause may    │ →  │ `}<M>{`[source row]`}</M>{`  │`}{'\n'}
+{`│  be..."       │    │ `}<B>{`accept · edit`}</B>{` │`}{'\n'}
+{`└───────────────┘    └───────────────┘`}{'\n'}
+{`  fluent guess         refusable fact`}
+            </Ascii>
+            <Ascii>
+{`┌────────┐          ┌────────┐`}{'\n'}
+{`│ ticket │ ←detour→ │copilot │   before`}{'\n'}
+{`└────────┘          └────────┘`}{'\n'}{'\n'}
+{`┌──────────────────┐`}{'\n'}
+{`│ ticket           │`}{'\n'}
+{`│  `}<M>{`└ suggestion`}</M>{`    │            after`}{'\n'}
+{`│    `}<B>{`accept · undo`}</B>{` │`}{'\n'}
+{`└──────────────────┘`}
+            </Ascii>
+            <p className="mt-2 font-serif text-[15px] leading-[1.65] text-[#a8a29e]">
+              Citations or silence: every claim links its source, or the machine
+              says it can&rsquo;t verify. And the copilot moves into the ticket,
+              draft-state by default. It stops being a destination.
+            </p>
           </div>
 
           <div className="mt-7">
