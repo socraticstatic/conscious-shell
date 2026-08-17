@@ -57,7 +57,7 @@ function Ascii({ children, label }: { children: React.ReactNode; label?: string 
   return (
     <div className="my-6">
       {label && (
-        <div className="mb-2 font-mono text-[10px] tracking-[0.25em] uppercase text-[#605a52]">{label}</div>
+        <div className="mb-2 font-mono text-[9px] tracking-[0.18em] uppercase text-[#605a52] whitespace-nowrap">{label}</div>
       )}
       <pre className="font-mono text-[11px] sm:text-[13px] leading-[1.5] whitespace-pre text-[#8a837a] overflow-hidden">
         {children}
@@ -80,11 +80,11 @@ const PROOF = [
 ] as const;
 
 const FAILURES = [
-  ['the trust cliff', 'fatal · ~60% of drop-off', 'The first materially wrong answer lands in week one. No confidence signal, no source to check. That user never comes back, and tells two more.'],
-  ['answer-shaped output', 'high', 'Fluent paragraphs where the job needed a value and a link. Verifying the answer costs more than looking it up.'],
-  ['outside the system of record', 'high', 'The copilot lives in its own tab. Ground truth lives in the ticket. Every use is a detour.'],
-  ['no draft state', 'medium', 'Output lands in customer-visible fields with no undo, so users pre-edit in a notepad. The tool added a step.'],
-  ['expertise inversion', 'medium · compounding', "Seniors get no value; they already know. Juniors can't validate. Adoption pools with exactly the people least able to catch an error. That's risk, not productivity."],
+  ['the trust cliff', 'fatal'],
+  ['answer-shaped output', 'high'],
+  ['outside the record', 'high'],
+  ['no draft state', 'medium'],
+  ['expertise inversion', 'compounding'],
 ] as const;
 
 type Fields = { name: string; email: string; company: string; message: string };
@@ -241,11 +241,18 @@ export default function Studio() {
 {`build path   `}{`░░░░░░░░░░  ░░░░░`}<M>{`████`}</M>{`░`}{'\n'}
 {`readout      `}{`░░░░░░░░░░  ░░░░░░░░░`}<M>{`█`}</M>
           </Ascii>
-          <ul className="mt-2 space-y-1.5 font-serif text-[15px] leading-[1.6] text-[#a8a29e]">
-            <li><span className="font-mono text-[12px] text-[#e040fb]">shadow</span> · the real users inside the real workflow. Not interviews. The work itself.</li>
-            <li><span className="font-mono text-[12px] text-[#e040fb]">failure map</span> · every human drop-out point, ranked by cost.</li>
-            <li><span className="font-mono text-[12px] text-[#e040fb]">redesign</span> · the new interaction model, tested with your users.</li>
-            <li><span className="font-mono text-[12px] text-[#e040fb]">build path</span> · what your engineers ship, in order, with acceptance criteria.</li>
+          <ul className="mt-4">
+            {[
+              ['shadow', 'the real users inside the real workflow. Not interviews. The work itself.'],
+              ['failure map', 'every human drop-out point, ranked by cost.'],
+              ['redesign', 'the new interaction model, tested with your users.'],
+              ['build path', 'what your engineers ship, in order, with acceptance criteria.'],
+            ].map(([k, v]) => (
+              <li key={k} className="grid grid-cols-[104px_1fr] gap-x-3 py-1.5 items-baseline">
+                <span className="font-mono text-[12px] text-[#e040fb]">{k}</span>
+                <span className="font-serif text-[15px] leading-[1.6] text-[#a8a29e]">{v}</span>
+              </li>
+            ))}
           </ul>
           <p className="mt-4 font-mono text-[12px] leading-relaxed text-[#8a837a]">
             You keep: the failure map, the redesign, the build path, and the recording of the readout.
@@ -278,38 +285,38 @@ export default function Studio() {
           <div className="mt-8">
             <div className={label}>failure map · where the seats went</div>
             <Ascii>
-{`seats  `}<B>{`██████████████████████`}</B>{`  100%`}{'\n'}
+{`seats  `}<B>{`██████████████████████`}</B>{`  `}<M>{`100%`}</M>{'\n'}
 {`         │ first wrong answer,`}{'\n'}
 {`         │ no source shown`}{'\n'}
 {`         ▼`}{'\n'}
-{`       `}<B>{`█████████`}</B>{`               `}<M>{`40%`}</M>{'\n'}
+{`       `}<B>{`█████████`}</B>{`                `}<M>{` 40%`}</M>{'\n'}
 {`         │ paragraphs where a`}{'\n'}
 {`         │ value would do`}{'\n'}
 {`         ▼`}{'\n'}
-{`       `}<B>{`█████`}</B>{`                   `}<M>{`23%`}</M>{'\n'}
+{`       `}<B>{`█████`}</B>{`                    `}<M>{` 23%`}</M>{'\n'}
 {`         │ wrong tab · truth`}{'\n'}
 {`         │ lives in the ticket`}{'\n'}
 {`         ▼`}{'\n'}
-{`       `}<B>{`███`}</B>{`                     `}<M>{`15%`}</M>{'\n'}
+{`       `}<B>{`███`}</B>{`                      `}<M>{` 15%`}</M>{'\n'}
 {`         │ no undo, no draft`}{'\n'}
 {`         ▼`}{'\n'}
-{`       `}<B>{`██`}</B>{`                       `}<M>{`8%`}</M>{'\n'}
+{`       `}<B>{`██`}</B>{`                       `}<M>{`  8%`}</M>{'\n'}
 {`       week six · the flatline`}
             </Ascii>
-            <ol className="mt-3 space-y-1.5">
+            <ol className="mt-4">
               {FAILURES.map(([name, sev], i) => (
-                <li key={name} className="flex flex-wrap items-baseline gap-x-3 font-mono text-[13px]">
+                <li key={name} className="grid grid-cols-[26px_1fr_auto] items-baseline gap-x-3 py-1.5 border-b border-dashed border-[#16140f] last:border-b-0 font-mono text-[13px]">
                   <span className="text-[#605a52]">0{i + 1}</span>
-                  <span className="text-[#e040fb]">{name}</span>
-                  <span className="ml-auto text-[10px] tracking-[0.15em] uppercase text-[#605a52]">{sev}</span>
+                  <span className="text-[12.5px] text-[#e040fb] whitespace-nowrap">{name}</span>
+                  <span className="text-[9px] tracking-[0.12em] uppercase text-[#605a52] whitespace-nowrap">{sev}</span>
                 </li>
               ))}
             </ol>
           </div>
 
-          <div className="mt-10">
+          <div className="mt-12">
             <div className={label}>the redesign · two moves</div>
-            <Ascii>
+            <Ascii label="move one · citations or silence">
 {`before               after`}{'\n'}
 {`┌───────────────┐    ┌───────────────┐`}{'\n'}
 {`│ "the likely   │    │ `}<B>{`42ms · p95`}</B>{`    │`}{'\n'}
@@ -318,21 +325,15 @@ export default function Studio() {
 {`└───────────────┘    └───────────────┘`}{'\n'}
 {`  fluent guess         refusable fact`}
             </Ascii>
-            <Ascii>
-{`┌────────┐          ┌────────┐`}{'\n'}
-{`│ ticket │ ←detour→ │copilot │   before`}{'\n'}
-{`└────────┘          └────────┘`}{'\n'}{'\n'}
-{`┌──────────────────┐`}{'\n'}
-{`│ ticket           │`}{'\n'}
-{`│  `}<M>{`└ suggestion`}</M>{`    │            after`}{'\n'}
-{`│    `}<B>{`accept · undo`}</B>{` │`}{'\n'}
-{`└──────────────────┘`}
+            <Ascii label="move two · into the ticket">
+{`before               after`}{'\n'}
+{`┌───────────────┐    ┌───────────────┐`}{'\n'}
+{`│ ticket        │    │ ticket        │`}{'\n'}
+{`│      ↕ detour │    │  `}<M>{`└ suggestion`}</M>{` │`}{'\n'}
+{`│ [copilot tab] │    │   `}<B>{`accept·undo`}</B>{` │`}{'\n'}
+{`└───────────────┘    └───────────────┘`}{'\n'}
+{`   two places          one place`}
             </Ascii>
-            <p className="mt-2 font-serif text-[15px] leading-[1.65] text-[#a8a29e]">
-              Citations or silence: every claim links its source, or the machine
-              says it can&rsquo;t verify. And the copilot moves into the ticket,
-              draft-state by default. It stops being a destination.
-            </p>
           </div>
 
           <div className="mt-7">
@@ -350,13 +351,13 @@ export default function Studio() {
         </section>
 
         {/* retainer */}
-        <p className="mt-10 font-serif text-[15px] leading-[1.7] text-[#8a837a]">
+        <p className="mt-14 font-serif text-[15px] leading-[1.7] text-[#8a837a]">
           After the teardown, some teams keep me. Advisory retainer:
           $6,000/month, 4-6 hrs/week, two seats, selective.
         </p>
 
         {/* about */}
-        <p className="mt-10 pt-8 border-t border-[#1f1c17] font-serif text-[15px] leading-[1.7] text-[#8a837a]">
+        <p className="mt-14 pt-8 border-t border-[#1f1c17] font-serif text-[15px] leading-[1.7] text-[#8a837a]">
           Thirty years shipping enterprise software: GE Nuclear, Citi, Wells
           Fargo, the U.S. Mint, Dell, AT&amp;T. I write TypeScript and run
           production agents at home. The rest of me lives at{' '}
