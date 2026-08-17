@@ -251,8 +251,16 @@ export default function Studio() {
               ].map(([k, start, len]) => (
                 <React.Fragment key={k as string}>
                   <span className="py-[6px] text-[13px] sm:text-[14px] text-[#e040fb]">{k}</span>
-                  <div className="relative my-[6px] h-6 bg-[#16140f]">
-                    <div className="absolute inset-y-0 bg-[#e040fb]" style={{ left: `${start}%`, width: `${len}%` }} />
+                  <div className="relative my-[6px] h-5 bg-[#14110d]">
+                    <div
+                      className="absolute inset-y-0 border-l-2 border-[#e040fb]"
+                      style={{
+                        left: `${start}%`,
+                        width: `${len}%`,
+                        backgroundImage:
+                          'repeating-linear-gradient(135deg, rgba(224,64,251,0.7) 0 1.5px, transparent 1.5px 5px)',
+                      }}
+                    />
                     <div className="absolute inset-y-0 left-1/2 w-px bg-[#0b0a08]" />
                   </div>
                 </React.Fragment>
@@ -317,7 +325,15 @@ export default function Studio() {
                     </div>
                   )}
                   <div className="grid grid-cols-[1fr_64px] items-center gap-4">
-                    <div className="h-8 bg-[#e8e4dc]" style={{ width: `${w}%`, opacity: i === 0 ? 1 : 0.92 }} />
+                    <div
+                      className="h-6 border-l-2 border-[#e8e4dc]"
+                      style={{
+                        width: `${w}%`,
+                        backgroundImage:
+                          'repeating-linear-gradient(135deg, rgba(232,228,220,0.75) 0 1.5px, transparent 1.5px 5px)',
+                        opacity: i === 0 ? 1 : 0.9,
+                      }}
+                    />
                     <span className="text-[22px] sm:text-[26px] leading-none text-[#e8e4dc] text-right tabular-nums whitespace-pre">{pct}</span>
                   </div>
                   {note && (
