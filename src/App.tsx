@@ -3,6 +3,7 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import { lazyWithRetry as lazy, isChunkLoadError } from './lib/lazyWithRetry';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import NotFound from './components/NotFound';
+import Studio from './components/Studio';
 import Nav from './components/Nav';
 import Hero from './components/Hero';
 import Work from './components/Work';
@@ -178,6 +179,7 @@ export default function App() {
     <PersonalizationProvider>
     <Routes>
       <Route path="/work/:slug" element={<CaseStudy />} />
+      <Route path="/studio" element={<Studio />} />
       <Route path="*" element={<NotFound />} />
       <Route
         path="/"

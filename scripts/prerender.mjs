@@ -673,6 +673,62 @@ function renderDocument(template, { title, description, url, image, type, graph,
 }
 
 /**
+ * /studio — the practice's warm-link landing page. Prerendered so link
+ * scrapers (iMessage, LinkedIn DMs, Slack) and crawlers see real copy and
+ * a real head without executing the bundle. noindex + no canonical: the
+ * page is distributed by hand, never by search. Quiet-sell guards in
+ * main() fail the whole build if this URL ever leaks into sitemap.xml,
+ * llms.txt, or agents.md.
+ */
+function studioDocument(template) {
+  const title = 'The AI Adoption Teardown — Micah Boswell';
+  const description =
+    'Your AI pilot works. Nobody uses it. A two-week teardown that finds out why, and hands your team the fix.';
+  const image = 'https://conscious-shell.com/esper/art-corazon.jpg';
+
+  let html = template;
+  html = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(title)}</title>`);
+  html = setMetaTag(html, /<meta name="description"\s+content="[^"]*" \/>/,
+    `<meta name="description" content="${esc(description)}" />`);
+  html = setMetaTag(html, /<meta property="og:title"\s+content="[^"]*" \/>/,
+    `<meta property="og:title" content="${esc(title)}" />`);
+  html = setMetaTag(html, /<meta property="og:description"\s+content="[^"]*" \/>/,
+    `<meta property="og:description" content="${esc(description)}" />`);
+  html = setMetaTag(html, /<meta property="og:image"\s+content="[^"]*" \/>/,
+    `<meta property="og:image" content="${esc(image)}" />`);
+  html = setMetaTag(html, /<meta property="og:url"\s+content="[^"]*" \/>/,
+    `<meta property="og:url" content="https://conscious-shell.com/studio" />`);
+  html = setMetaTag(html, /<meta name="twitter:title"\s+content="[^"]*" \/>/,
+    `<meta name="twitter:title" content="${esc(title)}" />`);
+  html = setMetaTag(html, /<meta name="twitter:description"\s+content="[^"]*" \/>/,
+    `<meta name="twitter:description" content="${esc(description)}" />`);
+  const robots = '<meta name="robots" content="noindex, follow" />';
+  html = html.match(/<meta name="robots"[^>]*>/)
+    ? html.replace(/<meta name="robots"[^>]*>/, robots)
+    : html.replace('</head>', `    ${robots}\n  </head>`);
+
+  const block = [
+    '<main style="max-width:44rem;margin:0 auto;padding:3rem 1.25rem;color:#e8e4dc;background:#0b0a08">',
+    '<p style="font-family:monospace;font-size:11px;letter-spacing:.2em">micah boswell · the studio</p>',
+    '<h1>Your AI pilot works. Nobody uses it.</h1>',
+    "<p>I'm Micah Boswell. Thirty years of enterprise UX, currently Experience Lead, DNI at AT&amp;T. I take one outside engagement a month: a two-week teardown that finds out why the humans won't adopt your AI, and hands your team the fix.</p>",
+    "<p>Most enterprise AI pilots don't fail on the model. They fail at the moment a person has to trust the output, change a habit, or explain the answer to someone else. That moment is a design problem, and it's usually the one nobody staffed.</p>",
+    '<h2>AI Adoption Teardown — $18,000 fixed · two weeks · one per month</h2>',
+    '<ul>',
+    '<li>days 1-3 · I shadow the real users inside the real workflow.</li>',
+    '<li>days 4-5 · the failure map, ranked by what it costs you.</li>',
+    '<li>days 6-8 · the redesigned interaction model, walked through with your users.</li>',
+    '<li>days 9-10 · the build path, with acceptance criteria, and one readout.</li>',
+    '</ul>',
+    '<p>48% error reduction (GE Nuclear) · $300K+ recovered (AT&amp;T) · 31% abandonment cut (U.S. Mint)</p>',
+    '<p>Start the intro call: <a href="mailto:micah@conscious-shell.com">micah@conscious-shell.com</a></p>',
+    '</main>',
+  ].join('\n      ');
+  html = html.replace('<div id="root"></div>', `<div id="root">${block}</div>`);
+  return html;
+}
+
+/**
  * The 404 document.
  *
  * WHY THIS EXISTS
@@ -1007,11 +1063,27 @@ async function main() {
   writeFileSync(join(DIST, '404.html'), notFoundDocument(template, d, slugify));
   console.log('[prerender] 404.html');
 
+  // --- /studio (warm-link only) ---
+  mkdirSync(join(DIST, 'studio'), { recursive: true });
+  writeFileSync(join(DIST, 'studio', 'index.html'), studioDocument(template));
+  console.log('[prerender] /studio → dist/studio/index.html (noindex)');
+
   // --- sitemap / llms.txt / agents.md ---
   writeFileSync(join(DIST, 'sitemap.xml'), sitemap(d, slugify));
   writeFileSync(join(DIST, 'llms.txt'), llmsTxt(d, slugify));
   writeFileSync(join(DIST, 'agents.md'), agentsMd(d, slugify));
   console.log(`[prerender] sitemap.xml (${seen.size + 1} urls), llms.txt, agents.md`);
+
+  // Quiet-sell guards: /studio is warm-link only. A leak is a build failure.
+  const sitemapOut = readFileSync(join(DIST, 'sitemap.xml'), 'utf8');
+  const llmsOut = readFileSync(join(DIST, 'llms.txt'), 'utf8');
+  const agentsOut = readFileSync(join(DIST, 'agents.md'), 'utf8');
+  if (/studio/i.test(sitemapOut)) die('quiet-sell violation: sitemap.xml mentions studio');
+  if (/\/studio/.test(llmsOut)) die('quiet-sell violation: llms.txt links /studio');
+  if (/\/studio/.test(agentsOut)) die('quiet-sell violation: agents.md links /studio');
+  const studioOut = readFileSync(join(DIST, 'studio', 'index.html'), 'utf8');
+  if (!studioOut.includes('content="noindex')) die('studio page lost its noindex tag');
+  console.log('[prerender] quiet-sell guards: green');
 
   console.log(`[prerender] done in ${Date.now() - t0}ms`);
 }
