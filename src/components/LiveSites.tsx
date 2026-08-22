@@ -10,7 +10,6 @@ type Site = {
   tags: string[];
   thumb: React.ReactNode;
   status: 'live' | 'beta' | 'wip';
-  patent?: string;
 };
 
 
@@ -20,10 +19,9 @@ const SITES: Site[] = [
     url: 'https://familyroots.center',
     tagline: 'Your family\'s story, beautifully told.',
     description:
-      'A patent-pending dual parent view renders maternal and paternal lineage as a single coherent branching network — not a fan chart, not a flat list. 7 distinct visualizations, AI historian, recipe archive, and migration maps.',
+      'A dual parent view renders maternal and paternal lineage as a single coherent branching network — not a fan chart, not a flat list. 7 distinct visualizations, AI historian, recipe archive, and migration maps.',
     tags: ['next.js', 'ai', 'genealogy', 'visualization'],
     thumb: <img src="/site-shots/family-roots.webp" alt="Family Roots homepage" className="w-full h-full object-cover" loading="lazy" />,
-    patent: 'dual parent view',
     status: 'live',
   },
   {
@@ -31,10 +29,9 @@ const SITES: Site[] = [
     url: 'https://penpaperandink.app/pens',
     tagline: 'A fountain pen almanac.',
     description:
-      'A patent-pending pairing engine models nib flex, paper sizing, ink flow rate, and bleed resistance to predict real-world compatibility before you buy. Thirty years of analog obsession distilled into an algorithm.',
+      'A pairing engine models nib flex, paper sizing, ink flow rate, and bleed resistance to predict real-world compatibility before you buy. Thirty years of analog obsession distilled into an algorithm.',
     tags: ['react', 'editorial', 'catalogue', 'design'],
     thumb: <img src="/site-shots/pen-and-paper.webp" alt="Pen & Paper homepage" className="w-full h-full object-cover" loading="lazy" />,
-    patent: 'pairing engine',
     status: 'live',
   },
   {
@@ -135,17 +132,6 @@ function SiteCard({ site, index }: { site: Site; index: number }) {
           >
             <ExternalLink className="w-4 h-4" />
           </a>
-        </div>
-
-        {/* Patent badge — renders as empty space when absent so description stays aligned */}
-        <div className="mb-2 h-5">
-          {site.patent && (
-            <div className="inline-flex items-center gap-1.5 px-2 py-0.5 border border-[#c9a030]/40">
-              <span className="text-[8px] tracking-[0.4em] uppercase text-[#c9a030]">patent pending</span>
-              <span className="text-[8px] text-[#8a6a10]">·</span>
-              <span className="text-[8px] tracking-[0.2em] text-[#a07828]">{site.patent}</span>
-            </div>
-          )}
         </div>
 
         {/* Description — grows to fill remaining space */}
